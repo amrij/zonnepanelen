@@ -14,6 +14,7 @@ In config.php the following is fixed:
 - data for access to the database;
 - the latitude and longitude of the location of the panels;
 - name of the background image;
+- indicate power on the panels;
 - type of inverter (1 or 3 phase);
 - the name of the inverter (type number);
 - the number of panels;
