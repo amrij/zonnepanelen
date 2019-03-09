@@ -10,3 +10,5 @@ To configure the website config.php and css / zonnepanelen.css have to be modifi
 Then the website can be started with solar panels.php.
 
 ## Customize config.php
+In config.php the following is fixed:
+- data for access to the database;
