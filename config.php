@@ -18,7 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.22
+// versie: 1.23
 // auteur: André Rijkeboer
 // datum:  09-03-2019
 // omschrijving: configuratie bestand
@@ -36,6 +36,9 @@ $long = 6.0045953; //Longitude East
 
 // Achtergrond image (in de img directory)
 $zonnesysteem = "zonnesysteem.gif";
+
+// aangeven vermogen op het paneel
+$vermogen = 1; // 0 = nee, 1 = ja
 
 // gegevens van het zonnepanelensysteem
 $inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
