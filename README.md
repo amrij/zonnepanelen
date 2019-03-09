@@ -22,6 +22,8 @@ In config.php the following is fixed:
 ## Customize css/zonnepanelen.css
 In css/zonnepanelen.css the following is fixed:
 - div.box_Zonnepanelen: place, dimensions and possible rotation;
-- div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen
+- div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
+
+The file img/maan/maan.zip must be unpacked.
 
 For more information see https://gathering.tweakers.net/forum/list_message/54439825#54439825
