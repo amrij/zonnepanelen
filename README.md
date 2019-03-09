@@ -12,3 +12,16 @@ Then the website can be started with solar panels.php.
 ## Customize config.php
 In config.php the following is fixed:
 - data for access to the database;
+- the latitude and longitude of the location of the panels;
+- name of the background image;
+- type of inverter (1 or 3 phase);
+- the name of the inverter (type number);
+- the number of panels;
+- the optimizer id and number of the panel and the direction.
+
+## Customize css/zonnepanelen.css
+In css/zonnepanelen.css the following is fixed:
+- div.box_Zonnepanelen: place, dimensions and possible rotation;
+- div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen
+
+For more information see https://gathering.tweakers.net/forum/list_message/54439825#54439825
