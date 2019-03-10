@@ -204,7 +204,7 @@ omschrijving: hoofdprogramma
 		var data_i = [];
 		var chart_1 = "power_chart_paneel";
 		var chart_2 = "power_chart_inverter";
-		var productie = ['<?php echo $productie[14]?>','<?php echo $productie[13]?>','<?php echo $productie[12]?>','<?php echo $productie[11]?>','<?php echo $productie[10]?>','<?php echo $productie[9]?>','<?php echo $productie[8]?>','<?php echo $productie[7]?>','<?php echo $productie[6]?>','<?php echo $productie[5]?>','<?php echo $productie[4]?>','<?php echo $productie[3]?>','<?php echo $productie[2]?>','Voorafgaande dagen','<?php echo $productie[0]?>'];
+		var productie = ['<?php echo $productie[14]?>','<?php echo $productie[13]?>','<?php echo $productie[12]?>','<?php echo $productie[11]?>','<?php echo $productie[10]?>','<?php echo $productie[9]?>','<?php echo $productie[8]?>','<?php echo $productie[7]?>','<?php echo $productie[6]?>','<?php echo $productie[5]?>','<?php echo $productie[4]?>','<?php echo $productie[3]?>','<?php echo $productie[2]?>','voorafgaande dagen','<?php echo $productie[0]?>','<?php echo $productie[1]?>'];
 		var start_i = 0;
 		var inverter_redraw = 1;
 		
@@ -563,7 +563,7 @@ omschrijving: hoofdprogramma
 						}	
 						for(var i = 0; i < data_i.length; i++){
 							if (data_i[i]['op_id'] == "i"){
-								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],0),data_i[i]['p1_volume_prd']*1], false, shift);
+								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
 							}
 						}
 						if(inverter_redraw == 1) {inverter_chart.redraw();}
@@ -1418,8 +1418,11 @@ omschrijving: hoofdprogramma
 								for (i=0; i<=14; i++){ 
 									if (this.series.name == productie[i]) {
 										if (s != ""){ s += '<br>'}
-										s += Highcharts.dateFormat('%A ', this.series.name) + this.series.name + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' +
-										this.y + ' kWh';
+										if (i != 13){
+											s += Highcharts.dateFormat('%A ', this.series.name) + this.series.name + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' + this.y + ' kWh';
+										} else {
+											s += Highcharts.dateFormat('%A ', productie[15]) + productie[15] + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' + this.y + ' kWh';
+										}
 									}
 								}
 							});
