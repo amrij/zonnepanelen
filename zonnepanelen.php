@@ -426,9 +426,13 @@ omschrijving: hoofdprogramma
 				}
 				if (vermogen == 1){
 					document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
-					document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["E"+i])+ " W";
+					if(inv1Data[0]["IVACT"] != 0){
+						document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["E"+i])+ " W";
+					} else {
+						document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["VM"+i])+ " W";
+					}	
 					document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
-				} else{
+				} else {
 					document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 					document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
 					document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
