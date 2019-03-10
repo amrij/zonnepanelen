@@ -560,7 +560,7 @@ omschrijving: hoofdprogramma
 						}	
 						for(var i = 0; i < data_i.length; i++){
 							if (data_i[i]['op_id'] == "i"){
-								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],data_i[i]['sec']),data_i[i]['p1_volume_prd']*1], false, shift);
+								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],0),data_i[i]['p1_volume_prd']*1], false, shift);
 							}
 						}
 						if(inverter_redraw == 1) {inverter_chart.redraw();}
