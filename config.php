@@ -30,6 +30,7 @@ $user = 'gebruiker'; // gebruiker
 $passwd = 'password'; // paswoord gebruiker
 $db = 'solaredge'; // database naam
 
+
 // gegeven van de plaats waar de zonnepanelen staan
 $lat = 51.9515885; //Latitude North
 $long = 6.0045953; //Longitude East
@@ -37,16 +38,26 @@ $long = 6.0045953; //Longitude East
 // Achtergrond image (in de img directory)
 $zonnesysteem = "zonnesysteem.gif";
 
+//#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
+$domohost = '192.168.0.??:8080';                        // ip:poort van domoticz
+$domoidx = "123";                                       // device IDX voor de Electriciteits P1 meter
+$ElecLeverancier = "Essent";                            // naam electra leverancier
+$ElecDagGraph = '60';                                   // aantal dagen in grafiek
+$ElecMaandGraph = '13';                                 // aantal maanden in grafiek
+$DataURL = 'live-server-data-electra-domoticz.php';     // URL voor ophalen electra&Converter data
+$zonnesysteem_electra = "zonnesysteem-electra.gif";
+//#### einde aanpassing
+
 // aangeven vermogen op het paneel
 $vermogen = 1; // 0 = nee, 1 = ja
 
 // gegevens van het zonnepanelensysteem
 $inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
 $naam = "SolarEdge SE7k"; //naam van de inverter
-$aantal = 22; // aantal zonnepanelen dat in database is opgenoen 
+$aantal = 22; // aantal zonnepanelen dat in database is opgenomen
 // (max = 33 bij groter aantal moet in het html blok van zonnepanelen het aantal verhoogd worden)
 // optimizer id en positie paneel en richting van de panelen Vertikaal = 0, Horizontaal = 1
-$op_id[1] = ['2020B2E3','1.1.1',0]; //$op_id[id optimizer][inverter.string.paneelnummer][richting] 
+$op_id[1] = ['2020B2E3','1.1.1',0]; //$op_id[id optimizer][inverter.string.paneelnummer][richting]
 $op_id[2] = ['2020B18C', '1.1.2',0];
 $op_id[3] = ['2020B1B2', '1.1.3',0];
 $op_id[4] = ['2020B353', '1.1.4',0];
@@ -70,7 +81,7 @@ $op_id[21] = ['20212017', '1.1.21',1];
 $op_id[22] = ['20212166', '1.1.22',1];
 $op_id[23] = ['20211F32', '1.1.23',0];
 $op_id[24] = ['20211FD6', '1.1.24',0];
-$op_id[25] = ['0', '1.1.25',1]; 
+$op_id[25] = ['0', '1.1.25',1];
 $op_id[26] = ['0', '1.1.26',1];
 $op_id[27] = ['0', '1.1.27',1];
 $op_id[28] = ['0', '1.1.28',1];
