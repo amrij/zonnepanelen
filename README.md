@@ -34,8 +34,6 @@ The Config.php contains an extra number of variables and their purpose is descri
 This is handled by means of the zonnepanelen-electra.css file containing the definition for each of these options.
 screenshots:</b>
   ![Alt text](/docs/zonnepanelen-electra_LT.PNG?raw=true "Laptop")
-  ![Alt text](/docs/zonnepanelen-electra_Mobiel-portret.jpg?raw=true "Mobile portrait")
-  ![Alt text](/docs/zonnepanelen-electra_Mobiel-landschap1.jpg?raw=true "Mobile landscape")
-  ![Alt text](/docs/zonnepanelen-electra_Mobiel-landschap2.jpg?raw=true "Mobile landscape")
+  ![Alt text](/docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
 
 For more information see https://gathering.tweakers.net/forum/list_message/54439825#54439825
