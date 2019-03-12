@@ -157,28 +157,28 @@ div.panel_energy {
     left: 43%;
     top: 0.1%;
     width: 28.4%;
-    height: 49.5%;
+    height: 49.7%;
     position: absolute;
 }
 div.panel_vermogen {
     left: 71.5%;
     top: 0.1%;
     width: 28.4%;
-    height: 49.5%;
+    height: 49.7%;
     position: absolute;
 }
 div.chart_energy {
     left: 43%;
     top: 0.1%;
     width: 28.4%;
-    height: 49.5%;
+    height: 49.7%;
     position: absolute;
 }
 div.chart_vermogen {
     left: 71.5%;
     top: 0.1%;
     width: 28.4%;
-    height: 49.5%;
+    height: 49.7%;
     position: absolute;
 }
 div.daygraph {
@@ -188,7 +188,7 @@ div.daygraph {
     height: 48.9%;
     position: absolute;
 }
-div.yeargraph {
+div.monthgraph {
     left: 71.5%;
     top: 50.2%;
     width: 28.4%;
@@ -256,7 +256,7 @@ div.yeargraph {
 		width: 99.2%;
 		height: 50%;
 	}
-	div.yeargraph {
+	div.monthgraph {
 		left: .1%;
 		top: 250.2%;
 		width: 99.2%;
@@ -936,4 +936,3 @@ div.ZonnepaneelColor_3 {
     height: 150px;
     margin: 0px;
 }
-

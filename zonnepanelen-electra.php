@@ -2149,7 +2149,7 @@ omschrijving: hoofdprogramma
 			<div Class='chart_energy' id='chart_energy'></div>
 			<div Class='chart_vermogen' id='chart_vermogen'></div>
 			<div Class='daygraph' id="daygraph"></div>
-			<div Class='yeargraph' id="yeargraph"></div>
+			<div Class='monthgraph' id="monthgraph"></div>
 
 			<div Class='box_Zonnepanelen' id='box_Zonnepanelen'>
 				<div class='box_Zonnepaneel_1' id='box_Zonnepaneel_1'>
@@ -2624,11 +2624,7 @@ function draw_p1_chart() {
 						sVE += point.y;
 					} ;
                 });
-				if (this.points[0].series.chart.renderTo.id == "aYear") {
-					s += "Jaar:" + Highcharts.dateFormat('%Y', this.x);
-				} else if (this.points[0].series.chart.renderTo.id == "Month") {
-					s += "Week " + Highcharts.dateFormat('%W  (%d %B %Y)', this.x);
-				} else if (this.points[0].series.chart.renderTo.id == "Year") {
+				if (this.points[0].series.chart.renderTo.id == "monthgraph") {
 					s += "" + Highcharts.dateFormat('%B %Y', this.x);
 				} else {
 					s += Highcharts.dateFormat('%A', this.x) + ' ' + Highcharts.dateFormat('%d-%m-%Y', this.x);
@@ -2709,7 +2705,7 @@ function draw_p1_chart() {
 
 
 	chartoptions.title.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecMaandGraph?> maanden.';
-	chartoptions.chart.renderTo='yeargraph';
+	chartoptions.chart.renderTo='monthgraph';
 	chartoptions.series.pointInterval=24 * 3600 * 1000*30;
 	chartoptions.xAxis.tickInterval=28*24*3600*1000;
 	var ychart = new Highcharts.Chart(chartoptions);
@@ -2800,7 +2796,7 @@ function AddSeriestoChart(chart, switchtype) {
 			formatter: function () {
 				if (chart.renderTo.id == "aYear") {
 					return 'Solar :' + Highcharts.numberFormat(this.point.stackTotal,0) + '<br/><?php echo $ElecLeverancier?>:' + Highcharts.numberFormat(this.y,0);
-				} else if (chart.renderTo.id == "Year") {
+				} else if (chart.renderTo.id == "monthgraph") {
 					return Highcharts.numberFormat(this.point.stackTotal,0);
 				} else {
 					return Highcharts.numberFormat(this.point.stackTotal,1);
@@ -2827,7 +2823,7 @@ function AddSeriestoChart(chart, switchtype) {
 			formatter: function () {
 				if (chart.renderTo.id == "aYear") {
 					return Highcharts.numberFormat(this.y,0);
-				} else if (chart.renderTo.id == "Year") {
+				} else if (chart.renderTo.id == "monthgraph") {
 					return Highcharts.numberFormat(this.y,0);
 				} else {
 					return Highcharts.numberFormat(this.y,1);
@@ -2856,7 +2852,7 @@ function AddSeriestoChart(chart, switchtype) {
 			formatter: function () {
 				if (chart.renderTo.id == "aYear") {
 					return Highcharts.numberFormat(this.point.stackTotal,0);
-				} else if (chart.renderTo.id == "Year") {
+				} else if (chart.renderTo.id == "monthgraph") {
 					return Highcharts.numberFormat(this.point.stackTotal,0);
 				} else {
 					return Highcharts.numberFormat(this.point.stackTotal,0);
