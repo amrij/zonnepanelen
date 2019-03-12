@@ -20,8 +20,8 @@
 #
 
 versie: 1.46
-auteur: André Rijkeboer
-datum:  09-03-2019
+auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
+datum:  12-03-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -335,7 +335,7 @@ omschrijving: hoofdprogramma
 
 		function paneel(){
 			var p1data = $.ajax({
-				url: "http://<?php echo $domohost?>/json.htm?type=devices&rid=<?php echo $domoidx?>",
+				url: "<?php echo $DataURL?>?period=c",
 				dataType: "json",
 				type: 'GET',
 				data: { },
@@ -357,13 +357,13 @@ omschrijving: hoofdprogramma
 					document.getElementById("arrow_PRD").className = "";
 				}
 				document.getElementById("p1_huis").className = "red_text";
-				document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1data.result[0]["CounterDelivToday"])+parseFloat(p1data.result[0]["CounterToday"]))+" kWh";
+				document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1data[0]["CounterDelivToday"])+parseFloat(p1data[0]["CounterToday"]))+" kWh";
 				document.getElementById("so_text").className = "green_text";
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
 						"<tr><td colspan=3><b><u>Solar vandaag</u></b></td></tr>"+
-						"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1data.result[0]["CounterDelivToday"]))+" kWh</td></tr>"+
-						"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1data.result[0]["CounterDelivToday"]))+" kWh</td></tr>"+
+						"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1data[0]["CounterDelivToday"]))+" kWh</td></tr>"+
+						"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1data[0]["CounterDelivToday"]))+" kWh</td></tr>"+
 						"<tr><td></td><td colspan=3>----------</td></tr>"+
 						"<tr><td class=green_text>productie:</td><td class=green_text colspan=2>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
 						"</table>";
@@ -439,32 +439,32 @@ omschrijving: hoofdprogramma
 
 		function p1_update(){
 			var p1data = $.ajax({
-				url: "http://<?php echo $domohost?>/json.htm?type=devices&rid=<?php echo $domoidx?>",
+				url: "<?php echo $DataURL?>?period=c",
 				dataType: "json",
 				type: 'GET',
 				data: { },
 				async: false,
 			}).responseText;
 			p1data = JSON.parse(p1data);
-			if(p1data.result[0]["Usage"] == "0 Watt"){
+			if(p1data[0]["Usage"] == "0 Watt"){
 				document.getElementById("arrow_RETURN").className = "arrow_right_green";
 				document.getElementById("p1_text").className = "green_text";
-				document.getElementById("p1_text").innerHTML = p1data.result[0]["UsageDeliv"];
+				document.getElementById("p1_text").innerHTML = p1data[0]["UsageDeliv"];
 			}else{
 				document.getElementById("arrow_RETURN").className = "arrow_left_red";
 				document.getElementById("p1_text").className = "red_text";
-				document.getElementById("p1_text").innerHTML = p1data.result[0]["Usage"];
+				document.getElementById("p1_text").innerHTML = p1data[0]["Usage"];
 			}
-			var diff=parseFloat(p1data.result[0]["CounterToday"])-parseFloat(p1data.result[0]["CounterDelivToday"]);
+			var diff=parseFloat(p1data[0]["CounterToday"])-parseFloat(p1data[0]["CounterDelivToday"]);
 			var cdiff  = "red_text";
 			if (diff < 0) {
 				cdiff  = "green_text";
 				diff = diff * -1;
 			}
 			document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1data["ServerTime"].substr(11,10)+")</td><td colspan=1></td></tr>" +
-					"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data.result[0]["CounterToday"]))+" kWh</td></tr>" +
-					"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data.result[0]["CounterDelivToday"]))+" kWh</td></tr>" +
+					"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1data[0]["ServerTime"].substr(11,10)+")</td><td colspan=1></td></tr>" +
+					"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data[0]["CounterToday"]))+" kWh</td></tr>" +
+					"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data[0]["CounterDelivToday"]))+" kWh</td></tr>" +
 					"<tr><td></td><td colspan=3>----------</td></tr>"+
 					"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" colspan=3>"+waarde(0,3,diff)+" kWh</td></tr>"+
 					"</table>";
