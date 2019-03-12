@@ -399,11 +399,11 @@ omschrijving: hoofdprogramma
 						document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["E"+i])+ " W";
 					} else {
 						document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["VM"+i])+ " W";
-					}	
+					}
 				} else {
 					document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 					document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
-				}	
+				}
 				document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
 				if ( inv1Data[0]["C"+i] == 0) {
 					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000";
@@ -1957,7 +1957,8 @@ omschrijving: hoofdprogramma
 									if (this.series.y == this.y) {};
 									if (this.series.name == productie[i]) {
 										if (s != ""){ s += '<br>'}
-										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+										s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' +
+										Highcharts.numberFormat(this.y,0) + ' W';
 									}
 								}
 							});
