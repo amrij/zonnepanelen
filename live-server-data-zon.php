@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.2
+// versie: 1.21
 // auteur: André Rijkeboer
-// datum:  10-03-2019
+// datum:  12-03-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
 
 $d1 = $_GET['date'];
@@ -85,6 +85,7 @@ If ($d3 >= $begin) {
 		$diff[sprintf('T%s',$i)]	= 0;
 		$diff[sprintf('E%s',$i)]	= 0;
 		$diff[sprintf('VM%s',$i)]	= 0;
+		$diff[sprintf('VMT%s',$i)]	= 0;
 	}
 
 	//Zet de waarden bij het juiste paneel
@@ -144,6 +145,17 @@ If ($d3 >= $begin) {
 				$diff[sprintf('VM%s',$i)]	= round($row['v_m']*0.125*0.00625,2);
 			}
 		}
+	}
+	$formatt='%H:%i:%s';
+	for ($i = 1; $i <= $aantal; $i++){
+		$query = sprintf("SELECT FROM_UNIXTIME(`timestamp`, '%s') time
+			FROM `telemetry_optimizers` 
+			WHERE (`timestamp` > %s AND `timestamp`< %s) and (%s = round(v_in*i_in*0.125*0.00625,2)) and (HEX(`op_id`) = '%s');", $formatt, $date, $tomorrow, $diff[sprintf('VM%s',$i)], $op_id[$i][0]);
+		$result = $mysqli->query($query);
+
+		$row = mysqli_fetch_assoc($result);
+
+		$diff[sprintf('VMT%s',$i)]	= $row['time'];
 	}
 	$format1 = '%Y%m%d';
 	if ($inverter == 1){
