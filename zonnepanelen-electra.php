@@ -365,7 +365,7 @@ omschrijving: hoofdprogramma
 						"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1data.result[0]["CounterDelivToday"]))+" kWh</td></tr>"+
 						"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1data.result[0]["CounterDelivToday"]))+" kWh</td></tr>"+
 						"<tr><td></td><td colspan=3>----------</td></tr>"+
-						"<tr><td>productie:</td><td colspan=2>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
+						"<tr><td class=green_text>productie:</td><td class=green_text colspan=2>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
 						"</table>";
 
 				document.getElementById("inverter_text").innerHTML = "<table width=100% class=data-table>"+
@@ -462,7 +462,7 @@ omschrijving: hoofdprogramma
 				diff = diff * -1;
 			}
 			document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td colspan=2><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td><td colspan=2>"+p1data["ServerTime"].substr(11,10)+"</td></tr>" +
+					"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1data["ServerTime"].substr(11,10)+")</td><td colspan=1></td></tr>" +
 					"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data.result[0]["CounterToday"]))+" kWh</td></tr>" +
 					"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data.result[0]["CounterDelivToday"]))+" kWh</td></tr>" +
 					"<tr><td></td><td colspan=3>----------</td></tr>"+
@@ -2125,19 +2125,19 @@ omschrijving: hoofdprogramma
 						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">"></TD><TR>
 				</div>
 
-				<img src="./img/dummy.gif" style="top: 1.59%; left: 21.24%; z-index: 10; width: 3.19%; height: 11.93%; position: absolute;" usemap="#inverter"/>
+				<img src="./img/dummy.gif" style="top: 4%; left: 5.50%; z-index: 10; width: 15.00%; height: 28.00%; position: absolute;" usemap="#inverter"/>
 				<map name="inverter" style="z-index: 20;">
 					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="" onmouseover="vermogenChart()" onmouseout="vermogenChartcl()">
 				</map>
-				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 21%; z-index: 10; width: 43%; height: 20%; line-height: 120%; position: absolute;"></div>
-				<div class='sola_text' id='sola_text' style="top: 45%; left: 2%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<div class='elec_text' id='elec_text' style="top: 70%; left: 2%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 21%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='elec_text' id='elec_text' style="top: 70%; left: 18%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<img src="./img/dummy.gif" style="top: 28.18%; left: 29.95%; z-index: 10; width: 3,62%; height: 11.36%; position: absolute;" usemap="#meter"/>
-				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 				<div class="" id="arrow_PRD"      style="top: 33.9%; left: 29.0%; width: 0.01%; height: 0.7% ; z-index: 20; position: absolute;"></div>
-				<div class='p1_text' id='p1_text' style="top: 82.5%; left: 70.0%; width: 15%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<div class=""   id="arrow_RETURN" style="top: 87.4%; left: 75.0%; width: 0.03%; height: 2.1% ; z-index: 20; position: absolute;"></div>
-				<div class='p1_huis' id='p1_huis' style="top: 33.0%; left: 78.0%; width: 15%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='p1_text' id='p1_text' style="top: 82.5%; left: 70.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
+				<div class=""   id="arrow_RETURN" style="top: 87.4%; left: 75.0%; width: 0.03%; height: 2.1%; z-index: 20; position: absolute;"></div>
+				<div class='p1_huis' id='p1_huis' style="top: 33.0%; left: 78.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 
 				<map name="meter" style="z-index: 20;">
 					<area id="meter_1" shape="rect" coords="0,0,67,100" title="P1_Meter">
