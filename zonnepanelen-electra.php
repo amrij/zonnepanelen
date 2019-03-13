@@ -289,23 +289,30 @@ omschrijving: hoofdprogramma
 	function drawChart() {
 		zonmaan();
 		paneel();
+		inverter_chart.redraw();
+		vermogen_chart.redraw();
 		p1_update();
 		draw_p1_chart();
 		document.getElementById("panel_vermogen").innerHTML ="";
 		document.getElementById("panel_energy").innerHTML ="";
-		inverter_chart.redraw();
-		vermogen_chart.redraw();
 		document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
 		document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
 		document.getElementById("sunset_text").innerHTML = sunset+" uur";
 		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
 		setInterval(function() {
-			zonmaan();
-			paneel();
-		}, 60000);
-		setInterval(function() {
 			p1_update();
 		}, 20000);
+		setInterval(function() {
+			zonmaan();
+			paneel();
+			inverter_chart.redraw();
+			vermogen_chart.redraw();
+		}, 60000);
+		setInterval(function() {
+			updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
+			updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
+		}, 60000);
+
 	}
 	function paneelChart(event,x) {
 		if (x <= aantal){
@@ -2417,12 +2424,6 @@ omschrijving: hoofdprogramma
 		// lees data en update grafieken
 		updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-		setInterval(function() {
-			updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
-			updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-		}, 60000);
-
-
 	}
 	function updateP1graphs(ichart,gtype, periods) {
 		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods;
