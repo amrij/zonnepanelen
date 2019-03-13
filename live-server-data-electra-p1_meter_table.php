@@ -1,6 +1,6 @@
 <?php
 //
-// versie: 1.2
+// versie: 1.3
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
 // datum:  13-03-2018
@@ -123,6 +123,30 @@ if ($period == 'c' ){
 		}
 	}else{
 		// haal de gegevens van de 3 fase inverter op
+		foreach($mysqli->query('SELECT * FROM ( ' .
+								'SELECT '.$datefilter.' as oDate, DATE(t2.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
+								'	 FROM      (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(v1) as sv1, sum(v2) as sv2, sum(r1) as sr1, sum(r2) as sr2 ' .
+								'			   FROM   P1_Meter ' .
+								'			   GROUP BY d ' .
+								'			   ) t2 ' .
+								'	 left join (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(de_day)/1000 as tzon ' .
+								'			   FROM   solaredge.telemetry_inverter_3phase ' .
+								'			   GROUP BY d  ' .
+								'			   ) t1 ' .
+								' ON t1.d = t2.d  ' .
+								' GROUP BY oDate ' .
+								' ORDER by t2.d desc ' .
+								' LIMIT '.$limit.') output' .
+								' ORDER by oDate ;'   ) as $j => $row){
+			$diff['idate'] = date($row['iDate']);
+			$diff['serie'] = date($row['oDate']);
+			$diff['prod'] = round($row["prod"],2);
+			$diff['v1'] = round($row["v1"],2);
+			$diff['v2'] = round($row["v2"],2);
+			$diff['r1'] = round($row["r1"],2);
+			$diff['r2'] = round($row["r2"],2);
+			//voeg het resultaat toe aan de total-array
+			array_push($total, $diff);
 	}
 	// Sluit DB
 	$thread_id = $mysqli->thread_id;
