@@ -756,7 +756,6 @@ omschrijving: hoofdprogramma
 					legend: {
 						itemStyle: {
 							fontWeight: 'Thin',
-							fontSize: '.7vw'
 						},
 						layout: 'vertical',
 						align: 'left',
@@ -1216,7 +1215,6 @@ omschrijving: hoofdprogramma
 					legend: {
 						itemStyle: {
 							fontWeight: 'Thin',
-							fontSize: '.7vw'
 						},
 						layout: 'vertical',
 						align: 'left',
@@ -1655,7 +1653,6 @@ omschrijving: hoofdprogramma
 					legend: {
 						itemStyle: {
 							fontWeight: 'Thin',
-							fontSize: '.7vw'
 						},
 						layout: 'vertical',
 						align: 'left',
@@ -1955,7 +1952,6 @@ omschrijving: hoofdprogramma
 					legend: {
 						itemStyle: {
 							fontWeight: 'Thin',
-							fontSize: '.7vw'
 						},
 						layout: 'vertical',
 						align: 'left',
