@@ -349,6 +349,10 @@ omschrijving: hoofdprogramma
 				async: false,
 			}).responseText;
 			p1data = JSON.parse(p1data);
+			p1CounterToday = p1data[0]["CounterToday"];
+			p1CounterDelivToday = p1data[0]["CounterDelivToday"];
+			if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
+			if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
 			inv1Data = eval(inv1Data)
 			if (datum1 < tomorrow) {
 				if(inv1Data[0]["IVACT"] != 0){
@@ -357,13 +361,13 @@ omschrijving: hoofdprogramma
 					document.getElementById("arrow_PRD").className = "";
 				}
 				document.getElementById("p1_huis").className = "red_text";
-				document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1data[0]["CounterDelivToday"])+parseFloat(p1data[0]["CounterToday"]))+" kWh";
+				document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
 				document.getElementById("so_text").className = "green_text";
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
 						"<tr><td colspan=3><b><u>Solar vandaag</u></b></td></tr>"+
-						"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1data[0]["CounterDelivToday"]))+" kWh</td></tr>"+
-						"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1data[0]["CounterDelivToday"]))+" kWh</td></tr>"+
+						"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
+						"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
 						"<tr><td></td><td colspan=3>----------</td></tr>"+
 						"<tr><td class=green_text>productie:</td><td class=green_text colspan=2>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
 						"</table>";
@@ -449,25 +453,39 @@ omschrijving: hoofdprogramma
 				async: false,
 			}).responseText;
 			p1data = JSON.parse(p1data);
-			if(p1data[0]["Usage"] == "0 Watt"){
+			p1servertime = p1data[0]["ServerTime"];
+			p1CounterToday = p1data[0]["CounterToday"];
+			p1CounterDelivToday = p1data[0]["CounterDelivToday"];
+			p1Usage = p1data[0]["Usage"];
+			p1UsageDeliv = p1data[0]["UsageDeliv"];
+			if (typeof p1servertime === 'undefined') {p1servertime = "";}
+			if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
+			if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
+			if (typeof p1Usage === 'undefined') {p1Usage = 0;}
+			if (typeof p1UsageDeliv === 'undefined') {p1UsageDeliv = 0;}
+			if( p1Usage == 0){
+				document.getElementById("arrow_RETURN").className = "";
+				document.getElementById("p1_text").className = "red_text";
+				document.getElementById("p1_text").innerHTML = "No data";
+			}else if( p1Usage == "0 Watt"){
 				document.getElementById("arrow_RETURN").className = "arrow_right_green";
 				document.getElementById("p1_text").className = "green_text";
-				document.getElementById("p1_text").innerHTML = p1data[0]["UsageDeliv"];
+				document.getElementById("p1_text").innerHTML = p1UsageDeliv;
 			}else{
 				document.getElementById("arrow_RETURN").className = "arrow_left_red";
 				document.getElementById("p1_text").className = "red_text";
-				document.getElementById("p1_text").innerHTML = p1data[0]["Usage"];
+				document.getElementById("p1_text").innerHTML = p1Usage;
 			}
-			var diff=parseFloat(p1data[0]["CounterToday"])-parseFloat(p1data[0]["CounterDelivToday"]);
+			var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
 			var cdiff  = "red_text";
 			if (diff < 0) {
 				cdiff  = "green_text";
 				diff = diff * -1;
 			}
 			document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1data[0]["ServerTime"].substr(11,10)+")</td><td colspan=1></td></tr>" +
-					"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data[0]["CounterToday"]))+" kWh</td></tr>" +
-					"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1data[0]["CounterDelivToday"]))+" kWh</td></tr>" +
+					"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1servertime.substr(11,10)+")</td><td colspan=1></td></tr>" +
+					"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
+					"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
 					"<tr><td></td><td colspan=3>----------</td></tr>"+
 					"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" colspan=3>"+waarde(0,3,diff)+" kWh</td></tr>"+
 					"</table>";
@@ -612,7 +630,6 @@ omschrijving: hoofdprogramma
 						style: {
 							font: 'Arial',
 							fontWeight: 'bold',
-							fontSize: '.85vw'
 						},
 						floating: true
 					},
@@ -1073,7 +1090,6 @@ omschrijving: hoofdprogramma
 						style: {
 							font: 'Arial',
 							fontWeight: 'bold',
-							fontSize: '.85vw'
 						},
 						floating: true
 					},
@@ -1535,7 +1551,6 @@ omschrijving: hoofdprogramma
 						style: {
 							font: 'Arial',
 							fontWeight: 'bold',
-							fontSize: '.85vw'
 						},
 						floating: true
 					},
@@ -1836,7 +1851,6 @@ omschrijving: hoofdprogramma
 						style: {
 							font: 'Arial',
 							fontWeight: 'bold',
-							fontSize: '.85vw'
 						},
 						floating: true
 					},
@@ -2576,11 +2590,13 @@ function draw_p1_chart() {
 			marginRight: 10,
 		},
 		title: {
+			text: null
+		},
+		subtitle: {
 			text: 'TITLE',
 			style: {
 				font: 'Arial',
 				fontWeight: 'bold',
-				fontSize: '.85vw',
                 color: 'gray',
                 fontWeight: 'bold'
             }
@@ -2701,14 +2717,14 @@ function draw_p1_chart() {
 	};
 
 	// creeer de Charts met ieder hun eigen setting
-	chartoptions.title.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecDagGraph?> dagen.';
+	chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecDagGraph?> dagen.';
 	chartoptions.chart.renderTo='daygraph';
 	chartoptions.xAxis.dateTimeLabelFormats.day='%a %d-%b';
 	chartoptions.xAxis.tickInterval=24 * 3600 * 1000;
 	var wchart = new Highcharts.Chart(chartoptions);
 
 
-	chartoptions.title.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecMaandGraph?> maanden.';
+	chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecMaandGraph?> maanden.';
 	chartoptions.chart.renderTo='monthgraph';
 	chartoptions.series.pointInterval=24 * 3600 * 1000*30;
 	chartoptions.xAxis.tickInterval=28*24*3600*1000;
@@ -2809,12 +2825,12 @@ function AddSeriestoChart(chart, switchtype) {
 
 		},
 		tooltip: {
-			valueSuffix: (chart.title.textStr != 'Last Day') ? ' kWh' : ' Watt',
+			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
 			valueDecimals: totDecimals
 		},
 		color: 'rgba(30,242,110,1)',
 		stack: 'sreturn',
-		yAxis: (chart.title.textStr != 'Last Day') ? 0 : 1
+		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
 	}, false);
 
 	chart.addSeries({
@@ -2836,12 +2852,12 @@ function AddSeriestoChart(chart, switchtype) {
 		},
 		showInLegend: false,
 		tooltip: {
-			valueSuffix: (chart.title.textStr != 'Last Day') ? ' kWh' : ' Watt',
+			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
 			valueDecimals: totDecimals
 		},
 		color: 'rgba(3,222,190,1)',
 		stack: 'sreturn',
-		yAxis: (chart.title.textStr != 'Last Day') ? 0 : 1
+		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
 	}, false);
 
 	chart.addSeries({
@@ -2864,12 +2880,12 @@ function AddSeriestoChart(chart, switchtype) {
 			}
 		},
 		tooltip: {
-			valueSuffix: (chart.title.textStr != 'Last Day') ? ' kWh' : ' Watt',
+			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
 			valueDecimals: totDecimals
 		},
 		color: 'rgba(60,130,252,0.5)',
 		stack: 'susage',
-		yAxis: (chart.title.textStr != 'Last Day') ? 0 : 1
+		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
 	}, false);
 
 	chart.addSeries({
@@ -2879,12 +2895,12 @@ function AddSeriestoChart(chart, switchtype) {
 			enabled: false,
 		},
 		tooltip: {
-			valueSuffix: (chart.title.textStr != 'Last Day') ? ' kWh' : ' Watt',
+			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
 			valueDecimals: totDecimals
 		},
 		color: 'rgba(3,190,252,0.5)',
 		stack: 'susage',
-		yAxis: (chart.title.textStr != 'Last Day') ? 0 : 1
+		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
 	}, false);
 }
 
