@@ -1,10 +1,12 @@
 <?php
 //
-// versie: 1.1
+// versie: 1.2
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  12-03-2018
+// datum:  13-03-2018
+
 // omschrijving: ophalen van de P1 en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
+//
 // Extra tabel definitie voor de solaredge database:
 // 		USE solaredge;
 // 		CREATE TABLE P1_Meter (
@@ -16,28 +18,35 @@
 // 			PRIMARY KEY (timestamp),
 // 			INDEX       (timestamp)
 // 		);
-//
-// De verwachte JSON output is voor "period=c"  (current data)   aantal= wordt niet gebruikt
-//[{
-// "ServerTime" : "2019-03-13 11:48:40",
-// "CounterDelivToday" : "1.349 kWh",
-// "CounterToday" : "3.893 kWh",
-// "Usage" : "167 Watt",
-// "UsageDeliv" : "0 Watt",
-//}]
 
-// De verwachte JSON output is voor "period=d&aantal=xx"
-// [
-// {"idate":"2019-02-10","serie":"2019-02-10","prod":0,"v1":10.94,"v2":0,"r1":0,"r2":0},
-// {"idate":"2019-02-11","serie":"2019-02-11","prod":0,"v1":3.68,"v2":9.92,"r1":0,"r2":0},
-// {"idate":"2019-02-12","serie":"2019-02-12","prod":0,"v1":3.45,"v2":8.49,"r1":0,"r2":0}
-// ]
-// De verwachte JSON output is voor "period=m&aantal=xx"
-// [
-// {"idate":"2019-01-01","serie":"2019-01","prod":0,"v1":186.47,"v2":181.2,"r1":0,"r2":0},
-// {"idate":"2019-02-01","serie":"2019-02","prod":137.72,"v1":163.95,"v2":154.13,"r1":36.64,"r2":71.46},
-// {"idate":"2019-03-01","serie":"2019-03","prod":128.23,"v1":63.63,"v2":34.71,"r1":15.8,"r2":72.11}
-// ]
+//~ URL tbv live data p1 Meter: live-server-data-electra-domoticz.php/period=c
+//~ ==========================================================================
+//~ De verwachte JSON output is voor "period=c"  (current data)   aantal= wordt niet gebruikt
+//~ [{
+//~  "ServerTime" : "2019-03-13 11:48:40",
+//~  "CounterDelivToday" : "1.349 kWh",
+//~  "CounterToday" : "3.893 kWh",
+//~  "Usage" : "167 Watt",
+//~  "UsageDeliv" : "0 Watt",
+//~ }]
+
+//~ URL tbv dag grafiek p1 Meter: live-server-data-electra-domoticz.php/period=d&aantal=60
+//~ ======================================================================================
+//~ De verwachte JSON output is voor "period=d&aantal=xx"
+//~ [
+//~ {"idate":"2019-02-10","serie":"2019-02-10","prod":0,"v1":10.94,"v2":0,"r1":0,"r2":0},
+//~ {"idate":"2019-02-11","serie":"2019-02-11","prod":0,"v1":3.68,"v2":9.92,"r1":0,"r2":0},
+//~ {"idate":"2019-02-12","serie":"2019-02-12","prod":0,"v1":3.45,"v2":8.49,"r1":0,"r2":0}
+//~ ]
+
+//~ URL tbv maand grafiek p1 Meter: live-server-data-electra-domoticz.php/period=m&aantal=13
+//~ ========================================================================================
+//~ De verwachte JSON output is voor "period=m&aantal=xx"
+//~ [
+//~ {"idate":"2019-01-01","serie":"2019-01","prod":0,"v1":186.47,"v2":181.2,"r1":0,"r2":0},
+//~ {"idate":"2019-02-01","serie":"2019-02","prod":137.72,"v1":163.95,"v2":154.13,"r1":36.64,"r2":71.46},
+//~ {"idate":"2019-03-01","serie":"2019-03","prod":128.23,"v1":63.63,"v2":34.71,"r1":15.8,"r2":72.11}
+//~ ]
 
 $limit = $_GET['aantal'];
 if($limit == ''){
