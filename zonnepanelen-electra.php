@@ -145,1985 +145,6 @@ omschrijving: hoofdprogramma
 			return $s;
 		}
 	?>
-
-	<script type="text/javascript">
-		var datum = '<?php echo $date ?>';
-		var datumz = '<?php echo $datumz ?>';
-		var datum1 = '<?php echo $datum1 ?>';
-		var tomorrow = '<?php echo $tomorrow ?>';
-		var date2 = "<?php echo $date2 ?>";
-		var date3 = "<?php echo $date3 ?>";
-		var datev = "<?php echo $datev ?>";
-		var winter = '<?php echo $winter?>';
-		var jaar = '<?php echo $jaar?>';
-		var maand = '<?php echo $maand?>';
-		var sunrise = '<?php echo $sunrise ?>';
-		var solar_noon = '<?php echo $solar_noon ?>';
-		var sunset = '<?php echo $sunset ?>';
-		var daglengte = '<?php echo $daglengte ?>';
-		var dag = '<?php echo $dag?>';
-		var begin = '<?php echo $begin?>';
-		var vermogen = '<?php echo $vermogen?>';
-		var inverter = '<?php echo $inverter?>';
-		var naam = '<?php echo $naam?>';
-		var aantal = '<?php echo $aantal?>';
-		var op_id = [0,'<?php echo $op_id[1][1]?>','<?php echo $op_id[2][1]?>','<?php echo $op_id[3][1]?>','<?php echo $op_id[4][1]?>','<?php echo $op_id[5][1]?>','<?php echo $op_id[6][1]?>','<?php echo $op_id[7][1]?>','<?php echo $op_id[8][1]?>','<?php echo $op_id[9][1]?>','<?php echo $op_id[10][1]?>','<?php echo $op_id[11][1]?>','<?php echo $op_id[12][1]?>','<?php echo $op_id[13][1]?>','<?php echo $op_id[14][1]?>','<?php echo $op_id[15][1]?>','<?php echo $op_id[16][1]?>','<?php echo $op_id[17][1]?>','<?php echo $op_id[18][1]?>','<?php echo $op_id[19][1]?>','<?php echo $op_id[20][1]?>','<?php echo $op_id[21][1]?>','<?php echo $op_id[22][1]?>','<?php echo $op_id[23][1]?>','<?php echo $op_id[24][1]?>','<?php echo $op_id[25][1]?>','<?php echo $op_id[26][1]?>','<?php echo $op_id[27][1]?>','<?php echo $op_id[28][1]?>','<?php echo $op_id[29][1]?>','<?php echo $op_id[30][1]?>','<?php echo $op_id[31][1]?>','<?php echo $op_id[32][1]?>','<?php echo $op_id[33][1]?>'];
-		var rpan = [0,'<?php echo $op_id[1][2]?>','<?php echo $op_id[2][2]?>','<?php echo $op_id[3][2]?>','<?php echo $op_id[4][2]?>','<?php echo $op_id[5][2]?>','<?php echo $op_id[6][2]?>','<?php echo $op_id[7][2]?>','<?php echo $op_id[8][2]?>','<?php echo $op_id[9][2]?>','<?php echo $op_id[10][2]?>','<?php echo $op_id[11][2]?>','<?php echo $op_id[12][2]?>','<?php echo $op_id[13][2]?>','<?php echo $op_id[14][2]?>','<?php echo $op_id[15][2]?>','<?php echo $op_id[16][2]?>','<?php echo $op_id[17][2]?>','<?php echo $op_id[18][2]?>','<?php echo $op_id[19][2]?>','<?php echo $op_id[20][2]?>','<?php echo $op_id[21][2]?>','<?php echo $op_id[22][2]?>','<?php echo $op_id[23][2]?>','<?php echo $op_id[24][2]?>','<?php echo $op_id[25][2]?>','<?php echo $op_id[26][2]?>','<?php echo $op_id[27][2]?>','<?php echo $op_id[28][2]?>','<?php echo $op_id[29][2]?>','<?php echo $op_id[30][2]?>','<?php echo $op_id[31][2]?>','<?php echo $op_id[32][2]?>','<?php echo $op_id[33][2]?>'];
-		var uur0 = '22';
-		var uur1 = '23';
-		var uur2 = '24';
-		var uur3 = '25';
-		var uur4 = '26';
-		var uur5 = '27';
-		var uur6 = '28';
-		var uur7 = '29';
-		var uur8 = '30';
-		var uur9 = '31';
-		var uur10 = '32';
-		var uur11 = '33';
-		var uur12 = '34';
-		var uur13 = '35';
-		var uur14 = '36';
-		var uur15 = '37';
-		var uur16 = '38';
-		var uur17 = '39';
-		var uur18 = '40';
-		var uur19 = '41';
-		var uur20 = '42';
-		var uur21 = '43';
-		var uur22 = '44';
-		var uur23 = '45';
-		var uur24 = '46';
-		var uur25 = '47';
-		var data_p = [];
-		var data_i = [];
-		var chart_1 = "chart_energy";
-		var chart_2 = "chart_vermogen";
-		var productie = ['<?php echo $productie[14]?>','<?php echo $productie[13]?>','<?php echo $productie[12]?>','<?php echo $productie[11]?>','<?php echo $productie[10]?>','<?php echo $productie[9]?>','<?php echo $productie[8]?>','<?php echo $productie[7]?>','<?php echo $productie[6]?>','<?php echo $productie[5]?>','<?php echo $productie[4]?>','<?php echo $productie[3]?>','<?php echo $productie[2]?>','<?php echo $productie[1]?>','<?php echo $productie[0]?>'];
-		var start_i = 0;
-		var inverter_redraw = 1;
-
-
-		google.charts.load('current', {'packages':['gauge', 'line']});
-		google.charts.setOnLoadCallback(drawChart);
-		function drawChart() {
-			zonmaan();
-			paneel();
-			p1_update();
-			draw_p1_chart();
-			document.getElementById("panel_vermogen").innerHTML ="";
-			document.getElementById("panel_energy").innerHTML ="";
-			inverter_chart.redraw();
-			vermogen_chart.redraw();
-			document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
-			document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
-			document.getElementById("sunset_text").innerHTML = sunset+" uur";
-			document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
-			setInterval(function() {
-				zonmaan();
-				paneel();
-			}, 60000);
-			setInterval(function() {
-				p1_update();
-			}, 20000);
-		}
-		function paneelChart(event,x) {
-			if (x <= aantal){
-				inverter_redraw = 0;
-				document.getElementById("chart_vermogen").innerHTML ="";
-				document.getElementById("chart_energy").innerHTML ="";
-				// #### Vermogen  #####
-				var series = paneel_chartv.series[0];
-				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-				for (var i = 0; i < data_p.length; i++){
-					if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
-						if (data_p[i]['op_id'] < x ){
-							paneel_chartv.series[data_p[i]['op_id']-1].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
-							paneel_charte.series[data_p[i]['op_id']-1].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
-						} else {
-							paneel_chartv.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
-							paneel_charte.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
-						}
-					} else {
-						paneel_chartv.series[33].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
-						paneel_charte.series[33].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
-					}
-				}
-				paneel_chartv.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-				paneel_chartv.yAxis[0].update({
-					opposite: true
-				});
-				paneel_charte.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-				paneel_charte.yAxis[0].update({
-					opposite: true
-				});
-				paneel_chartv.legend.update({x:10,y:20});
-				paneel_chartv.series[33].update({name: "Vermogen paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-				paneel_chartv.series[32].update({showInLegend: false});
-				paneel_chartv.series[31].update({showInLegend: true, name: "Vermogen overige panelen"});
-				paneel_chartv.yAxis[0].update({
-					title: {
-						text: 'Vermogen (W)'
-					},
-				});
-				paneel_chartv.yAxis[1].update({
-					labels: {
-						enabled: false
-					},
-					title: {
-						text: null
-					}
-				});
-				paneel_charte.legend.update({x:10,y:20});
-				paneel_charte.series[33].update({name: "Energie paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-				paneel_charte.series[32].update({showInLegend: false});
-				paneel_charte.series[31].update({showInLegend: true, name: "Energie overige panelen"});
-				paneel_charte.yAxis[0].update({
-					title: {
-						text: 'Energie (Wh)'
-					},
-				});
-				paneel_charte.yAxis[1].update({
-					labels: {
-						enabled: false
-					},
-					title: {
-						text: null
-					}
-				});
-				paneel_chartv.redraw();
-				paneel_charte.redraw();
-			}
-		}
-
-		function paneelChartcl() {
-			inverter_redraw = 1;
-			document.getElementById("panel_vermogen").innerHTML ="";
-			document.getElementById("panel_energy").innerHTML ="";
-			for (var i=0; i<=33; i++){
-				paneel_chartv.series[i].setData([]);
-				paneel_charte.series[i].setData([]);
-			}
-			inverter_chart.redraw();
-			vermogen_chart.redraw();
-		}
-
-		function waarde(l,d,x){
-			s = String(x);
-			n = s.indexOf('-');
-			if ( n==0) { s=s.slice(1,s.length);}
-			p=s.indexOf('.');
-			if ( p <0 ) { s = s + ".";}
-			p=s.indexOf('.');
-			for (var i=1; i <= l; i++) {
-				if (l > i) {if (s.indexOf('.')<i+1) { s = "0"+ s;};}
-			}
-			p=s.indexOf('.');
-			for (var i=1; i<=d; i++){
-				if (s.length<p+1+i) { s = s + "0";}
-			}
-			if (d == 0 && p+1 == s.length) { s=s.slice(0,p);}
-			if (d > 0 && p+1+d < s.length) { s=s.slice(0,p+1+d);}
-			if (n==0) { s="-"+s;}
-			return s;
-		}
-
-		function paneel(){
-			var p1data = $.ajax({
-				url: "<?php echo $DataURL?>?period=c",
-				dataType: "json",
-				type: 'GET',
-				data: { },
-				async: false,
-			}).responseText;
-			var inv1Data = $.ajax({
-				url: "live-server-data-zon.php",
-				dataType: "json",
-				type: 'GET',
-				data: { "date" : datum },
-				async: false,
-			}).responseText;
-			p1data = JSON.parse(p1data);
-			p1CounterToday = p1data[0]["CounterToday"];
-			p1CounterDelivToday = p1data[0]["CounterDelivToday"];
-			if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
-			if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
-			inv1Data = eval(inv1Data)
-			if (datum1 < tomorrow) {
-				if(inv1Data[0]["IVACT"] != 0){
-					document.getElementById("arrow_PRD").className = "arrow_right_green";
-				}else{
-					document.getElementById("arrow_PRD").className = "";
-				}
-				document.getElementById("p1_huis").className = "red_text";
-				if (parseFloat(p1CounterToday)+parseFloat(p1CounterDelivToday) > 0) {
-					document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
-				} else {
-					document.getElementById("p1_huis").innerHTML = "No Data";
-				}
-				document.getElementById("so_text").className = "green_text";
-				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
-				document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
-						"<tr><td colspan=3><b><u>Solar vandaag</u></b></td></tr>"+
-						"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
-						"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
-						"<tr><td></td><td colspan=3>----------</td></tr>"+
-						"<tr><td class=green_text>productie:</td><td class=green_text colspan=2>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
-						"</table>";
-
-				document.getElementById("inverter_text").innerHTML = "<table width=100% class=data-table>"+
-						"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>"+
-						"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>"+
-						"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td><tr>"+
-						"<td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"])+"/"+waarde(0,1,inv1Data[0]["ITMIN"])+"/"+waarde(0,1,inv1Data[0]["ITMAX"])+" °C</td></tr>"+
-						"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"])+"</td></tr></table>";
-			}else{
-				document.getElementById("inverter_text").innerHTML = "<b>Inverter:</b><br>D:&emsp;&emsp;&nbsp;&nbsp;"+inv1Data[0]["IT"]+"<br>Pmax:&nbsp;&nbsp;"+inv1Data[0]["IVMAX"]+" W<br><b>E:&emsp;&emsp;&emsp;"+waarde(0,3,inv1Data[0]["IE"])+" kWh</b><br>Tmin:&emsp;"+waarde(0,1,inv1Data[0]["ITMIN"])+" °C<br>Tmax:&nbsp;&nbsp;"+waarde(0,1,inv1Data[0]["ITMAX"])+" °C";
-				document.getElementById("arrow_PRD").className = "";
-			}
-			if (inverter == 1){
-				document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\nS AC:	"+inv1Data[0]["i_ac"]+" A\r\nV AC:	"+inv1Data[0]["v_ac"]+" V\r\nFre:	"+inv1Data[0]["frequency"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active"]+" kWh\r\nV DC:	"+waarde(0,1,inv1Data[0]["v_dc"])+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
-			}else{
-				document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\n	L1	L2	L3\r\nS AC:	"+inv1Data[0]["i_ac1"]+"	"+inv1Data[0]["i_ac2"]+"	"+inv1Data[0]["i_ac3"]+" A\r\nV AC:	"+inv1Data[0]["v_ac1"]+"	"+inv1Data[0]["v_ac2"]+"	"+inv1Data[0]["v_ac3"]+" V\r\nFre:	"+inv1Data[0]["frequency1"]+"	"+inv1Data[0]["frequency2"]+"	"+inv1Data[0]["frequency3"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active1"]+"	"+inv1Data[0]["p_active2"]+"	"+inv1Data[0]["p_active3"]+" W\r\nV DC:	"+waarde(0,1,inv1Data[0]["v_dc"])+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
-			}
-//~ 			for (var i = Math.round(aantal)+1; i<=33; i++){
-//~ 				document.getElementById("tool_paneel_"+i).coords = "0,0,0,0";
-//~ 			}
-			for (var i=1; i<=aantal; i++){
-				document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
-				if (rpan[i] == 0){
-					document.getElementById("image_"+i).src = "./img/Zonnepaneel-ver.gif";
-				}else{
-					document.getElementById("image_"+i).src = "./img/Zonnepaneel-hor.gif";
-				}
-				if (vermogen == 1){
-					document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
-					if(inv1Data[0]["IVACT"] != 0){
-						document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["E"+i])+ " W";
-					} else {
-						document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["VM"+i])+ " W";
-					}
-				} else {
-					document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
-					document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
-				}
-				document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
-				if ( inv1Data[0]["C"+i] == 0) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000";
-				} else {
-					if ( inv1Data[0]["C"+i] < 0.1) {
-						document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16";
-					} else {
-						if ( inv1Data[0]["C"+i] < 0.2) {
-							document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d";
-						} else {
-							if ( inv1Data[0]["C"+i] < 0.3) {
-								document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44";
-							} else {
-								if ( inv1Data[0]["C"+i] < 0.4) {
-									document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a";
-								} else {
-									if ( inv1Data[0]["C"+i] < 0.5) {
-										document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71";
-									} else {
-										if ( inv1Data[0]["C"+i] < 0.6) {
-											document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88";
-										} else {
-											if ( inv1Data[0]["C"+i] < 0.7) {
-												document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e";
-											} else {
-												if ( inv1Data[0]["C"+i] < 0.8) {
-													document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5";
-												} else {
-													if ( inv1Data[0]["C"+i] < 0.9) {
-														document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc";
-													} else {
-														document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3";
-				}	}	}	}	}	}	}	}	}	}
-			}
-		}
-
-		function p1_update(){
-			var p1data = $.ajax({
-				url: "<?php echo $DataURL?>?period=c",
-				dataType: "json",
-				type: 'GET',
-				data: { },
-				async: false,
-			}).responseText;
-			p1data = JSON.parse(p1data);
-			p1servertime = p1data[0]["ServerTime"];
-			p1CounterToday = p1data[0]["CounterToday"];
-			p1CounterDelivToday = p1data[0]["CounterDelivToday"];
-			p1Usage = p1data[0]["Usage"];
-			p1UsageDeliv = p1data[0]["UsageDeliv"];
-			if (typeof p1servertime === 'undefined') {p1servertime = "";}
-			if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
-			if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
-			if (typeof p1Usage === 'undefined') {p1Usage = 0;}
-			if (typeof p1UsageDeliv === 'undefined') {p1UsageDeliv = 0;}
-			if( p1Usage == 0){
-				document.getElementById("arrow_RETURN").className = "";
-				document.getElementById("p1_text").className = "red_text";
-				document.getElementById("p1_text").innerHTML = "No data";
-			}else if( p1Usage == "0 Watt"){
-				document.getElementById("arrow_RETURN").className = "arrow_right_green";
-				document.getElementById("p1_text").className = "green_text";
-				document.getElementById("p1_text").innerHTML = p1UsageDeliv;
-			}else{
-				document.getElementById("arrow_RETURN").className = "arrow_left_red";
-				document.getElementById("p1_text").className = "red_text";
-				document.getElementById("p1_text").innerHTML = p1Usage;
-			}
-			var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
-			var cdiff  = "red_text";
-			if (diff < 0) {
-				cdiff  = "green_text";
-				diff = diff * -1;
-			}
-			document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1servertime.substr(11,10)+")</td><td colspan=1></td></tr>" +
-					"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
-					"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
-					"<tr><td></td><td colspan=3>----------</td></tr>"+
-					"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" colspan=3>"+waarde(0,3,diff)+" kWh</td></tr>"+
-					"</table>";
-
-
-		}
-
-		function zonmaan(){
-			if (date2 >= date3){
-				document.getElementById("NextDay").disabled = true;
-			}else{
-				document.getElementById("NextDay").disabled = false;
-			}
-			if (date2 <= "2016-01-01"){
-				document.getElementById("PrevDay").disabled = true;
-			}
-			if (datum1 < tomorrow) {
-				datumz = Date();
-			}
-			var inv4Data = $.ajax({
-				url: "maanfase.php",
-				dataType: "json",
-				type: 'GET',
-				data: { "date" : datumz },
-				async: false,
-			}).responseText;
-			inv4Data = eval(inv4Data)
-			date3 = inv4Data[0]["date3"];
-			datum1 = inv4Data[0]["datum1"];
-			document.getElementById("maan_th").src = inv4Data[0]["filenaam"];
-			document.getElementById("fase_text").innerHTML = inv4Data[0]["phase_naam"];
-			document.getElementById("verlicht_text").innerHTML = inv4Data[0]["illumination"]+'% Verlicht';
-		}
-		$(function() {
-			Highcharts.setOptions({
-				global: {
-					useUTC: false,
-				},
-				style: {
-					fontFamily: 'Arial'
-				}
-			})
-			var urlname = 'live-server-data-s.php'
-			var urlname1 = 'live-server-data-paneel.php'
-			var urlname2 = 'live-server-data-inverter.php'
-			function requestData1() {
-				$.ajax({
-					url: urlname,//url of data source
-					type: 'GET',
-					data: { "date" : datum }, //optional
-					success: function(data) {
-						var series = power_chart.series[0];
-						var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-						data = eval(data);
-						for(var i = 0; i < data.length; i++){
-							power_chart.series[0].addPoint([Date.UTC(data[i]['jaar'],data[i]['maand'],data[i]['dag'],data[i]['uur'],data[i]['minuut'],data[i]['sec']),data[i]['p1_volume_prd']*1], false, shift);
-							power_chart.series[1].addPoint([Date.UTC(data[i]['jaar'],data[i]['maand'],data[i]['dag'],data[i]['uur'],data[i]['minuut'],data[i]['sec']),data[i]['p1_current_power_prd']*1], false, shift);
-						}
-						power_chart.redraw();
-						urlname = 'live-server-data-c.php';
-						if (datum1 < tomorrow) {
-						   setTimeout(requestData1, 1000*60);
-						} else {
-						   setTimeout(requestData1, 1000*86400);
-						}
-					},
-					cache: false
-				});
-			}
-			function requestData2() {
-				$.ajax({
-					url: urlname1,//url of data source
-					type: 'GET',
-					data: { "date" : datum }, //optional
-					success: function(data) {
-						data_p = eval(data);
-						if (datum1 < tomorrow) {
-						   setTimeout(requestData2, 1000*60);
-						} else {
-						   setTimeout(requestData2, 1000*86400);
-						}
-					},
-					cache: false
-				});
-			}
-			function requestDatai() {
-				$.ajax({
-					url: urlname2,//url of data source
-					type: 'GET',
-					data: { "date" : datum }, //optional
-					success: function(data) {
-						data_i = eval(data);
-						var series = inverter_chart.series[0];
-						var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-						for (var i=0; i<=14; i++){
-							inverter_chart.series[i].setData([]);
-							vermogen_chart.series[i].setData([]);
-						}
-						for(var i = 0; i < data_i.length; i++){
-							if (data_i[i]['op_id'] == "i"){
-								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],0),data_i[i]['p1_volume_prd']*1], false, shift);
-								vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],0),data_i[i]['p1_current_power_prd']*1], false, shift);
-							}
-						}
-						if(inverter_redraw == 1) {
-							inverter_chart.redraw();
-							vermogen_chart.redraw();
-						}
-						if (datum1 < tomorrow) {
-						   setTimeout(requestDatai, 1000*60);
-						} else {
-						   setTimeout(requestDatai, 1000*86400);
-						}
-					},
-					cache: false
-				});
-			}
-			function requestDatav() {
-			}
-			$(document).ready(function() {
-				paneel_chartv = new Highcharts.Chart({
-					chart: {
-						type: 'area',
-						renderTo: 'panel_vermogen',
-						spacingTop: 10,
-						borderColor: 'grey',
-						borderWidth: 1,
-						borderRadius: 5,
-						alignTicks:true,
-						spacingBottom: 0,
-						zoomType: 'none',
-						events: {load: requestData2}
-					},
-					title: {
-						text: null
-					},
-					subtitle: {
-						text: "",
-						align: 'left',
-						x: 90,
-						y: 20,
-						style: {
-							font: 'Arial',
-							fontWeight: 'bold',
-						},
-						floating: true
-					},
-					xAxis: [{
-						type: 'datetime',
-						pointstart: Date.UTC(1970,01,01),
-						maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-						title: {
-							text: null
-						},
-						startOnTick: true,
-						minPadding: 0,
-						maxPadding: 0,
-						labels: {
-							overflow: 'justify'
-						},
-						tooltip: {
-							enabled: true,
-							crosshair: true
-						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
-					}],
-					yAxis: [{
-						title: {
-							text: 'Vermogen(W)'
-						},
-						showEmpty: false,
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick) / 6);
-							if (this.dataMax ==  this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						}
-					}, {
-						title: {
-							text: 'Energie (Wh)'
-						},
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick)/ 6);
-							if (this.dataMax ==  this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						},
-						opposite: true
-					}],
-					legend: {
-						itemStyle: {
-							fontWeight: 'Thin',
-						},
-						layout: 'vertical',
-						align: 'left',
-						x: 10,
-						verticalAlign: 'top',
-						y: 20,
-						floating: true,
-					},
-					credits: {
-						enabled: false
-					},
-					tooltip: {
-						formatter: function () {
-							var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
-							$.each(this.points, function () {
-								if (this.series.name == 'Energie Productie') {
-									s += '<br/>' + this.series.name + ': ' +
-									this.y + ' kWh';
-								}
-								if (this.series.name == 'Stroom Productie') {
-									s += '<br/>' + this.series.name + ': ' +
-									this.y + ' W';
-								}
-							});
-							return s;
-						},
-						shared: true,
-						snap: 0,
-						crosshairs: [{
-							width: 1,
-							color: 'red',
-							zIndex: 3
-						}]
-					},
-					plotOptions: {
-						  spline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								symbol: 'circle',
-								states: {
-									hover: {
-									enabled: true
-									}
-								}
-							}
-						  },
-						  areaspline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								type: 'triangle',
-								states: {
-									hover: {
-									enabled: true,
-									}
-								}
-							}
-						}
-					},
-					exporting: {
-						enabled: false,
-						filename: 'power_chart',
-						url: 'export.php'
-					},
-					series: [{
-						name: 'Paneel_33',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_32',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_31',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_30',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_29',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_28',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_27',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_26',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_25',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_24',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_23',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_22',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_21',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_20',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_19',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_18',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_17',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_16',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_15',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_14',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_13',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_12',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_11',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_10',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_9',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_8',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_7',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_6',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_5',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_4',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_3',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_2',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Energie Productie',
-						showInLegend: true,
-						type: 'areaspline',
-						marker: {
-							symbol: 'triangle'
-						},
-						yAxis: 1,
-						showEmpty: true,
-						lineWidth: 1,
-						color: 'rgba(204,255,153,1)',
-						pointWidth: 2,
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_1',
-						showInLegend: true,
-						type: 'spline',
-						yAxis: 0,
-						color: '#009900',
-						data: []//this will be filled by requestData()
-					}]
-				});
-			});
-			$(document).ready(function() {
-				paneel_charte = new Highcharts.Chart({
-					chart: {
-						type: 'area',
-						renderTo: 'panel_energy',
-						spacingTop: 10,
-						borderColor: 'grey',
-						borderWidth: 1,
-						borderRadius: 5,
-						alignTicks:true,
-						spacingBottom: 0,
-						zoomType: 'none',
-						events: {load: requestData2}
-					},
-					title: {
-						text: null
-					},
-					subtitle: {
-						text: "",
-						align: 'left',
-						x: 90,
-						y: 20,
-						style: {
-							font: 'Arial',
-							fontWeight: 'bold',
-						},
-						floating: true
-					},
-					xAxis: [{
-						type: 'datetime',
-						pointstart: Date.UTC(1970,01,01),
-						maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-						title: {
-							text: null
-						},
-						startOnTick: true,
-						minPadding: 0,
-						maxPadding: 0,
-						labels: {
-							overflow: 'justify'
-						},
-						tooltip: {
-							enabled: true,
-							crosshair: true
-						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
-					}],
-					yAxis: [{
-						title: {
-							text: 'Vermogen(W)'
-						},
-						showEmpty: false,
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick) / 6);
-							if (this.dataMax ==  this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						}
-					}, {
-						title: {
-							text: 'Energie (Wh)'
-						},
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick)/ 6);
-							if (this.dataMax ==  this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						},
-						opposite: true
-					}],
-					legend: {
-						itemStyle: {
-							fontWeight: 'Thin',
-						},
-						layout: 'vertical',
-						align: 'left',
-						x: 10,
-						verticalAlign: 'top',
-						y: 20,
-						floating: true,
-					},
-					credits: {
-						enabled: false
-					},
-					tooltip: {
-						formatter: function () {
-							var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
-							$.each(this.points, function () {
-								if (this.series.name == 'Energie Productie') {
-									s += '<br/>' + this.series.name + ': ' +
-									this.y + ' kWh';
-								}
-								if (this.series.name == 'Stroom Productie') {
-									s += '<br/>' + this.series.name + ': ' +
-									this.y + ' W';
-								}
-							});
-							return s;
-						},
-						shared: true,
-						snap: 0,
-						crosshairs: [{
-							width: 1,
-							color: 'red',
-							zIndex: 3
-						}]
-					},
-					plotOptions: {
-						  spline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								symbol: 'circle',
-								states: {
-									hover: {
-									enabled: true
-									}
-								}
-							}
-						  },
-						  areaspline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								type: 'triangle',
-								states: {
-									hover: {
-									enabled: true,
-									}
-								}
-							}
-						}
-					},
-					exporting: {
-						enabled: false,
-						filename: 'power_chart',
-						url: 'export.php'
-					},
-					series: [{
-						name: 'Paneel_33',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_32',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_31',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_30',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_29',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_28',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_27',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_26',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_25',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_24',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_23',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_22',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_21',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_20',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_19',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_18',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_17',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_16',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_15',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_14',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_13',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_12',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_11',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_10',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_9',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_8',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_7',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_6',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_5',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_4',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_3',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_2',
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Energie Productie',
-						showInLegend: true,
-						type: 'areaspline',
-						marker: {
-							symbol: 'triangle'
-						},
-						yAxis: 1,
-						showEmpty: true,
-						lineWidth: 1,
-						color: 'rgba(204,255,153,1)',
-						pointWidth: 2,
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Paneel_1',
-						showInLegend: true,
-						type: 'spline',
-						yAxis: 0,
-						color: '#009900',
-						data: []//this will be filled by requestData()
-					}]
-				});
-			});
-			$(document).ready(function() {
-				inverter_chart = new Highcharts.Chart({
-					chart: {
-						type: 'area',
-						renderTo: "chart_energy",
-						spacingTop: 10,
-						borderColor: 'grey',
-						borderWidth: 1,
-						borderRadius: 5,
-						alignTicks:true,
-						spacingBottom: 0,
-						zoomType: 'none',
-						events: {load: requestDatai},
-						spacingRight: 5
-					},
-					title: {
-					   text: null
-					},
-					subtitle: {
-						text: "Energie op <?php echo $datev;?> en 14 voorafgaande  dagen",
-						align: 'left',
-						x: 20,
-						y: 20,
-						style: {
-							font: 'Arial',
-							fontWeight: 'bold',
-						},
-						floating: true
-					},
-					xAxis: [{
-						type: 'datetime',
-						pointstart: Date.UTC(1970,01,01),
-						maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-						title: {
-							text: null
-						},
-						startOnTick: true,
-						minPadding: 0,
-						maxPadding: 0,
-						labels: {
-							overflow: 'justify'
-						},
-						tooltip: {
-							enabled: true,
-							crosshair: true
-						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
-					}],
-					yAxis: [{
-						title: {
-							text: 'Energie (kWh)'
-						},
-						opposite: true,
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick)/ 6);
-							if (this.dataMax ==  this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						}
-					}],
-					legend: {
-						itemStyle: {
-							fontWeight: 'Thin',
-						},
-						layout: 'vertical',
-						align: 'left',
-						x: 10,
-						verticalAlign: 'top',
-						y: 20,
-						floating: true,
-					},
-					credits: {
-						enabled: false
-					},
-					tooltip: {
-						formatter: function () {
-							var s ="";
-							$.each(this.points, function () {
-								for (i=0; i<=14; i++){
-									if (this.series.name == productie[i]) {
-										if (s != ""){ s += '<br>'}
-										s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+': ' +
-										this.y + ' kWh';
-									}
-								}
-							});
-							return s;
-						},
-						shared: true,
-						snap: 0,
-						crosshairs: [{
-							width: 1,
-							color: 'red',
-							zIndex: 3
-						}]
-					},
-					plotOptions: {
-						  spline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								symbol: 'circle',
-								states: {
-									hover: {
-									enabled: true
-									}
-								}
-							}
-						  },
-						  areaspline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								type: 'triangle',
-								states: {
-									hover: {
-									enabled: true,
-									}
-								}
-							}
-						}
-					},
-					exporting: {
-						enabled: false,
-						filename: 'power_chart',
-						url: 'export.php'
-					},
-					series: [{
-						name: productie[0],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[1],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[2],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[3],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[4],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[5],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[6],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[7],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[8],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[9],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[10],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[11],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[12],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[13],
-						showInLegend: true,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[14],
-						showInLegend: true,
-						type: 'spline',
-						yAxis: 0,
-						lineWidth: 2,
-						color: '#009900',
- 						data: []//this will be filled by requestData()
-					}]
-				});
-			});
-			$(document).ready(function() {
-				vermogen_chart = new Highcharts.Chart({
-					chart: {
-						type: 'area',
-						renderTo: "chart_vermogen",
-						spacingTop: 10,
-						borderColor: 'grey',
-						borderWidth: 1,
-						borderRadius: 5,
-						alignTicks:true,
-						spacingBottom: 0,
-						zoomType: 'none',
-						spacingRight: 5,
-						events: {load: requestDatav}
-					},
-					title: {
-					   text: null
-					},
-					subtitle: {
-						text: "Vermogen op <?php echo $datev;?> en 14 voorafgaande  dagen",
-						align: 'left',
-						x: 20,
-						y: 20,
-						style: {
-							font: 'Arial',
-							fontWeight: 'bold',
-						},
-						floating: true
-					},
-					xAxis: [{
-						type: 'datetime',
-						pointstart: Date.UTC(1970,01,01),
-						maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-						title: {
-							text: null
-						},
-						startOnTick: true,
-						minPadding: 0,
-						maxPadding: 0,
-						labels: {
-							overflow: 'justify'
-						},
-						tooltip: {
-							enabled: true,
-							crosshair: true
-						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
-					}],
-					yAxis: [{
-						title: {
-							text: 'Vermogen (W)'
-						},
-						opposite: true,
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick)/ 6);
-							if (this.dataMax ==  this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						}
-					}],
-					legend: {
-						itemStyle: {
-							fontWeight: 'Thin',
-						},
-						layout: 'vertical',
-						align: 'left',
-						x: 10,
-						verticalAlign: 'top',
-						y: 20,
-						floating: true,
-					},
-					credits: {
-						enabled: false
-					},
-					tooltip: {
-						formatter: function () {
-							var s = "";
-							$.each(this.points, function () {
-								for (i=0; i<=14; i++){
-									if (this.series.y == this.y) {};
-									if (this.series.name == productie[i]) {
-										if (s != ""){ s += '<br>'}
-										s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' +
-										Highcharts.numberFormat(this.y,0) + ' W';
-									}
-								}
-							});
-							return s;
-						},
-						shared: true,
-						snap: 0,
-						crosshairs: [{
-							width: 1,
-							color: 'red',
-							zIndex: 3
-						}]
-					},
-					plotOptions: {
-						  spline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								symbol: 'circle',
-								states: {
-									hover: {
-									enabled: true
-									}
-								}
-							}
-						  },
-						  areaspline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								type: 'triangle',
-								states: {
-									hover: {
-									enabled: true,
-									}
-								}
-							}
-						}
-					},
-					exporting: {
-						enabled: false,
-						filename: 'power_chart',
-						url: 'export.php'
-					},
-					series: [{
-						name: productie[0],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[1],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[2],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[3],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[4],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[5],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[6],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[7],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[8],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[9],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[10],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[11],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[12],
-						showInLegend: false,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[13],
-						showInLegend: true,
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[14],
-						showInLegend: true,
- 						type: 'spline',
-						yAxis: 0,
-						lineWidth: 2,
-						color: '#009900',
- 						data: []//this will be filled by requestData()
-					}]
-				});
-			});
-		});
-
-		</script>
 </head>
 <body>
 	<div class='mainpage'>
@@ -2166,22 +187,19 @@ omschrijving: hoofdprogramma
 
 			<div Class='box_Zonnepanelen' id='box_Zonnepanelen'>
 <?php
-		include('config.php');
-		if ($aantal > 33) { $aantal = 33;}
-		if ($aantal < 0) { $aantal = 0;}
-		for ($i=1; $i<=$aantal; $i++){
-			echo ' 	<div class="box_Zonnepaneel_'.$i.'" id="box_Zonnepaneel_'.$i.'">'."\n";
-			echo '			<div class="text_paneel_W" id="text_paneel_W_'.$i.'"></div>'."\n";
-			echo '			<div class="text_paneel_WX" id="text_paneel_W_'.$i.'a"></div>'."\n";
-			echo '		<img  id="image_'.$i.'" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>'."\n";
-			echo '		<div class="box_Zonnepaneel_'.$i.'">'."\n";
-			echo '		<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
-			echo '		<map name="'.$i.'">'."\n";
-			echo '				<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
-			echo '		</map>'."\n";
-			echo '		<div class="text_Zonnepaneel_n" id="text_Zonnepaneel_'.$i.'"></div>'."\n";
-			echo "  </div>\n";
-		}
+	for ($i=1; $i<=$aantal; $i++){
+		echo '				<div class="box_Zonnepaneel_'.$i.'" id="box_Zonnepaneel_'.$i.'">'."\n";
+		echo '					<div class="text_paneel_W" id="text_paneel_W_'.$i.'"></div>'."\n";
+		echo '					<div class="text_paneel_WX" id="text_paneel_W_'.$i.'a"></div>'."\n";
+		echo '					<img  id="image_'.$i.'" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>'."\n";
+		echo '					<div class="box_Zonnepaneel_'.$i.'">'."\n";
+		echo '						<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
+		echo '						<map name="'.$i.'">'."\n";
+		echo '							<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
+		echo '						</map>'."\n";
+		echo '					<div class="text_Zonnepaneel_n" id="text_Zonnepaneel_'.$i.'"></div>'."\n";
+		echo '				</div>'."\n";
+	}
 ?>
 			<div Class='box_sunrise' id='box_sunrise'>
 				<img src="./img/zon/sunrise.gif"                  style="top: .1%;   left: 3%;  z-index: 10; width: 20%; height: 12%; position: absolute;" />
@@ -2204,7 +222,1988 @@ omschrijving: hoofdprogramma
 		</div>
 	</div>
 </body>
+
+
+
+
 <script type="text/javascript">
+	var datum = '<?php echo $date ?>';
+	var datumz = '<?php echo $datumz ?>';
+	var datum1 = '<?php echo $datum1 ?>';
+	var tomorrow = '<?php echo $tomorrow ?>';
+	var date2 = "<?php echo $date2 ?>";
+	var date3 = "<?php echo $date3 ?>";
+	var datev = "<?php echo $datev ?>";
+	var winter = '<?php echo $winter?>';
+	var jaar = '<?php echo $jaar?>';
+	var maand = '<?php echo $maand?>';
+	var sunrise = '<?php echo $sunrise ?>';
+	var solar_noon = '<?php echo $solar_noon ?>';
+	var sunset = '<?php echo $sunset ?>';
+	var daglengte = '<?php echo $daglengte ?>';
+	var dag = '<?php echo $dag?>';
+	var begin = '<?php echo $begin?>';
+	var vermogen = '<?php echo $vermogen?>';
+	var inverter = '<?php echo $inverter?>';
+	var naam = '<?php echo $naam?>';
+	var aantal = '<?php echo $aantal?>';
+	var op_id = [0,'<?php echo $op_id[1][1]?>','<?php echo $op_id[2][1]?>','<?php echo $op_id[3][1]?>','<?php echo $op_id[4][1]?>','<?php echo $op_id[5][1]?>','<?php echo $op_id[6][1]?>','<?php echo $op_id[7][1]?>','<?php echo $op_id[8][1]?>','<?php echo $op_id[9][1]?>','<?php echo $op_id[10][1]?>','<?php echo $op_id[11][1]?>','<?php echo $op_id[12][1]?>','<?php echo $op_id[13][1]?>','<?php echo $op_id[14][1]?>','<?php echo $op_id[15][1]?>','<?php echo $op_id[16][1]?>','<?php echo $op_id[17][1]?>','<?php echo $op_id[18][1]?>','<?php echo $op_id[19][1]?>','<?php echo $op_id[20][1]?>','<?php echo $op_id[21][1]?>','<?php echo $op_id[22][1]?>','<?php echo $op_id[23][1]?>','<?php echo $op_id[24][1]?>','<?php echo $op_id[25][1]?>','<?php echo $op_id[26][1]?>','<?php echo $op_id[27][1]?>','<?php echo $op_id[28][1]?>','<?php echo $op_id[29][1]?>','<?php echo $op_id[30][1]?>','<?php echo $op_id[31][1]?>','<?php echo $op_id[32][1]?>','<?php echo $op_id[33][1]?>'];
+	var rpan = [0,'<?php echo $op_id[1][2]?>','<?php echo $op_id[2][2]?>','<?php echo $op_id[3][2]?>','<?php echo $op_id[4][2]?>','<?php echo $op_id[5][2]?>','<?php echo $op_id[6][2]?>','<?php echo $op_id[7][2]?>','<?php echo $op_id[8][2]?>','<?php echo $op_id[9][2]?>','<?php echo $op_id[10][2]?>','<?php echo $op_id[11][2]?>','<?php echo $op_id[12][2]?>','<?php echo $op_id[13][2]?>','<?php echo $op_id[14][2]?>','<?php echo $op_id[15][2]?>','<?php echo $op_id[16][2]?>','<?php echo $op_id[17][2]?>','<?php echo $op_id[18][2]?>','<?php echo $op_id[19][2]?>','<?php echo $op_id[20][2]?>','<?php echo $op_id[21][2]?>','<?php echo $op_id[22][2]?>','<?php echo $op_id[23][2]?>','<?php echo $op_id[24][2]?>','<?php echo $op_id[25][2]?>','<?php echo $op_id[26][2]?>','<?php echo $op_id[27][2]?>','<?php echo $op_id[28][2]?>','<?php echo $op_id[29][2]?>','<?php echo $op_id[30][2]?>','<?php echo $op_id[31][2]?>','<?php echo $op_id[32][2]?>','<?php echo $op_id[33][2]?>'];
+	var uur0 = '22';
+	var uur1 = '23';
+	var uur2 = '24';
+	var uur3 = '25';
+	var uur4 = '26';
+	var uur5 = '27';
+	var uur6 = '28';
+	var uur7 = '29';
+	var uur8 = '30';
+	var uur9 = '31';
+	var uur10 = '32';
+	var uur11 = '33';
+	var uur12 = '34';
+	var uur13 = '35';
+	var uur14 = '36';
+	var uur15 = '37';
+	var uur16 = '38';
+	var uur17 = '39';
+	var uur18 = '40';
+	var uur19 = '41';
+	var uur20 = '42';
+	var uur21 = '43';
+	var uur22 = '44';
+	var uur23 = '45';
+	var uur24 = '46';
+	var uur25 = '47';
+	var data_p = [];
+	var data_i = [];
+	var chart_1 = "chart_energy";
+	var chart_2 = "chart_vermogen";
+	var productie = ['<?php echo $productie[14]?>','<?php echo $productie[13]?>','<?php echo $productie[12]?>','<?php echo $productie[11]?>','<?php echo $productie[10]?>','<?php echo $productie[9]?>','<?php echo $productie[8]?>','<?php echo $productie[7]?>','<?php echo $productie[6]?>','<?php echo $productie[5]?>','<?php echo $productie[4]?>','<?php echo $productie[3]?>','<?php echo $productie[2]?>','<?php echo $productie[1]?>','<?php echo $productie[0]?>'];
+	var start_i = 0;
+	var inverter_redraw = 1;
+
+
+	google.charts.load('current', {'packages':['gauge', 'line']});
+	google.charts.setOnLoadCallback(drawChart);
+	function drawChart() {
+		zonmaan();
+		paneel();
+		p1_update();
+		draw_p1_chart();
+		document.getElementById("panel_vermogen").innerHTML ="";
+		document.getElementById("panel_energy").innerHTML ="";
+		inverter_chart.redraw();
+		vermogen_chart.redraw();
+		document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
+		document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
+		document.getElementById("sunset_text").innerHTML = sunset+" uur";
+		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
+		setInterval(function() {
+			zonmaan();
+			paneel();
+		}, 60000);
+		setInterval(function() {
+			p1_update();
+		}, 20000);
+	}
+	function paneelChart(event,x) {
+		if (x <= aantal){
+			inverter_redraw = 0;
+			document.getElementById("chart_vermogen").innerHTML ="";
+			document.getElementById("chart_energy").innerHTML ="";
+			// #### Vermogen  #####
+			var series = paneel_chartv.series[0];
+			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+			for (var i = 0; i < data_p.length; i++){
+				if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
+					if (data_p[i]['op_id'] < x ){
+						paneel_chartv.series[data_p[i]['op_id']-1].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
+						paneel_charte.series[data_p[i]['op_id']-1].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
+					} else {
+						paneel_chartv.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
+						paneel_charte.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
+					}
+				} else {
+					paneel_chartv.series[33].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
+					paneel_charte.series[33].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
+				}
+			}
+			paneel_chartv.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
+			paneel_chartv.yAxis[0].update({
+				opposite: true
+			});
+			paneel_charte.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
+			paneel_charte.yAxis[0].update({
+				opposite: true
+			});
+			paneel_chartv.legend.update({x:10,y:20});
+			paneel_chartv.series[33].update({name: "Vermogen paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+			paneel_chartv.series[32].update({showInLegend: false});
+			paneel_chartv.series[31].update({showInLegend: true, name: "Vermogen overige panelen"});
+			paneel_chartv.yAxis[0].update({
+				title: {
+					text: 'Vermogen (W)'
+				},
+			});
+			paneel_chartv.yAxis[1].update({
+				labels: {
+					enabled: false
+				},
+				title: {
+					text: null
+				}
+			});
+			paneel_charte.legend.update({x:10,y:20});
+			paneel_charte.series[33].update({name: "Energie paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+			paneel_charte.series[32].update({showInLegend: false});
+			paneel_charte.series[31].update({showInLegend: true, name: "Energie overige panelen"});
+			paneel_charte.yAxis[0].update({
+				title: {
+					text: 'Energie (Wh)'
+				},
+			});
+			paneel_charte.yAxis[1].update({
+				labels: {
+					enabled: false
+				},
+				title: {
+					text: null
+				}
+			});
+			paneel_chartv.redraw();
+			paneel_charte.redraw();
+		}
+	}
+
+	function paneelChartcl() {
+		inverter_redraw = 1;
+		document.getElementById("panel_vermogen").innerHTML ="";
+		document.getElementById("panel_energy").innerHTML ="";
+		for (var i=0; i<=33; i++){
+			paneel_chartv.series[i].setData([]);
+			paneel_charte.series[i].setData([]);
+		}
+		inverter_chart.redraw();
+		vermogen_chart.redraw();
+	}
+
+	function waarde(l,d,x){
+		s = String(x);
+		n = s.indexOf('-');
+		if ( n==0) { s=s.slice(1,s.length);}
+		p=s.indexOf('.');
+		if ( p <0 ) { s = s + ".";}
+		p=s.indexOf('.');
+		for (var i=1; i <= l; i++) {
+			if (l > i) {if (s.indexOf('.')<i+1) { s = "0"+ s;};}
+		}
+		p=s.indexOf('.');
+		for (var i=1; i<=d; i++){
+			if (s.length<p+1+i) { s = s + "0";}
+		}
+		if (d == 0 && p+1 == s.length) { s=s.slice(0,p);}
+		if (d > 0 && p+1+d < s.length) { s=s.slice(0,p+1+d);}
+		if (n==0) { s="-"+s;}
+		return s;
+	}
+
+	function paneel(){
+		var p1data = $.ajax({
+			url: "<?php echo $DataURL?>?period=c",
+			dataType: "json",
+			type: 'GET',
+			data: { },
+			async: false,
+		}).responseText;
+		var inv1Data = $.ajax({
+			url: "live-server-data-zon.php",
+			dataType: "json",
+			type: 'GET',
+			data: { "date" : datum },
+			async: false,
+		}).responseText;
+		p1data = JSON.parse(p1data);
+		p1CounterToday = p1data[0]["CounterToday"];
+		p1CounterDelivToday = p1data[0]["CounterDelivToday"];
+		if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
+		if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
+		inv1Data = eval(inv1Data)
+		if (datum1 < tomorrow) {
+			if(inv1Data[0]["IVACT"] != 0){
+				document.getElementById("arrow_PRD").className = "arrow_right_green";
+			}else{
+				document.getElementById("arrow_PRD").className = "";
+			}
+			document.getElementById("p1_huis").className = "red_text";
+			if (parseFloat(p1CounterToday)+parseFloat(p1CounterDelivToday) > 0) {
+				document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
+			} else {
+				document.getElementById("p1_huis").innerHTML = "No Data";
+			}
+			document.getElementById("so_text").className = "green_text";
+			document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
+			document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
+					"<tr><td colspan=3><b><u>Solar vandaag</u></b></td></tr>"+
+					"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
+					"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
+					"<tr><td></td><td colspan=3>----------</td></tr>"+
+					"<tr><td class=green_text>productie:</td><td class=green_text colspan=2>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
+					"</table>";
+
+			document.getElementById("inverter_text").innerHTML = "<table width=100% class=data-table>"+
+					"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>"+
+					"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>"+
+					"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td><tr>"+
+					"<td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"])+"/"+waarde(0,1,inv1Data[0]["ITMIN"])+"/"+waarde(0,1,inv1Data[0]["ITMAX"])+" °C</td></tr>"+
+					"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"])+"</td></tr></table>";
+		}else{
+			document.getElementById("inverter_text").innerHTML = "<b>Inverter:</b><br>D:&emsp;&emsp;&nbsp;&nbsp;"+inv1Data[0]["IT"]+"<br>Pmax:&nbsp;&nbsp;"+inv1Data[0]["IVMAX"]+" W<br><b>E:&emsp;&emsp;&emsp;"+waarde(0,3,inv1Data[0]["IE"])+" kWh</b><br>Tmin:&emsp;"+waarde(0,1,inv1Data[0]["ITMIN"])+" °C<br>Tmax:&nbsp;&nbsp;"+waarde(0,1,inv1Data[0]["ITMAX"])+" °C";
+			document.getElementById("arrow_PRD").className = "";
+		}
+		if (inverter == 1){
+			document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\nS AC:	"+inv1Data[0]["i_ac"]+" A\r\nV AC:	"+inv1Data[0]["v_ac"]+" V\r\nFre:	"+inv1Data[0]["frequency"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active"]+" kWh\r\nV DC:	"+waarde(0,1,inv1Data[0]["v_dc"])+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
+		}else{
+			document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\n	L1	L2	L3\r\nS AC:	"+inv1Data[0]["i_ac1"]+"	"+inv1Data[0]["i_ac2"]+"	"+inv1Data[0]["i_ac3"]+" A\r\nV AC:	"+inv1Data[0]["v_ac1"]+"	"+inv1Data[0]["v_ac2"]+"	"+inv1Data[0]["v_ac3"]+" V\r\nFre:	"+inv1Data[0]["frequency1"]+"	"+inv1Data[0]["frequency2"]+"	"+inv1Data[0]["frequency3"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active1"]+"	"+inv1Data[0]["p_active2"]+"	"+inv1Data[0]["p_active3"]+" W\r\nV DC:	"+waarde(0,1,inv1Data[0]["v_dc"])+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
+		}
+//~ 			for (var i = Math.round(aantal)+1; i<=33; i++){
+//~ 				document.getElementById("tool_paneel_"+i).coords = "0,0,0,0";
+//~ 			}
+		for (var i=1; i<=aantal; i++){
+			document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
+			if (rpan[i] == 0){
+				document.getElementById("image_"+i).src = "./img/Zonnepaneel-ver.gif";
+			}else{
+				document.getElementById("image_"+i).src = "./img/Zonnepaneel-hor.gif";
+			}
+			if (vermogen == 1){
+				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
+				if(inv1Data[0]["IVACT"] != 0){
+					document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["E"+i])+ " W";
+				} else {
+					document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["VM"+i])+ " W";
+				}
+			} else {
+				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
+				document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
+			}
+			document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
+			if ( inv1Data[0]["C"+i] == 0) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000";
+			} else {
+				if ( inv1Data[0]["C"+i] < 0.1) {
+					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16";
+				} else {
+					if ( inv1Data[0]["C"+i] < 0.2) {
+						document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d";
+					} else {
+						if ( inv1Data[0]["C"+i] < 0.3) {
+							document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44";
+						} else {
+							if ( inv1Data[0]["C"+i] < 0.4) {
+								document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a";
+							} else {
+								if ( inv1Data[0]["C"+i] < 0.5) {
+									document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71";
+								} else {
+									if ( inv1Data[0]["C"+i] < 0.6) {
+										document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88";
+									} else {
+										if ( inv1Data[0]["C"+i] < 0.7) {
+											document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e";
+										} else {
+											if ( inv1Data[0]["C"+i] < 0.8) {
+												document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5";
+											} else {
+												if ( inv1Data[0]["C"+i] < 0.9) {
+													document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc";
+												} else {
+													document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3";
+			}	}	}	}	}	}	}	}	}	}
+		}
+	}
+
+	function p1_update(){
+		var p1data = $.ajax({
+			url: "<?php echo $DataURL?>?period=c",
+			dataType: "json",
+			type: 'GET',
+			data: { },
+			async: false,
+		}).responseText;
+		p1data = JSON.parse(p1data);
+		p1servertime = p1data[0]["ServerTime"];
+		p1CounterToday = p1data[0]["CounterToday"];
+		p1CounterDelivToday = p1data[0]["CounterDelivToday"];
+		p1Usage = p1data[0]["Usage"];
+		p1UsageDeliv = p1data[0]["UsageDeliv"];
+		if (typeof p1servertime === 'undefined') {p1servertime = "";}
+		if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
+		if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
+		if (typeof p1Usage === 'undefined') {p1Usage = 0;}
+		if (typeof p1UsageDeliv === 'undefined') {p1UsageDeliv = 0;}
+		if( p1Usage == 0){
+			document.getElementById("arrow_RETURN").className = "";
+			document.getElementById("p1_text").className = "red_text";
+			document.getElementById("p1_text").innerHTML = "No data";
+		}else if( p1Usage == "0 Watt"){
+			document.getElementById("arrow_RETURN").className = "arrow_right_green";
+			document.getElementById("p1_text").className = "green_text";
+			document.getElementById("p1_text").innerHTML = p1UsageDeliv;
+		}else{
+			document.getElementById("arrow_RETURN").className = "arrow_left_red";
+			document.getElementById("p1_text").className = "red_text";
+			document.getElementById("p1_text").innerHTML = p1Usage;
+		}
+		var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
+		var cdiff  = "red_text";
+		if (diff < 0) {
+			cdiff  = "green_text";
+			diff = diff * -1;
+		}
+		document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
+				"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1servertime.substr(11,10)+")</td><td colspan=1></td></tr>" +
+				"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
+				"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
+				"<tr><td></td><td colspan=3>----------</td></tr>"+
+				"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" colspan=3>"+waarde(0,3,diff)+" kWh</td></tr>"+
+				"</table>";
+
+
+	}
+
+	function zonmaan(){
+		if (date2 >= date3){
+			document.getElementById("NextDay").disabled = true;
+		}else{
+			document.getElementById("NextDay").disabled = false;
+		}
+		if (date2 <= "2016-01-01"){
+			document.getElementById("PrevDay").disabled = true;
+		}
+		if (datum1 < tomorrow) {
+			datumz = Date();
+		}
+		var inv4Data = $.ajax({
+			url: "maanfase.php",
+			dataType: "json",
+			type: 'GET',
+			data: { "date" : datumz },
+			async: false,
+		}).responseText;
+		inv4Data = eval(inv4Data)
+		date3 = inv4Data[0]["date3"];
+		datum1 = inv4Data[0]["datum1"];
+		document.getElementById("maan_th").src = inv4Data[0]["filenaam"];
+		document.getElementById("fase_text").innerHTML = inv4Data[0]["phase_naam"];
+		document.getElementById("verlicht_text").innerHTML = inv4Data[0]["illumination"]+'% Verlicht';
+	}
+	$(function() {
+		Highcharts.setOptions({
+			global: {
+				useUTC: false,
+			},
+			style: {
+				fontFamily: 'Arial'
+			}
+		})
+		var urlname = 'live-server-data-s.php'
+		var urlname1 = 'live-server-data-paneel.php'
+		var urlname2 = 'live-server-data-inverter.php'
+		function requestData1() {
+			$.ajax({
+				url: urlname,//url of data source
+				type: 'GET',
+				data: { "date" : datum }, //optional
+				success: function(data) {
+					var series = power_chart.series[0];
+					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+					data = eval(data);
+					for(var i = 0; i < data.length; i++){
+						power_chart.series[0].addPoint([Date.UTC(data[i]['jaar'],data[i]['maand'],data[i]['dag'],data[i]['uur'],data[i]['minuut'],data[i]['sec']),data[i]['p1_volume_prd']*1], false, shift);
+						power_chart.series[1].addPoint([Date.UTC(data[i]['jaar'],data[i]['maand'],data[i]['dag'],data[i]['uur'],data[i]['minuut'],data[i]['sec']),data[i]['p1_current_power_prd']*1], false, shift);
+					}
+					power_chart.redraw();
+					urlname = 'live-server-data-c.php';
+					if (datum1 < tomorrow) {
+					   setTimeout(requestData1, 1000*60);
+					} else {
+					   setTimeout(requestData1, 1000*86400);
+					}
+				},
+				cache: false
+			});
+		}
+		function requestData2() {
+			$.ajax({
+				url: urlname1,//url of data source
+				type: 'GET',
+				data: { "date" : datum }, //optional
+				success: function(data) {
+					data_p = eval(data);
+					if (datum1 < tomorrow) {
+					   setTimeout(requestData2, 1000*60);
+					} else {
+					   setTimeout(requestData2, 1000*86400);
+					}
+				},
+				cache: false
+			});
+		}
+		function requestDatai() {
+			$.ajax({
+				url: urlname2,//url of data source
+				type: 'GET',
+				data: { "date" : datum }, //optional
+				success: function(data) {
+					data_i = eval(data);
+					var series = inverter_chart.series[0];
+					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+					for (var i=0; i<=14; i++){
+						inverter_chart.series[i].setData([]);
+						vermogen_chart.series[i].setData([]);
+					}
+					for(var i = 0; i < data_i.length; i++){
+						if (data_i[i]['op_id'] == "i"){
+							inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],0),data_i[i]['p1_volume_prd']*1], false, shift);
+							vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],0),data_i[i]['p1_current_power_prd']*1], false, shift);
+						}
+					}
+					if(inverter_redraw == 1) {
+						inverter_chart.redraw();
+						vermogen_chart.redraw();
+					}
+					if (datum1 < tomorrow) {
+					   setTimeout(requestDatai, 1000*60);
+					} else {
+					   setTimeout(requestDatai, 1000*86400);
+					}
+				},
+				cache: false
+			});
+		}
+		function requestDatav() {
+		}
+		$(document).ready(function() {
+			paneel_chartv = new Highcharts.Chart({
+				chart: {
+					type: 'area',
+					renderTo: 'panel_vermogen',
+					spacingTop: 10,
+					borderColor: 'grey',
+					borderWidth: 1,
+					borderRadius: 5,
+					alignTicks:true,
+					spacingBottom: 0,
+					zoomType: 'none',
+					events: {load: requestData2}
+				},
+				title: {
+					text: null
+				},
+				subtitle: {
+					text: "",
+					align: 'left',
+					x: 90,
+					y: 20,
+					style: {
+						font: 'Arial',
+						fontWeight: 'bold',
+					},
+					floating: true
+				},
+				xAxis: [{
+					type: 'datetime',
+					pointstart: Date.UTC(1970,01,01),
+					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
+					title: {
+						text: null
+					},
+					startOnTick: true,
+					minPadding: 0,
+					maxPadding: 0,
+					labels: {
+						overflow: 'justify'
+					},
+					tooltip: {
+						enabled: true,
+						crosshair: true
+					},
+					plotBands: [{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur0-winter),
+						to: Date.UTC(jaar, maand, dag, uur1-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur2-winter),
+						to: Date.UTC(jaar, maand, dag, uur3-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur4-winter),
+						to: Date.UTC(jaar, maand, dag, uur5-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur6-winter),
+						to: Date.UTC(jaar, maand, dag, uur7-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur8-winter),
+						to: Date.UTC(jaar, maand, dag, uur9-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur10-winter),
+						to: Date.UTC(jaar, maand, dag, uur11-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur12-winter),
+						to: Date.UTC(jaar, maand, dag, uur13-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur14-winter),
+						to: Date.UTC(jaar, maand, dag, uur15-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur16-winter),
+						to: Date.UTC(jaar, maand, dag, uur17-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur18-winter),
+						to: Date.UTC(jaar, maand, dag, uur19-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur20-winter),
+						to: Date.UTC(jaar, maand, dag, uur21-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur22-winter),
+						to: Date.UTC(jaar, maand, dag, uur23-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur24-winter),
+						to: Date.UTC(jaar, maand, dag, uur25-winter),
+					}],
+				}],
+				yAxis: [{
+					title: {
+						text: 'Vermogen(W)'
+					},
+					showEmpty: false,
+					tickPositioner: function () {
+						var positions = [],
+						tick = Math.floor(0),
+						tickMax = Math.ceil(this.dataMax),
+						increment = Math.ceil((tickMax - tick) / 6);
+						if (this.dataMax ==  this.dataMin ) {
+							increment = .5,
+							tickMax = tick + 3
+						}
+						if (this.dataMax !== null && this.dataMin !== null) {
+							for (i=0; i<=6; i += 1) {
+								positions.push(tick);
+								tick += increment;
+							}
+						}
+						return positions;
+					}
+				}, {
+					title: {
+						text: 'Energie (Wh)'
+					},
+					tickPositioner: function () {
+						var positions = [],
+						tick = Math.floor(0),
+						tickMax = Math.ceil(this.dataMax),
+						increment = Math.ceil((tickMax - tick)/ 6);
+						if (this.dataMax ==  this.dataMin ) {
+							increment = .5,
+							tickMax = tick + 3
+						}
+						if (this.dataMax !== null && this.dataMin !== null) {
+							for (i=0; i<=6; i += 1) {
+								positions.push(tick);
+								tick += increment;
+							}
+						}
+						return positions;
+					},
+					opposite: true
+				}],
+				legend: {
+					itemStyle: {
+						fontWeight: 'Thin',
+					},
+					layout: 'vertical',
+					align: 'left',
+					x: 10,
+					verticalAlign: 'top',
+					y: 20,
+					floating: true,
+				},
+				credits: {
+					enabled: false
+				},
+				tooltip: {
+					formatter: function () {
+						var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
+						$.each(this.points, function () {
+							if (this.series.name == 'Energie Productie') {
+								s += '<br/>' + this.series.name + ': ' +
+								this.y + ' kWh';
+							}
+							if (this.series.name == 'Stroom Productie') {
+								s += '<br/>' + this.series.name + ': ' +
+								this.y + ' W';
+							}
+						});
+						return s;
+					},
+					shared: true,
+					snap: 0,
+					crosshairs: [{
+						width: 1,
+						color: 'red',
+						zIndex: 3
+					}]
+				},
+				plotOptions: {
+					  spline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							states: {
+								hover: {
+								enabled: true
+								}
+							}
+						}
+					  },
+					  areaspline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							type: 'triangle',
+							states: {
+								hover: {
+								enabled: true,
+								}
+							}
+						}
+					}
+				},
+				exporting: {
+					enabled: false,
+					filename: 'power_chart',
+					url: 'export.php'
+				},
+				series: [{
+					name: 'Paneel_33',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_32',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_31',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_30',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_29',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_28',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_27',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_26',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_25',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_24',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_23',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_22',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_21',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_20',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_19',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_18',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_17',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_16',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_15',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_14',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_13',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_12',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_11',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_10',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_9',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_8',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_7',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_6',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_5',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_4',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_3',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_2',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Energie Productie',
+					showInLegend: true,
+					type: 'areaspline',
+					marker: {
+						symbol: 'triangle'
+					},
+					yAxis: 1,
+					showEmpty: true,
+					lineWidth: 1,
+					color: 'rgba(204,255,153,1)',
+					pointWidth: 2,
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_1',
+					showInLegend: true,
+					type: 'spline',
+					yAxis: 0,
+					color: '#009900',
+					data: []//this will be filled by requestData()
+				}]
+			});
+		});
+		$(document).ready(function() {
+			paneel_charte = new Highcharts.Chart({
+				chart: {
+					type: 'area',
+					renderTo: 'panel_energy',
+					spacingTop: 10,
+					borderColor: 'grey',
+					borderWidth: 1,
+					borderRadius: 5,
+					alignTicks:true,
+					spacingBottom: 0,
+					zoomType: 'none',
+					events: {load: requestData2}
+				},
+				title: {
+					text: null
+				},
+				subtitle: {
+					text: "",
+					align: 'left',
+					x: 90,
+					y: 20,
+					style: {
+						font: 'Arial',
+						fontWeight: 'bold',
+					},
+					floating: true
+				},
+				xAxis: [{
+					type: 'datetime',
+					pointstart: Date.UTC(1970,01,01),
+					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
+					title: {
+						text: null
+					},
+					startOnTick: true,
+					minPadding: 0,
+					maxPadding: 0,
+					labels: {
+						overflow: 'justify'
+					},
+					tooltip: {
+						enabled: true,
+						crosshair: true
+					},
+					plotBands: [{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur0-winter),
+						to: Date.UTC(jaar, maand, dag, uur1-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur2-winter),
+						to: Date.UTC(jaar, maand, dag, uur3-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur4-winter),
+						to: Date.UTC(jaar, maand, dag, uur5-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur6-winter),
+						to: Date.UTC(jaar, maand, dag, uur7-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur8-winter),
+						to: Date.UTC(jaar, maand, dag, uur9-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur10-winter),
+						to: Date.UTC(jaar, maand, dag, uur11-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur12-winter),
+						to: Date.UTC(jaar, maand, dag, uur13-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur14-winter),
+						to: Date.UTC(jaar, maand, dag, uur15-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur16-winter),
+						to: Date.UTC(jaar, maand, dag, uur17-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur18-winter),
+						to: Date.UTC(jaar, maand, dag, uur19-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur20-winter),
+						to: Date.UTC(jaar, maand, dag, uur21-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur22-winter),
+						to: Date.UTC(jaar, maand, dag, uur23-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur24-winter),
+						to: Date.UTC(jaar, maand, dag, uur25-winter),
+					}],
+				}],
+				yAxis: [{
+					title: {
+						text: 'Vermogen(W)'
+					},
+					showEmpty: false,
+					tickPositioner: function () {
+						var positions = [],
+						tick = Math.floor(0),
+						tickMax = Math.ceil(this.dataMax),
+						increment = Math.ceil((tickMax - tick) / 6);
+						if (this.dataMax ==  this.dataMin ) {
+							increment = .5,
+							tickMax = tick + 3
+						}
+						if (this.dataMax !== null && this.dataMin !== null) {
+							for (i=0; i<=6; i += 1) {
+								positions.push(tick);
+								tick += increment;
+							}
+						}
+						return positions;
+					}
+				}, {
+					title: {
+						text: 'Energie (Wh)'
+					},
+					tickPositioner: function () {
+						var positions = [],
+						tick = Math.floor(0),
+						tickMax = Math.ceil(this.dataMax),
+						increment = Math.ceil((tickMax - tick)/ 6);
+						if (this.dataMax ==  this.dataMin ) {
+							increment = .5,
+							tickMax = tick + 3
+						}
+						if (this.dataMax !== null && this.dataMin !== null) {
+							for (i=0; i<=6; i += 1) {
+								positions.push(tick);
+								tick += increment;
+							}
+						}
+						return positions;
+					},
+					opposite: true
+				}],
+				legend: {
+					itemStyle: {
+						fontWeight: 'Thin',
+					},
+					layout: 'vertical',
+					align: 'left',
+					x: 10,
+					verticalAlign: 'top',
+					y: 20,
+					floating: true,
+				},
+				credits: {
+					enabled: false
+				},
+				tooltip: {
+					formatter: function () {
+						var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
+						$.each(this.points, function () {
+							if (this.series.name == 'Energie Productie') {
+								s += '<br/>' + this.series.name + ': ' +
+								this.y + ' kWh';
+							}
+							if (this.series.name == 'Stroom Productie') {
+								s += '<br/>' + this.series.name + ': ' +
+								this.y + ' W';
+							}
+						});
+						return s;
+					},
+					shared: true,
+					snap: 0,
+					crosshairs: [{
+						width: 1,
+						color: 'red',
+						zIndex: 3
+					}]
+				},
+				plotOptions: {
+					  spline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							states: {
+								hover: {
+								enabled: true
+								}
+							}
+						}
+					  },
+					  areaspline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							type: 'triangle',
+							states: {
+								hover: {
+								enabled: true,
+								}
+							}
+						}
+					}
+				},
+				exporting: {
+					enabled: false,
+					filename: 'power_chart',
+					url: 'export.php'
+				},
+				series: [{
+					name: 'Paneel_33',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_32',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_31',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_30',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_29',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_28',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_27',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_26',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_25',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_24',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_23',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_22',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_21',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_20',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_19',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_18',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_17',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_16',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_15',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_14',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_13',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_12',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_11',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_10',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_9',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_8',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_7',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_6',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_5',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_4',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_3',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_2',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Energie Productie',
+					showInLegend: true,
+					type: 'areaspline',
+					marker: {
+						symbol: 'triangle'
+					},
+					yAxis: 1,
+					showEmpty: true,
+					lineWidth: 1,
+					color: 'rgba(204,255,153,1)',
+					pointWidth: 2,
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_1',
+					showInLegend: true,
+					type: 'spline',
+					yAxis: 0,
+					color: '#009900',
+					data: []//this will be filled by requestData()
+				}]
+			});
+		});
+		$(document).ready(function() {
+			inverter_chart = new Highcharts.Chart({
+				chart: {
+					type: 'area',
+					renderTo: "chart_energy",
+					spacingTop: 10,
+					borderColor: 'grey',
+					borderWidth: 1,
+					borderRadius: 5,
+					alignTicks:true,
+					spacingBottom: 0,
+					zoomType: 'none',
+					events: {load: requestDatai},
+					spacingRight: 5
+				},
+				title: {
+				   text: null
+				},
+				subtitle: {
+					text: "Energie op <?php echo $datev;?> en 14 voorafgaande  dagen",
+					align: 'left',
+					x: 20,
+					y: 20,
+					style: {
+						font: 'Arial',
+						fontWeight: 'bold',
+					},
+					floating: true
+				},
+				xAxis: [{
+					type: 'datetime',
+					pointstart: Date.UTC(1970,01,01),
+					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
+					title: {
+						text: null
+					},
+					startOnTick: true,
+					minPadding: 0,
+					maxPadding: 0,
+					labels: {
+						overflow: 'justify'
+					},
+					tooltip: {
+						enabled: true,
+						crosshair: true
+					},
+					plotBands: [{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur0-winter),
+						to: Date.UTC(jaar, maand, dag, uur1-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur2-winter),
+						to: Date.UTC(jaar, maand, dag, uur3-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur4-winter),
+						to: Date.UTC(jaar, maand, dag, uur5-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur6-winter),
+						to: Date.UTC(jaar, maand, dag, uur7-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur8-winter),
+						to: Date.UTC(jaar, maand, dag, uur9-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur10-winter),
+						to: Date.UTC(jaar, maand, dag, uur11-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur12-winter),
+						to: Date.UTC(jaar, maand, dag, uur13-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur14-winter),
+						to: Date.UTC(jaar, maand, dag, uur15-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur16-winter),
+						to: Date.UTC(jaar, maand, dag, uur17-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur18-winter),
+						to: Date.UTC(jaar, maand, dag, uur19-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur20-winter),
+						to: Date.UTC(jaar, maand, dag, uur21-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur22-winter),
+						to: Date.UTC(jaar, maand, dag, uur23-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur24-winter),
+						to: Date.UTC(jaar, maand, dag, uur25-winter),
+					}],
+				}],
+				yAxis: [{
+					title: {
+						text: 'Energie (kWh)'
+					},
+					opposite: true,
+					tickPositioner: function () {
+						var positions = [],
+						tick = Math.floor(0),
+						tickMax = Math.ceil(this.dataMax),
+						increment = Math.ceil((tickMax - tick)/ 6);
+						if (this.dataMax ==  this.dataMin ) {
+							increment = .5,
+							tickMax = tick + 3
+						}
+						if (this.dataMax !== null && this.dataMin !== null) {
+							for (i=0; i<=6; i += 1) {
+								positions.push(tick);
+								tick += increment;
+							}
+						}
+						return positions;
+					}
+				}],
+				legend: {
+					itemStyle: {
+						fontWeight: 'Thin',
+					},
+					layout: 'vertical',
+					align: 'left',
+					x: 10,
+					verticalAlign: 'top',
+					y: 20,
+					floating: true,
+				},
+				credits: {
+					enabled: false
+				},
+				tooltip: {
+					formatter: function () {
+						var s ="";
+						$.each(this.points, function () {
+							for (i=0; i<=14; i++){
+								if (this.series.name == productie[i]) {
+									if (s != ""){ s += '<br>'}
+									s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+': ' +
+									this.y + ' kWh';
+								}
+							}
+						});
+						return s;
+					},
+					shared: true,
+					snap: 0,
+					crosshairs: [{
+						width: 1,
+						color: 'red',
+						zIndex: 3
+					}]
+				},
+				plotOptions: {
+					  spline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							states: {
+								hover: {
+								enabled: true
+								}
+							}
+						}
+					  },
+					  areaspline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							type: 'triangle',
+							states: {
+								hover: {
+								enabled: true,
+								}
+							}
+						}
+					}
+				},
+				exporting: {
+					enabled: false,
+					filename: 'power_chart',
+					url: 'export.php'
+				},
+				series: [{
+					name: productie[0],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[1],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[2],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[3],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[4],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[5],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[6],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[7],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[8],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[9],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[10],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[11],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[12],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[13],
+					showInLegend: true,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[14],
+					showInLegend: true,
+					type: 'spline',
+					yAxis: 0,
+					lineWidth: 2,
+					color: '#009900',
+					data: []//this will be filled by requestData()
+				}]
+			});
+		});
+		$(document).ready(function() {
+			vermogen_chart = new Highcharts.Chart({
+				chart: {
+					type: 'area',
+					renderTo: "chart_vermogen",
+					spacingTop: 10,
+					borderColor: 'grey',
+					borderWidth: 1,
+					borderRadius: 5,
+					alignTicks:true,
+					spacingBottom: 0,
+					zoomType: 'none',
+					spacingRight: 5,
+					events: {load: requestDatav}
+				},
+				title: {
+				   text: null
+				},
+				subtitle: {
+					text: "Vermogen op <?php echo $datev;?> en 14 voorafgaande  dagen",
+					align: 'left',
+					x: 20,
+					y: 20,
+					style: {
+						font: 'Arial',
+						fontWeight: 'bold',
+					},
+					floating: true
+				},
+				xAxis: [{
+					type: 'datetime',
+					pointstart: Date.UTC(1970,01,01),
+					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
+					title: {
+						text: null
+					},
+					startOnTick: true,
+					minPadding: 0,
+					maxPadding: 0,
+					labels: {
+						overflow: 'justify'
+					},
+					tooltip: {
+						enabled: true,
+						crosshair: true
+					},
+					plotBands: [{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur0-winter),
+						to: Date.UTC(jaar, maand, dag, uur1-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur2-winter),
+						to: Date.UTC(jaar, maand, dag, uur3-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur4-winter),
+						to: Date.UTC(jaar, maand, dag, uur5-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur6-winter),
+						to: Date.UTC(jaar, maand, dag, uur7-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur8-winter),
+						to: Date.UTC(jaar, maand, dag, uur9-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur10-winter),
+						to: Date.UTC(jaar, maand, dag, uur11-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur12-winter),
+						to: Date.UTC(jaar, maand, dag, uur13-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur14-winter),
+						to: Date.UTC(jaar, maand, dag, uur15-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur16-winter),
+						to: Date.UTC(jaar, maand, dag, uur17-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur18-winter),
+						to: Date.UTC(jaar, maand, dag, uur19-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur20-winter),
+						to: Date.UTC(jaar, maand, dag, uur21-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur22-winter),
+						to: Date.UTC(jaar, maand, dag, uur23-winter),
+					},{
+						color: '#ebfbff',
+						from: Date.UTC(jaar, maand , dag, uur24-winter),
+						to: Date.UTC(jaar, maand, dag, uur25-winter),
+					}],
+				}],
+				yAxis: [{
+					title: {
+						text: 'Vermogen (W)'
+					},
+					opposite: true,
+					tickPositioner: function () {
+						var positions = [],
+						tick = Math.floor(0),
+						tickMax = Math.ceil(this.dataMax),
+						increment = Math.ceil((tickMax - tick)/ 6);
+						if (this.dataMax ==  this.dataMin ) {
+							increment = .5,
+							tickMax = tick + 3
+						}
+						if (this.dataMax !== null && this.dataMin !== null) {
+							for (i=0; i<=6; i += 1) {
+								positions.push(tick);
+								tick += increment;
+							}
+						}
+						return positions;
+					}
+				}],
+				legend: {
+					itemStyle: {
+						fontWeight: 'Thin',
+					},
+					layout: 'vertical',
+					align: 'left',
+					x: 10,
+					verticalAlign: 'top',
+					y: 20,
+					floating: true,
+				},
+				credits: {
+					enabled: false
+				},
+				tooltip: {
+					formatter: function () {
+						var s = "";
+						$.each(this.points, function () {
+							for (i=0; i<=14; i++){
+								if (this.series.y == this.y) {};
+								if (this.series.name == productie[i]) {
+									if (s != ""){ s += '<br>'}
+									s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' +
+									Highcharts.numberFormat(this.y,0) + ' W';
+								}
+							}
+						});
+						return s;
+					},
+					shared: true,
+					snap: 0,
+					crosshairs: [{
+						width: 1,
+						color: 'red',
+						zIndex: 3
+					}]
+				},
+				plotOptions: {
+					  spline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							states: {
+								hover: {
+								enabled: true
+								}
+							}
+						}
+					  },
+					  areaspline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							type: 'triangle',
+							states: {
+								hover: {
+								enabled: true,
+								}
+							}
+						}
+					}
+				},
+				exporting: {
+					enabled: false,
+					filename: 'power_chart',
+					url: 'export.php'
+				},
+				series: [{
+					name: productie[0],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[1],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[2],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[3],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[4],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[5],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[6],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[7],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[8],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[9],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[10],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[11],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[12],
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[13],
+					showInLegend: true,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},{
+					name: productie[14],
+					showInLegend: true,
+					type: 'spline',
+					yAxis: 0,
+					lineWidth: 2,
+					color: '#009900',
+					data: []//this will be filled by requestData()
+				}]
+			});
+		});
+	});
+
+
 	$('#multiShowPicker').calendarsPicker({
 		pickerClass: 'noPrevNext', maxDate: +0, minDate: begin,
 		dateFormat: 'yyyy-mm-dd', defaultDate: date2, selectDefaultDate: true,
@@ -2254,357 +2253,355 @@ omschrijving: hoofdprogramma
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
 	});
-</script>
 
+// -------------------------------
+// P1 meter scripts
+// -------------------------------
+	function draw_p1_chart() {
 
-<script>
-// P1 scripts
-function draw_p1_chart() {
-
-	// definieer standaard opties voor iedere grafiek
-	var chartoptions={
-		chart: {
-			renderTo: 'DIV',
-			borderColor: 'grey',
-			borderWidth: 1,
-			borderRadius: 5,
-			type: 'column',
-			marginRight: 10,
-		},
-		title: {
-			text: null
-		},
-		subtitle: {
-			text: 'TITLE',
-			style: {
-				font: 'Arial',
-				fontWeight: 'bold',
-                color: 'gray',
-                fontWeight: 'bold'
-            }
-		},
-		series: {
-		},
-		xAxis: {
-			type: 'datetime',
-			dateTimeLabelFormats: {
+		// definieer standaard opties voor iedere grafiek
+		var chartoptions={
+			chart: {
+				renderTo: 'DIV',
+				borderColor: 'grey',
+				borderWidth: 1,
+				borderRadius: 5,
+				type: 'column',
+				marginRight: 10,
 			},
-			labels: {
-				style: {
-					color: 'gray'
-				}
-			}
-		},
-		yAxis: {
 			title: {
-				text: 'Energie (kWh)',
+				text: null
+			},
+			subtitle: {
+				text: 'TITLE',
 				style: {
+					font: 'Arial',
+					fontWeight: 'bold',
 					color: 'gray',
 					fontWeight: 'bold'
 				}
 			},
-			min: 0,
-			labels: {
-				style: {
-					color: 'gray'
-				}
-			}
-		},
-		tooltip: {
-			useHTML: true,
-            formatter: function() {
-                var s = '<b><u>';
-                sRE = 0;
-                sVS = 0;
-                sVE = 0;
-                $.each(this.points, function(i, point) {
-					if(point.series.name == 'Solar Retour <?php echo $ElecLeverancier?>') {
-						sRE += point.y;
-					} else if(point.series.name == 'Solar verbruik') {
-						sVS += point.y;
-					} else if(point.series.name == 'Verbruik <?php echo $ElecLeverancier?>') {
-						sVE += point.y;
-					} ;
-                });
-				if (this.points[0].series.chart.renderTo.id == "monthgraph") {
-					s += "" + Highcharts.dateFormat('%B %Y', this.x);
-				} else {
-					s += Highcharts.dateFormat('%A', this.x) + ' ' + Highcharts.dateFormat('%d-%m-%Y', this.x);
-				}
-				s += '</u></b><br/>';
-				//
-				if(sVS+sRE>0){
-					s += 'Solar verbruik&nbsp;: ' + Highcharts.numberFormat(sVS,1) + ' kWh<br/>';
-					s += '<b>Solar totaal&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat(sVS+sRE,1) + '</b> kWh<br/>';
-					s += '----------------------<br/>';
-					s += '<?php echo $ElecLeverancier?> verbruik: ' + Highcharts.numberFormat(sVE,1) + ' kWh<br/>';
-					s += '<?php echo $ElecLeverancier?> retour&nbsp;-: ' + Highcharts.numberFormat(sRE,1) + ' kWh<br/>';
-					s += '<b><?php echo $ElecLeverancier?> Netto&nbsp;&nbsp;&nbsp;: <b>' + Highcharts.numberFormat(sVE-sRE,1) + '</b> kWh<br/>';
-					s += '&nbsp;<br/>';
-					s += '<b>Totaal verbruik: <b>' + Highcharts.numberFormat(sVE+sVS,1) + '</b> kWh';
-				} else {
-					s += '<b><?php echo $ElecLeverancier?> verbruik: <b>' + Highcharts.numberFormat(sVE-sRE,1) + '</b> kWh';
-				}
-				return s;
-            },
-            shared: true
-        },
-		plotOptions: {
 			series: {
-				dataLabels: {
+			},
+			xAxis: {
+				type: 'datetime',
+				dateTimeLabelFormats: {
 				},
+				labels: {
+					style: {
+						color: 'gray'
+					}
+				}
 			},
-			column: {
-				stacking: 'normal',
-				minPointLength: 4,
-				pointPadding: 0.15,
-				groupPadding: 0
+			yAxis: {
+				title: {
+					text: 'Energie (kWh)',
+					style: {
+						color: 'gray',
+						fontWeight: 'bold'
+					}
+				},
+				min: 0,
+				labels: {
+					style: {
+						color: 'gray'
+					}
+				}
 			},
-			area: {
-				stacking: 'normal',
-				minPointLength: 4,
-				pointPadding: 0.1,
-				groupPadding: 0
+			tooltip: {
+				useHTML: true,
+				formatter: function() {
+					var s = '<b><u>';
+					sRE = 0;
+					sVS = 0;
+					sVE = 0;
+					$.each(this.points, function(i, point) {
+						if(point.series.name == 'Solar Retour <?php echo $ElecLeverancier?>') {
+							sRE += point.y;
+						} else if(point.series.name == 'Solar verbruik') {
+							sVS += point.y;
+						} else if(point.series.name == 'Verbruik <?php echo $ElecLeverancier?>') {
+							sVE += point.y;
+						} ;
+					});
+					if (this.points[0].series.chart.renderTo.id == "monthgraph") {
+						s += "" + Highcharts.dateFormat('%B %Y', this.x);
+					} else {
+						s += Highcharts.dateFormat('%A', this.x) + ' ' + Highcharts.dateFormat('%d-%m-%Y', this.x);
+					}
+					s += '</u></b><br/>';
+					//
+					if(sVS+sRE>0){
+						s += 'Solar verbruik&nbsp;: ' + Highcharts.numberFormat(sVS,1) + ' kWh<br/>';
+						s += '<b>Solar totaal&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat(sVS+sRE,1) + '</b> kWh<br/>';
+						s += '----------------------<br/>';
+						s += '<?php echo $ElecLeverancier?> verbruik: ' + Highcharts.numberFormat(sVE,1) + ' kWh<br/>';
+						s += '<?php echo $ElecLeverancier?> retour&nbsp;-: ' + Highcharts.numberFormat(sRE,1) + ' kWh<br/>';
+						s += '<b><?php echo $ElecLeverancier?> Netto&nbsp;&nbsp;&nbsp;: <b>' + Highcharts.numberFormat(sVE-sRE,1) + '</b> kWh<br/>';
+						s += '&nbsp;<br/>';
+						s += '<b>Totaal verbruik: <b>' + Highcharts.numberFormat(sVE+sVS,1) + '</b> kWh';
+					} else {
+						s += '<b><?php echo $ElecLeverancier?> verbruik: <b>' + Highcharts.numberFormat(sVE-sRE,1) + '</b> kWh';
+					}
+					return s;
+				},
+				shared: true
+			},
+			plotOptions: {
+				series: {
+					dataLabels: {
+					},
+				},
+				column: {
+					stacking: 'normal',
+					minPointLength: 4,
+					pointPadding: 0.15,
+					groupPadding: 0
+				},
+				area: {
+					stacking: 'normal',
+					minPointLength: 4,
+					pointPadding: 0.1,
+					groupPadding: 0
+				}
+			},
+			exporting: {
+				enabled: false,
+				filename: 'power_chart',
+				url: 'export.php'
+			},
+			legend: {
+				enabled: true,
+				itemStyle: {
+					color: 'gray',
+					fontWeight: 'bold'
+				}
+			},
+			credits: {
+				enabled: false
+			},
+		};
+
+
+		// Add weeknummer format
+		Highcharts.dateFormats = {
+			W: function (timestamp) {
+				var date = new Date(timestamp),
+					day = date.getUTCDay() === 0 ? 7 : date.getUTCDay(),
+					dayNumber;
+				date.setDate(date.getUTCDate() + 4 - day);
+				dayNumber = Math.floor((date.getTime() - new Date(date.getUTCFullYear(), 0, 1, -6)) / 86400000);
+				return 1 + Math.floor(dayNumber / 7);
+
 			}
-		},
-		exporting: {
-			enabled: false,
-			filename: 'power_chart',
-			url: 'export.php'
-		},
-		legend: {
-			enabled: true,
-			itemStyle: {
-                color: 'gray',
-                fontWeight: 'bold'
-            }
- 		},
-		credits: {
-			enabled: false
-		},
-	};
+		};
+
+		// creeer de Charts met ieder hun eigen setting
+		chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecDagGraph?> dagen.';
+		chartoptions.chart.renderTo='daygraph';
+		chartoptions.xAxis.dateTimeLabelFormats.day='%a %d-%b';
+		chartoptions.xAxis.tickInterval=24 * 3600 * 1000;
+		var wchart = new Highcharts.Chart(chartoptions);
 
 
-    // Add weeknummer format
-	Highcharts.dateFormats = {
-		W: function (timestamp) {
-			var date = new Date(timestamp),
-				day = date.getUTCDay() === 0 ? 7 : date.getUTCDay(),
-				dayNumber;
-			date.setDate(date.getUTCDate() + 4 - day);
-			dayNumber = Math.floor((date.getTime() - new Date(date.getUTCFullYear(), 0, 1, -6)) / 86400000);
-			return 1 + Math.floor(dayNumber / 7);
+		chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecMaandGraph?> maanden.';
+		chartoptions.chart.renderTo='monthgraph';
+		chartoptions.series.pointInterval=24 * 3600 * 1000*30;
+		chartoptions.xAxis.tickInterval=28*24*3600*1000;
+		var ychart = new Highcharts.Chart(chartoptions);
 
-		}
-	};
+		// voeg de data series toe aan de Charts
+		AddSeriestoChart(wchart, 0);
+		AddSeriestoChart(ychart, 0);
 
-	// creeer de Charts met ieder hun eigen setting
-	chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecDagGraph?> dagen.';
-	chartoptions.chart.renderTo='daygraph';
-	chartoptions.xAxis.dateTimeLabelFormats.day='%a %d-%b';
-	chartoptions.xAxis.tickInterval=24 * 3600 * 1000;
-	var wchart = new Highcharts.Chart(chartoptions);
-
-
-	chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecMaandGraph?> maanden.';
-	chartoptions.chart.renderTo='monthgraph';
-	chartoptions.series.pointInterval=24 * 3600 * 1000*30;
-	chartoptions.xAxis.tickInterval=28*24*3600*1000;
-	var ychart = new Highcharts.Chart(chartoptions);
-
-	// voeg de data series toe aan de Charts
-	AddSeriestoChart(wchart, 0);
-	AddSeriestoChart(ychart, 0);
-
-	// lees data en update grafieken
-	updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
-	updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-	setInterval(function() {
+		// lees data en update grafieken
 		updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-	}, 60000);
+		setInterval(function() {
+			updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
+			updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
+		}, 60000);
 
 
-}
-function updateP1graphs(ichart,gtype, periods) {
-	var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods;
-	$.getJSON(url,
-		function(data1){
-			var series = [], domoData= data1.result;
-			if (typeof data1 != 'undefined') {
-				AddDataToUtilityChart(data1, ichart, 0);
-			}
-			ichart.redraw();
-	   }
-	);
-}
-
-function AddDataToUtilityChart(data, chart, switchtype) {
-	var datatableverbruikElecNet = [];
-	var datatableverbruikSolar = [];
-	var datatableSolarElecNet = [];
-	var datatableSolarVerbruik = [];
-	var datatableTotalUsage = [];
-	var datatableTotalReturn = [];
-	var valueUnits = "";
-	var length = data.length;
-	$.each(data, function (i, item) {
-		var cdate = GetDateFromString(item.idate);
-		var prod = parseFloat(item.prod);  //Solar productie
-		var v1 = parseFloat(item.v1);      // verbruik hoog
-		var v2 = parseFloat(item.v2);      // verbruik laag
-		var r1 = parseFloat(item.r1);      // return hoog
-		var r2 = parseFloat(item.r2);      // return laag
-		var ve = v1 + v2;
-		var vs = prod - r1 - r2;
-		var se = r1 + r2;
-		var sv = vs;
-		datatableverbruikElecNet.push([cdate, ve]);
-		datatableverbruikSolar.push([cdate, vs]);
-		datatableSolarElecNet.push([cdate, se]);
-		datatableSolarVerbruik.push([cdate, sv]);
-	});
-
-	var series;
-	//Electra Usage/Return
-	var totDecimals = 3;
-	if (datatableSolarElecNet.length > 0) {
-		series = chart.get('SolarElecNet');
-		series.setData(datatableSolarElecNet, false);
 	}
-	if (datatableSolarVerbruik.length > 0) {
-		series = chart.get('SolarVerbruik');
-		series.setData(datatableSolarVerbruik, false);
-	}
-	if (datatableverbruikElecNet.length > 0) {
-		series = chart.get('verbruikElecNet');
-		series.setData(datatableverbruikElecNet, false);
-	}
-	if (datatableverbruikSolar.length > 0) {
-		series = chart.get('verbruikSolar');
-		series.setData(datatableverbruikSolar, false);
-	}
-}
-//
-function AddSeriestoChart(chart, switchtype) {
-	totDecimals = 0;
-	chart.addSeries({
-		id: 'SolarElecNet',
-		type: 'area',
-		name: 'Solar Retour <?php echo $ElecLeverancier?>',
-		dataLabels: {
-			enabled: false,
-			color: 'green',
-			formatter: function () {
-				if (chart.renderTo.id == "aYear") {
-					return 'Solar :' + Highcharts.numberFormat(this.point.stackTotal,0) + '<br/><?php echo $ElecLeverancier?>:' + Highcharts.numberFormat(this.y,0);
-				} else if (chart.renderTo.id == "monthgraph") {
-					return Highcharts.numberFormat(this.point.stackTotal,0);
-				} else {
-					return Highcharts.numberFormat(this.point.stackTotal,1);
+	function updateP1graphs(ichart,gtype, periods) {
+		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods;
+		$.getJSON(url,
+			function(data1){
+				var series = [], domoData= data1.result;
+				if (typeof data1 != 'undefined') {
+					AddDataToUtilityChart(data1, ichart, 0);
 				}
-			}
+				ichart.redraw();
+		   }
+		);
+	}
 
-		},
-		tooltip: {
-			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
-			valueDecimals: totDecimals
-		},
-		color: 'rgba(30,242,110,1)',
-		stack: 'sreturn',
-		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
-	}, false);
+	function AddDataToUtilityChart(data, chart, switchtype) {
+		var datatableverbruikElecNet = [];
+		var datatableverbruikSolar = [];
+		var datatableSolarElecNet = [];
+		var datatableSolarVerbruik = [];
+		var datatableTotalUsage = [];
+		var datatableTotalReturn = [];
+		var valueUnits = "";
+		var length = data.length;
+		$.each(data, function (i, item) {
+			var cdate = GetDateFromString(item.idate);
+			var prod = parseFloat(item.prod);  //Solar productie
+			var v1 = parseFloat(item.v1);      // verbruik hoog
+			var v2 = parseFloat(item.v2);      // verbruik laag
+			var r1 = parseFloat(item.r1);      // return hoog
+			var r2 = parseFloat(item.r2);      // return laag
+			var ve = v1 + v2;
+			var vs = prod - r1 - r2;
+			var se = r1 + r2;
+			var sv = vs;
+			datatableverbruikElecNet.push([cdate, ve]);
+			datatableverbruikSolar.push([cdate, vs]);
+			datatableSolarElecNet.push([cdate, se]);
+			datatableSolarVerbruik.push([cdate, sv]);
+		});
 
-	chart.addSeries({
-		id: 'SolarVerbruik',
-		type: 'area',
-		name: 'Solar verbruik',
-		dataLabels: {
-			enabled: false,
-			color: 'green',
-			formatter: function () {
-				if (chart.renderTo.id == "aYear") {
-					return Highcharts.numberFormat(this.y,0);
-				} else if (chart.renderTo.id == "monthgraph") {
-					return Highcharts.numberFormat(this.y,0);
-				} else {
-					return Highcharts.numberFormat(this.y,1);
+		var series;
+		//Electra Usage/Return
+		var totDecimals = 3;
+		if (datatableSolarElecNet.length > 0) {
+			series = chart.get('SolarElecNet');
+			series.setData(datatableSolarElecNet, false);
+		}
+		if (datatableSolarVerbruik.length > 0) {
+			series = chart.get('SolarVerbruik');
+			series.setData(datatableSolarVerbruik, false);
+		}
+		if (datatableverbruikElecNet.length > 0) {
+			series = chart.get('verbruikElecNet');
+			series.setData(datatableverbruikElecNet, false);
+		}
+		if (datatableverbruikSolar.length > 0) {
+			series = chart.get('verbruikSolar');
+			series.setData(datatableverbruikSolar, false);
+		}
+	}
+	//
+	function AddSeriestoChart(chart, switchtype) {
+		totDecimals = 0;
+		chart.addSeries({
+			id: 'SolarElecNet',
+			type: 'area',
+			name: 'Solar Retour <?php echo $ElecLeverancier?>',
+			dataLabels: {
+				enabled: false,
+				color: 'green',
+				formatter: function () {
+					if (chart.renderTo.id == "aYear") {
+						return 'Solar :' + Highcharts.numberFormat(this.point.stackTotal,0) + '<br/><?php echo $ElecLeverancier?>:' + Highcharts.numberFormat(this.y,0);
+					} else if (chart.renderTo.id == "monthgraph") {
+						return Highcharts.numberFormat(this.point.stackTotal,0);
+					} else {
+						return Highcharts.numberFormat(this.point.stackTotal,1);
+					}
 				}
-			}
-		},
-		showInLegend: false,
-		tooltip: {
-			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
-			valueDecimals: totDecimals
-		},
-		color: 'rgba(3,222,190,1)',
-		stack: 'sreturn',
-		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
-	}, false);
 
-	chart.addSeries({
-		id: 'verbruikElecNet',
-		name: 'Verbruik <?php echo $ElecLeverancier?>',
-		dataLabels: {
-			enabled: true,
-			inside: false,
-			align: 'left',
-			verticalalign: 'top',
-			color: 'red',
-			formatter: function () {
-				if (chart.renderTo.id == "aYear") {
-					return Highcharts.numberFormat(this.point.stackTotal,0);
-				} else if (chart.renderTo.id == "monthgraph") {
-					return Highcharts.numberFormat(this.point.stackTotal,0);
-				} else {
-					return Highcharts.numberFormat(this.point.stackTotal,0);
+			},
+			tooltip: {
+				valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
+				valueDecimals: totDecimals
+			},
+			color: 'rgba(30,242,110,1)',
+			stack: 'sreturn',
+			yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
+		}, false);
+
+		chart.addSeries({
+			id: 'SolarVerbruik',
+			type: 'area',
+			name: 'Solar verbruik',
+			dataLabels: {
+				enabled: false,
+				color: 'green',
+				formatter: function () {
+					if (chart.renderTo.id == "aYear") {
+						return Highcharts.numberFormat(this.y,0);
+					} else if (chart.renderTo.id == "monthgraph") {
+						return Highcharts.numberFormat(this.y,0);
+					} else {
+						return Highcharts.numberFormat(this.y,1);
+					}
 				}
+			},
+			showInLegend: false,
+			tooltip: {
+				valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
+				valueDecimals: totDecimals
+			},
+			color: 'rgba(3,222,190,1)',
+			stack: 'sreturn',
+			yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
+		}, false);
+
+		chart.addSeries({
+			id: 'verbruikElecNet',
+			name: 'Verbruik <?php echo $ElecLeverancier?>',
+			dataLabels: {
+				enabled: true,
+				inside: false,
+				align: 'left',
+				verticalalign: 'top',
+				color: 'red',
+				formatter: function () {
+					if (chart.renderTo.id == "aYear") {
+						return Highcharts.numberFormat(this.point.stackTotal,0);
+					} else if (chart.renderTo.id == "monthgraph") {
+						return Highcharts.numberFormat(this.point.stackTotal,0);
+					} else {
+						return Highcharts.numberFormat(this.point.stackTotal,0);
+					}
+				}
+			},
+			tooltip: {
+				valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
+				valueDecimals: totDecimals
+			},
+			color: 'rgba(60,130,252,0.5)',
+			stack: 'susage',
+			yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
+		}, false);
+
+		chart.addSeries({
+			id: 'verbruikSolar',
+			name: 'Verbruik Solar',
+			dataLabels: {
+				enabled: false,
+			},
+			tooltip: {
+				valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
+				valueDecimals: totDecimals
+			},
+			color: 'rgba(3,190,252,0.5)',
+			stack: 'susage',
+			yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
+		}, false);
+	}
+
+	function GetDateFromString(s) {
+			var year = 1;
+			var month = 1;
+			var week = 0;
+			var day = 1;
+			if (s.length > 3) {
+				year = parseInt(s.substring(0, 4), 10);
 			}
-		},
-		tooltip: {
-			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
-			valueDecimals: totDecimals
-		},
-		color: 'rgba(60,130,252,0.5)',
-		stack: 'susage',
-		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
-	}, false);
-
-	chart.addSeries({
-		id: 'verbruikSolar',
-		name: 'Verbruik Solar',
-		dataLabels: {
-			enabled: false,
-		},
-		tooltip: {
-			valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
-			valueDecimals: totDecimals
-		},
-		color: 'rgba(3,190,252,0.5)',
-		stack: 'susage',
-		yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
-	}, false);
-}
-
-function GetDateFromString(s) {
-		var year = 1;
-		var month = 1;
-		var week = 0;
-		var day = 1;
-		if (s.length > 3) {
-			year = parseInt(s.substring(0, 4), 10);
-		}
-		if (s.length = 6) {
-			week = parseInt(s.substring(0, 4), 10);
-		}
-		if (s.length > 6) {
-			month = parseInt(s.substring(5, 7), 10);
-		}
-		if (s.length > 8) {
-			day = parseInt(s.substring(8, 10), 10);
-		}
-	return Date.UTC(year,month - 1,day);
-}
-
+			if (s.length = 6) {
+				week = parseInt(s.substring(0, 4), 10);
+			}
+			if (s.length > 6) {
+				month = parseInt(s.substring(5, 7), 10);
+			}
+			if (s.length > 8) {
+				day = parseInt(s.substring(8, 10), 10);
+			}
+		return Date.UTC(year,month - 1,day);
+	}
 </script>
 </html>
