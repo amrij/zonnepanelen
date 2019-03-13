@@ -361,7 +361,11 @@ omschrijving: hoofdprogramma
 					document.getElementById("arrow_PRD").className = "";
 				}
 				document.getElementById("p1_huis").className = "red_text";
-				document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
+				if (parseFloat(p1CounterToday)+parseFloat(p1CounterDelivToday) > 0) {
+					document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
+				} else {
+					document.getElementById("p1_huis").innerHTML = "No Data";
+				}
 				document.getElementById("so_text").className = "green_text";
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
