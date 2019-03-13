@@ -19,9 +19,9 @@
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-versie: 1.47
+versie: 1.47.2
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  12-03-2019
+datum:  13-03-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -59,11 +59,6 @@ omschrijving: hoofdprogramma
 		include('config.php');
 		if ($aantal > 33) { $aantal = 33;}
 		if ($aantal < 0) { $aantal = 0;}
-		$pro = ["7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%"];
-		$top = ["65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%","65%"];
-		for ($i=1; $i<=$aantal; $i++){
-			if ($op_id[$i][2] == 1){$pro[$i] = "10%"; $top[$i] = "65%";}
-		}
 		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 		$query = sprintf("SELECT `timestamp` FROM `telemetry_optimizers` LIMIT 1");
 		$result = $mysqli->query($query);
@@ -391,9 +386,9 @@ omschrijving: hoofdprogramma
 			}else{
 				document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\n	L1	L2	L3\r\nS AC:	"+inv1Data[0]["i_ac1"]+"	"+inv1Data[0]["i_ac2"]+"	"+inv1Data[0]["i_ac3"]+" A\r\nV AC:	"+inv1Data[0]["v_ac1"]+"	"+inv1Data[0]["v_ac2"]+"	"+inv1Data[0]["v_ac3"]+" V\r\nFre:	"+inv1Data[0]["frequency1"]+"	"+inv1Data[0]["frequency2"]+"	"+inv1Data[0]["frequency3"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active1"]+"	"+inv1Data[0]["p_active2"]+"	"+inv1Data[0]["p_active3"]+" W\r\nV DC:	"+waarde(0,1,inv1Data[0]["v_dc"])+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
 			}
-			for (var i = Math.round(aantal)+1; i<=33; i++){
-				document.getElementById("tool_paneel_"+i).coords = "0,0,0,0";
-			}
+//~ 			for (var i = Math.round(aantal)+1; i<=33; i++){
+//~ 				document.getElementById("tool_paneel_"+i).coords = "0,0,0,0";
+//~ 			}
 			for (var i=1; i<=aantal; i++){
 				document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
 				if (rpan[i] == 0){
@@ -2145,16 +2140,16 @@ omschrijving: hoofdprogramma
 
 				<img src="./img/dummy.gif" style="top: 4%; left: 5.50%; z-index: 10; width: 15.00%; height: 28.00%; position: absolute;" usemap="#inverter"/>
 				<map name="inverter" style="z-index: 20;">
-					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="" onmouseover="vermogenChart()" onmouseout="vermogenChartcl()">
+					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="">
 				</map>
 				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 21%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='elec_text' id='elec_text' style="top: 70%; left: 18%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<img src="./img/dummy.gif" style="top: 28.18%; left: 29.95%; z-index: 10; width: 3,62%; height: 11.36%; position: absolute;" usemap="#meter"/>
 				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
-				<div class="" id="arrow_PRD"      style="top: 33.9%; left: 29.0%; width: 0.01%; height: 0.7% ; z-index: 20; position: absolute;"></div>
+				<div class="" id="arrow_PRD"      style="top: 34.05%; left: 29.0%; width: 0.01%; height: 0.7% ; z-index: 20; position: absolute;"></div>
 				<div class='p1_text' id='p1_text' style="top: 82.5%; left: 70.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
-				<div class=""   id="arrow_RETURN" style="top: 87.4%; left: 75.0%; width: 0.03%; height: 2.1%; z-index: 20; position: absolute;"></div>
+				<div class=""   id="arrow_RETURN" style="top: 87.35%; left: 75.0%; width: 0.03%; height: 2.1%; z-index: 20; position: absolute;"></div>
 				<div class='p1_huis' id='p1_huis' style="top: 33.0%; left: 78.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 
 				<map name="meter" style="z-index: 20;">
@@ -2170,337 +2165,24 @@ omschrijving: hoofdprogramma
 			<div Class='monthgraph' id="monthgraph"></div>
 
 			<div Class='box_Zonnepanelen' id='box_Zonnepanelen'>
-				<div class='box_Zonnepaneel_1' id='box_Zonnepaneel_1'>
-					<div class="text_paneel_W" id="text_paneel_W_1" style="z-index: 10;  top: <?php echo $pro[1]; ?>; width: 100%;  position: absolute;"></div>
-					<div class="text_paneel_W" id="text_paneel_W_1a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img  id="image_1" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-				<div class='box_Zonnepaneel_1'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#1">
-				<map name="1">
-						<area id="tool_paneel_1" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,1)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_1' style="z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_2' id='box_Zonnepaneel_2'>
-				<div class="text_paneel_W" id="text_paneel_W_2" style="z-index: 10;  top: <?php echo $pro[2]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_2a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_2" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position: relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_2'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#2">
-				<map name="2">
-						<area id="tool_paneel_2" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,2)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_2' style="z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_3' id='box_Zonnepaneel_3'>
-				<div class="text_paneel_W" id="text_paneel_W_3" style="z-index: 10;  top: <?php echo $pro[3]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_3a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_3" alt="" width="100%" height="100%" style="witdh: 100%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_3'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#3">
-				<map name="3">
-						<area id="tool_paneel_3" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,3)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_3' style="position: absolute; top: <?php echo $top[3]; ?>; width: 100%; z-index: 10;"></div></div>
-				<div class='box_Zonnepaneel_4' id='box_Zonnepaneel_4'>
-				<div class="text_paneel_W" id="text_paneel_W_4" style="z-index: 10;  top: <?php echo $pro[4]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_4a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_4" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_4'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#4">
-				<map name="4">
-						<area id="tool_paneel_4" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,4)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_4' style="position: absolute; top: <?php echo $top[4]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_5' id='box_Zonnepaneel_5'>
-				<div class="text_paneel_W" id="text_paneel_W_5" style="z-index: 10;  top: <?php echo $pro[5]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_5a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_5" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_5'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#5">
-				<map name="5">
-						<area id="tool_paneel_5" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,5)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_5' style="position: absolute; top: <?php echo $top[5]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_6' id='box_Zonnepaneel_6'>
-				<div class="text_paneel_W" id="text_paneel_W_6" style="z-index: 10;  top: <?php echo $pro[6]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_6a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_6" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_6'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#6">
-				<map name="6">
-						<area id="tool_paneel_6" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,6)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_6' style="position: absolute; top: <?php echo $top[6]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_7' id='box_Zonnepaneel_7'>
-				<div class="text_paneel_W" id="text_paneel_W_7" style="z-index: 10;  top: <?php echo $pro[7]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_7a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_7" alt="" width="100%" height="100%" style="witdh: 100%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_7'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#7">
-				<map name="7">
-						<area id="tool_paneel_7" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,7)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_7' style="position: absolute; top: <?php echo $top[7]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_8' id='box_Zonnepaneel_8'>
-				<div class="text_paneel_W" id="text_paneel_W_8" style="z-index: 10;  top: <?php echo $pro[8]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_8a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_8" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_8'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#8">
-				<map name="8">
-						<area id="tool_paneel_8" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,8)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_8' style="position: absolute; top: <?php echo $top[8]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_9' id='box_Zonnepaneel_9'>
-				<div class="text_paneel_W" id="text_paneel_W_9" style="z-index: 10;  top: <?php echo $pro[9]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_9a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_9" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_9'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#9">
-				<map name="9">
-					<area id="tool_paneel_9" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,9)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_9' style="position: absolute; top: <?php echo $top[9]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_10' id='box_Zonnepaneel_10'>
-				<div class="text_paneel_W" id="text_paneel_W_10" style="z-index: 10;  top: <?php echo $pro[10]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_10a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_10" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_10'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#10">
-				<map name="10">
-					<area id="tool_paneel_10" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,10)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_10' style="position: absolute; top: <?php echo $top[10]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_11' id='box_Zonnepaneel_11'>
-				<div class="text_paneel_W" id="text_paneel_W_11" style="z-index: 10;  top: <?php echo $pro[11]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_11a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_11" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_11'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#11">
-				<map name="11">
-					<area id="tool_paneel_11" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,11)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_11' style="position: absolute; top: <?php echo $top[11]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_12' id='box_Zonnepaneel_12'>
-				<div class="text_paneel_W" id="text_paneel_W_12" style="z-index: 10;  top: <?php echo $pro[12]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_12a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_12" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_12'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#12">
-				<map name="12">
-					<area id="tool_paneel_12" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,12)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_12' style="position: absolute; top: <?php echo $top[12]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_13' id='box_Zonnepaneel_13'>
-				<div class="text_paneel_W" id="text_paneel_W_13" style="z-index: 10;  top: <?php echo $pro[13]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_13a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_13" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_13'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#13">
-				<map name="13">
-					<area id="tool_paneel_13" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,13)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_13' style="position: absolute; top: <?php echo $top[13]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_14' id='box_Zonnepaneel_14'>
-				<div class="text_paneel_W" id="text_paneel_W_14" style="z-index: 10;  top: <?php echo $pro[14]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_14a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_14" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_14'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#14">
-				<map name="14">
-					<area id="tool_paneel_14" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,14)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_14' style="position: absolute; top: <?php echo $top[14]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_15' id='box_Zonnepaneel_15'>
-				<div class="text_paneel_W" id="text_paneel_W_15" style="z-index: 10;  top: <?php echo $pro[15]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_15a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_15" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_15'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#15">
-				<map name="15">
-					<area id="tool_paneel_15" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,15)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_15' style="position: absolute; top: <?php echo $top[15]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_16' id='box_Zonnepaneel_16'>
-				<div class="text_paneel_W" id="text_paneel_W_16" style="z-index: 10;  top: <?php echo $pro[16]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_16a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_16" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_16'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#16">
-				<map name="16">
-					<area id="tool_paneel_16" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,16)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_16' style="position: absolute; top: <?php echo $top[16]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_17' id='box_Zonnepaneel_17'>
-				<div class="text_paneel_W" id="text_paneel_W_17" style="z-index: 10;  top: <?php echo $pro[17]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_17a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_17" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_17'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#17">
-				<map name="17">
-					<area id="tool_paneel_17" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,17)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_17' style="position: absolute; top: <?php echo $top[17]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_18' id='box_Zonnepaneel_18'>
-				<div class="text_paneel_W" id="text_paneel_W_18" style="z-index: 10;  top: <?php echo $pro[18]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_18a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_18" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_18'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#18">
-				<map name="18">
-					<area id="tool_paneel_18" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,18)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_18' style="position: absolute; top: <?php echo $top[18]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_19' id='box_Zonnepaneel_19'>
-				<div class="text_paneel_W" id="text_paneel_W_19" style="z-index: 10;  top: <?php echo $pro[19]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_19a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_19" src="./img/dummy.gif" alt="" width="100%" heihgt="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_19'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#19">
-				<map name="19">
-					<area id="tool_paneel_19" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,19)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_19' style="position: absolute; top: <?php echo $top[19]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_20' id='box_Zonnepaneel_20'>
-				<div class="text_paneel_W" id="text_paneel_W_20" style="z-index: 10;  top: <?php echo $pro[20]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_20a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_20" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_20'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style="witdh: 100%; height: 100%; position: relative; z-index: 15;" usemap="#20">
-				<map name="20">
-					<area id="tool_paneel_20" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,20)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_20' style="position: absolute; top: <?php echo $top[20]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_21' id='box_Zonnepaneel_21'>
-				<div class="text_paneel_W" id="text_paneel_W_21" style="z-index: 10;  top: <?php echo $pro[21]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_21a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_21" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_21'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style="witdh: 100%; height: 100%; position: relative; z-index: 15;" usemap="#21">
-				<map name="21">
-					<area id="tool_paneel_21" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,21)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_21' style="position: absolute; top: <?php echo $top[21]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_22' id='box_Zonnepaneel_22'>
-				<div class="text_paneel_W" id="text_paneel_W_22" style="z-index: 10;  top: <?php echo $pro[22]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_22a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_22" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 100%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_22'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style="witdh: 100%; height: 100%;  position: relative; z-index: 15;" usemap="#22">
-				<map name="22">
-					<area id="tool_paneel_22" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,22)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_22' style="position: absolute; top: <?php echo $top[22]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_23' id='box_Zonnepaneel_23'>
-				<div class="text_paneel_W" id="text_paneel_W_23" style="z-index: 10;  top: <?php echo $pro[23]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_23a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_23" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_23'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#23">
-				<map name="23">
-					<area id="tool_paneel_23" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,23)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_23' style="position: absolute; top: <?php echo $top[23]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_24' id='box_Zonnepaneel_24'>
-				<div class="text_paneel_W" id="text_paneel_W_24" style="z-index: 10;  top: <?php echo $pro[24]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_24a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_24" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_24'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#24">
-				<map name="24">
-					<area id="tool_paneel_24" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,24)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_24' style="position: absolute; top: <?php echo $top[24]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_25' id='box_Zonnepaneel_25'>
-				<div class="text_paneel_W" id="text_paneel_W_25" style="z-index: 10;  top: <?php echo $pro[25]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_25a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_25" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_25'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#25">
-				<map name="25">
-					<area id="tool_paneel_25" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,25)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_25' style="position: absolute; top: <?php echo $top[25]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_26' id='box_Zonnepaneel_26'>
-				<div class="text_paneel_W" id="text_paneel_W_26" style="z-index: 10;  top: <?php echo $pro[26]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_26a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_26" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_26'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#26">
-				<map name="26">
-					<area id="tool_paneel_26" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,26)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_26' style="position: absolute; top: <?php echo $top[26]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_27' id='box_Zonnepaneel_27'>
-				<div class="text_paneel_W" id="text_paneel_W_27" style="z-index: 10;  top: <?php echo $pro[27]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_27a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_27" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_27'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#27">
-				<map name="27">
-					<area id="tool_paneel_27" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,27)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_27' style="position: absolute; top: <?php echo $top[27]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_28' id='box_Zonnepaneel_28'>
-				<div class="text_paneel_W" id="text_paneel_W_28" style="z-index: 10;  top: <?php echo $pro[28]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_28a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_28" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_28'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#28">
-				<map name="28">
-					<area id="tool_paneel_28" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,28)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_28' style="position: absolute; top: <?php echo $top[28]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_29' id='box_Zonnepaneel_29'>
-				<div class="text_paneel_W" id="text_paneel_W_29" style="z-index: 10;  top: <?php echo $pro[29]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_29a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_29" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_29'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#29">
-				<map name="29">
-					<area id="tool_paneel_29" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,29)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_29' style="position: absolute; top: <?php echo $top[29]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_30' id='box_Zonnepaneel_30'>
-				<div class="text_paneel_W" id="text_paneel_W_30" style="z-index: 10;  top: <?php echo $pro[30]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_30a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_30" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_30'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#30">
-				<map name="30">
-					<area id="tool_paneel_30" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,30)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_30' style="position: absolute; top: <?php echo $top[30]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_31' id='box_Zonnepaneel_31'>
-				<div class="text_paneel_W" id="text_paneel_W_31" style="z-index: 10;  top: <?php echo $pro[31]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_31a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_31" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_31'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#31">
-				<map name="31">
-					<area id="tool_paneel_31" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,31)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_31' style="position: absolute; top: <?php echo $top[31]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_32' id='box_Zonnepaneel_32'>
-				<div class="text_paneel_W" id="text_paneel_W_32" style="z-index: 10;  top: <?php echo $pro[32]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_32a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_32" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_32'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#32">
-				<map name="32">
-					<area id="tool_paneel_32" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,32)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_32' style="position: absolute; top: <?php echo $top[32]; ?>; width: 100%; z-index: 10;"></div></div>
-			<div class='box_Zonnepaneel_33' id='box_Zonnepaneel_33'>
-				<div class="text_paneel_W" id="text_paneel_W_33" style="z-index: 10;  top: <?php echo $pro[33]; ?>; width: 100%;  position: absolute;"></div>
-				<div class="text_paneel_W" id="text_paneel_W_33a" style="z-index: 10;  top: 36%; width: 100%;  position: absolute;"></div>
-				<img id="image_33" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>
-			<div class='box_Zonnepaneel_33'>
-				<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#33">
-				<map name="33">
-					<area id="tool_paneel_33" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,33)" onmouseout="paneelChartcl()">
-				</map>
-				<div class='text_Zonnepaneel_n' id='text_Zonnepaneel_33' style="position: absolute; top: <?php echo $top[33]; ?>; width: 100%; z-index: 10;"></div>
-			</div>
+<?php
+		include('config.php');
+		if ($aantal > 33) { $aantal = 33;}
+		if ($aantal < 0) { $aantal = 0;}
+		for ($i=1; $i<=$aantal; $i++){
+			echo ' 	<div class="box_Zonnepaneel_'.$i.'" id="box_Zonnepaneel_'.$i.'">'."\n";
+			echo '			<div class="text_paneel_W" id="text_paneel_W_'.$i.'"></div>'."\n";
+			echo '			<div class="text_paneel_WX" id="text_paneel_W_'.$i.'a"></div>'."\n";
+			echo '		<img  id="image_'.$i.'" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>'."\n";
+			echo '		<div class="box_Zonnepaneel_'.$i.'">'."\n";
+			echo '		<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
+			echo '		<map name="'.$i.'">'."\n";
+			echo '				<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
+			echo '		</map>'."\n";
+			echo '		<div class="text_Zonnepaneel_n" id="text_Zonnepaneel_'.$i.'"></div>'."\n";
+			echo "  </div>\n";
+		}
+?>
 			<div Class='box_sunrise' id='box_sunrise'>
 				<img src="./img/zon/sunrise.gif"                  style="top: .1%;   left: 3%;  z-index: 10; width: 20%; height: 12%; position: absolute;" />
 				<div class='sunrise_text' id='sunrise_text'       style="top: .5%;   left: 30%; z-index: 10; width: 50%; height: 15%; line-height: 1.1em; position: absolute;"></div>
