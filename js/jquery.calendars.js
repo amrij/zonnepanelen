@@ -737,7 +737,7 @@
 			'': {
 				name: 'Gregorian',
 				epochs: ['BCE', 'CE'],
-				monthNames: ['Januari', 'Februari', 'Maaart', 'April', 'Mei', 'Juni',
+				monthNames: ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
 				'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'],
 				monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
 				dayNames: ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag'],
