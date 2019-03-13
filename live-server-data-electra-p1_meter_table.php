@@ -17,7 +17,7 @@
 // 			INDEX       (timestamp)
 // 		);
 //
-// De verwachte JSON output is voor "period=c"  (current data)   aantal isn't used
+// De verwachte JSON output is voor "period=c"  (current data)   aantal= wordt niet gebruikt
 //[{
 // "CounterDelivToday" : "1.349 kWh",
 // "CounterToday" : "3.893 kWh",
@@ -25,13 +25,13 @@
 // "UsageDeliv" : "0 Watt",
 //}]
 
-// De verwachte JSON output is voor "period=d"
+// De verwachte JSON output is voor "period=d&aantal=xx"
 // [
 // {"idate":"2019-02-10","serie":"2019-02-10","prod":0,"v1":10.94,"v2":0,"r1":0,"r2":0},
 // {"idate":"2019-02-11","serie":"2019-02-11","prod":0,"v1":3.68,"v2":9.92,"r1":0,"r2":0},
 // {"idate":"2019-02-12","serie":"2019-02-12","prod":0,"v1":3.45,"v2":8.49,"r1":0,"r2":0}
 // ]
-// De verwachte JSON output is voor "period=m"
+// De verwachte JSON output is voor "period=m&aantal=xx"
 // [
 // {"idate":"2019-01-01","serie":"2019-01","prod":0,"v1":186.47,"v2":181.2,"r1":0,"r2":0},
 // {"idate":"2019-02-01","serie":"2019-02","prod":137.72,"v1":163.95,"v2":154.13,"r1":36.64,"r2":71.46},
