@@ -308,10 +308,6 @@ omschrijving: hoofdprogramma
 			inverter_chart.redraw();
 			vermogen_chart.redraw();
 		}, 60000);
-		setInterval(function() {
-			updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
-			updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-		}, 60000);
 
 	}
 	function paneelChart(event,x) {
@@ -2424,6 +2420,10 @@ omschrijving: hoofdprogramma
 		// lees data en update grafieken
 		updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
+		setInterval(function() {
+			updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
+			updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
+		}, 60000);
 	}
 	function updateP1graphs(ichart,gtype, periods) {
 		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods;
