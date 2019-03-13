@@ -8,6 +8,7 @@
 //
 // De verwachte JSON output is voor "period=c"  (current data)   aantal= wordt niet gebruikt
 //[{
+// "ServerTime" : "2019-03-13 11:48:40",
 // "CounterDelivToday" : "1.349 kWh",
 // "CounterToday" : "3.893 kWh",
 // "Usage" : "167 Watt",
