@@ -19,9 +19,9 @@
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-versie: 1.47.2
+versie: 1.47.3
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  13-03-2019
+datum:  14-03-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -557,14 +557,14 @@ omschrijving: hoofdprogramma
 			document.getElementById("arrow_RETURN").className = "";
 			document.getElementById("p1_text").className = "red_text";
 			document.getElementById("p1_text").innerHTML = "No data";
-		}else if( p1Usage == "0 Watt"){
+		}else if( parseFloat(p1Usage) == 0){
 			document.getElementById("arrow_RETURN").className = "arrow_right_green";
 			document.getElementById("p1_text").className = "green_text";
-			document.getElementById("p1_text").innerHTML = p1UsageDeliv;
+			document.getElementById("p1_text").innerHTML = parseFloat(p1UsageDeliv)+" Watt";
 		}else{
 			document.getElementById("arrow_RETURN").className = "arrow_left_red";
 			document.getElementById("p1_text").className = "red_text";
-			document.getElementById("p1_text").innerHTML = p1Usage;
+			document.getElementById("p1_text").innerHTML = parseFloat(p1Usage)+" Watt";
 		}
 		var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
 		var cdiff  = "red_text";
