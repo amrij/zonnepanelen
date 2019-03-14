@@ -166,15 +166,18 @@ omschrijving: hoofdprogramma
 				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 21%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='elec_text' id='elec_text' style="top: 70%; left: 18%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<img src="./img/dummy.gif" style="top: 28.18%; left: 29.95%; z-index: 10; width: 3,62%; height: 11.36%; position: absolute;" usemap="#meter"/>
 				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 				<div class="" id="arrow_PRD"      style="top: 34.05%; left: 29.0%; width: 0.01%; height: 0.7% ; z-index: 20; position: absolute;"></div>
 				<div class='p1_text' id='p1_text' style="top: 82.5%; left: 70.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 				<div class=""   id="arrow_RETURN" style="top: 87.35%; left: 75.0%; width: 0.03%; height: 2.1%; z-index: 20; position: absolute;"></div>
-				<div class='p1_huis' id='p1_huis' style="top: 33.0%; left: 78.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
-
+				<img src="./img/dummy.gif" style="top: 60%; left: 50%; z-index: 10; width: 3,62%; height: 25%; position: absolute;" usemap="#meter"/>
 				<map name="meter" style="z-index: 20;">
 					<area id="meter_1" shape="rect" coords="0,0,67,100" title="P1_Meter">
+				</map>
+				<div class='p1_huis' id='p1_huis' style="top: 33.0%; left: 78.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
+				<img src="./img/dummy.gif" style="top: 3.5%; left: 60%; z-index: 10; width: 27%; height: 28%; position: absolute;" usemap="#huis"/>
+				<map name="huis" style="z-index: 20;">
+					<area id="huis_1" shape="rect" coords="0,0,150,150" title="thuis verbruik">
 				</map>
 			</div>
 
@@ -440,9 +443,14 @@ omschrijving: hoofdprogramma
 			}
 			document.getElementById("p1_huis").className = "red_text";
 			if (parseFloat(p1CounterToday)+parseFloat(p1CounterDelivToday) > 0) {
-				document.getElementById("p1_huis").innerHTML = waarde(0,1,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
+				document.getElementById("p1_huis").innerHTML = waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
+				document.getElementById("huis_1").title = "thuis verbruik: \r\n"+
+						"Zonne energie: " + waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh\r\n"+
+						"<?php echo $ElecLeverancier?> energie: " + waarde(0,3,parseFloat(p1CounterToday))+" kWh\r\n"+
+						"Totaal verbruik: "+ waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
 			} else {
 				document.getElementById("p1_huis").innerHTML = "No Data";
+				document.getElementById("huis_1").innerHTML = "No Data";
 			}
 			document.getElementById("so_text").className = "green_text";
 			document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
@@ -545,7 +553,7 @@ omschrijving: hoofdprogramma
 		if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
 		if (typeof p1Usage === 'undefined') {p1Usage = 0;}
 		if (typeof p1UsageDeliv === 'undefined') {p1UsageDeliv = 0;}
-		if( p1Usage == 0){
+		if( p1CounterToday == 0){
 			document.getElementById("arrow_RETURN").className = "";
 			document.getElementById("p1_text").className = "red_text";
 			document.getElementById("p1_text").innerHTML = "No data";
@@ -564,6 +572,8 @@ omschrijving: hoofdprogramma
 			cdiff  = "green_text";
 			diff = diff * -1;
 		}
+		document.getElementById("meter_1").title = "<?php echo $ElecLeverancier?> P1 meter";
+
 		document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
 				"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1servertime.substr(11,10)+")</td><td colspan=1></td></tr>" +
 				"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
