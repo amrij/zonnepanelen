@@ -76,7 +76,7 @@ if ($period == 'c' ){
 	$response = file_get_contents($dsmr_url.'/api/v2/datalogger/dsmrreading?ordering=-timestamp&limit=1', null, stream_context_create(array(
 			'http' => array(
 			'method' => 'GET',
-			'header' => array('X-AUTHKEY:'+$dsmr_apikey))
+			'header' => array('X-AUTHKEY:'.$dsmr_apikey))
 			)
 	));
 	$dsmr_rest = json_decode($response,true);
@@ -96,7 +96,7 @@ if ($period == 'c' ){
 	$response = file_get_contents($dsmr_url.'/api/v2/statistics/day?day__gte='.$sdate.'&limit='.$periods.'', null, stream_context_create(array(
 			'http' => array(
 			'method' => 'GET',
-			'header' => array('X-AUTHKEY:'+$dsmr_apikey))
+			'header' => array('X-AUTHKEY:'.$dsmr_apikey))
 			)
 	));
 	$dsmr_rest = json_decode($response,true);
