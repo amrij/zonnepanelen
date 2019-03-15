@@ -38,14 +38,23 @@ $long = 6.0045953; //Longitude East
 // Achtergrond image (in de img directory)
 $zonnesysteem = "zonnesysteem.gif";
 
-//#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
-$domohost = '192.168.0.??:8080';                        // ip:poort van domoticz
-$domoidx = "123";                                       // device IDX voor de Electriciteits P1 meter
-$ElecLeverancier = "Essent";                            // naam electra leverancier
-$ElecDagGraph = '60';                                   // aantal dagen in grafiek
-$ElecMaandGraph = '13';                                 // aantal maanden in grafiek
-$DataURL = 'live-server-data-electra-domoticz.php';     // URL voor ophalen electra&Converter data
+//#### Toegevoegd voor zonnepanelen-electra.php tbv informatie ophalen van electra
+//** Algemene velden
+$ElecLeverancier = "Essent";        					// naam electra leverancier
+$ElecDagGraph = '45';               					// aantal dagen in grafiek
+$ElecMaandGraph = '14';             					// aantal maanden in grafiek
 $zonnesysteem_electra = "zonnesysteem-electra.gif";
+
+//** velden voor Electra info van Domoticz server
+$domohost = '192.168.0.??:8080';						// ip:poort van domoticz
+$domoidx = "123";    									// device IDX voor de Electriciteits P1 meter
+$DataURL = 'live-server-data-electra-domoticz.php'; 	// URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
+
+//** velden voor Electra info van DSMR server(verwijder // om te activeren)
+// $dsmr_url='http://host-ip:1234';                     // URL voor DSMR inclusief
+// $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
+// $DataURL = 'live-server-data-electra-dsmr.php'; 	    // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
+
 //#### einde aanpassing
 
 // aangeven vermogen op het paneel

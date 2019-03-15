@@ -19,7 +19,8 @@
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-versie: 1.47.3
+based on versie: 1.48 of zonnepanelen.php
+versie: 1.48.1
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
 datum:  14-03-2019
 omschrijving: hoofdprogramma
@@ -164,8 +165,8 @@ omschrijving: hoofdprogramma
 					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="">
 				</map>
 				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 21%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<div class='elec_text' id='elec_text' style="top: 70%; left: 18%; width: 55%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='elec_text' id='elec_text' style="top: 65%; left: 18%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 				<div class="" id="arrow_PRD"      style="top: 34.05%; left: 29.0%; width: 0.01%; height: 0.7% ; z-index: 20; position: absolute;"></div>
 				<div class='p1_text' id='p1_text' style="top: 82.5%; left: 70.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
@@ -432,8 +433,16 @@ omschrijving: hoofdprogramma
 		p1data = JSON.parse(p1data);
 		p1CounterToday = p1data[0]["CounterToday"];
 		p1CounterDelivToday = p1data[0]["CounterDelivToday"];
-		if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
-		if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
+		if (typeof p1CounterToday === 'undefined') {
+			p1CounterToday = 0;
+		} else {
+			p1CounterToday = parseFloat(p1CounterToday);
+		}
+		if (typeof p1CounterDelivToday === 'undefined') {
+			p1CounterDelivToday = 0;
+		} else {
+			p1CounterDelivToday = parseFloat(p1CounterDelivToday);
+		}
 		inv1Data = eval(inv1Data)
 		if (datum1 < tomorrow) {
 			if(inv1Data[0]["IVACT"] != 0){
@@ -442,12 +451,12 @@ omschrijving: hoofdprogramma
 				document.getElementById("arrow_PRD").className = "";
 			}
 			document.getElementById("p1_huis").className = "red_text";
-			if (parseFloat(p1CounterToday)+parseFloat(p1CounterDelivToday) > 0) {
-				document.getElementById("p1_huis").innerHTML = waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
+			if (p1CounterToday+p1CounterDelivToday > 0) {
+				document.getElementById("p1_huis").innerHTML = waarde(0,3,parseFloat(inv1Data[0]["IE"])-p1CounterDelivToday+p1CounterToday)+" kWh";
 				document.getElementById("huis_1").title = "thuis verbruik: \r\n"+
-						"Zonne energie: " + waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh\r\n"+
-						"<?php echo $ElecLeverancier?> energie: " + waarde(0,3,parseFloat(p1CounterToday))+" kWh\r\n"+
-						"Totaal verbruik: "+ waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday)+parseFloat(p1CounterToday))+" kWh";
+						"Zonne energie: " + waarde(0,3,inv1Data[0]["IE"]-p1CounterDelivToday)+" kWh\r\n"+
+						"<?php echo $ElecLeverancier?> energie: " + waarde(0,3,p1CounterToday)+" kWh\r\n"+
+						"Totaal verbruik: "+ waarde(0,3,inv1Data[0]["IE"]-p1CounterDelivToday+p1CounterToday)+" kWh";
 			} else {
 				document.getElementById("p1_huis").innerHTML = "No Data";
 				document.getElementById("huis_1").innerHTML = "No Data";
@@ -455,11 +464,11 @@ omschrijving: hoofdprogramma
 			document.getElementById("so_text").className = "green_text";
 			document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 			document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td colspan=3><b><u>Solar vandaag</u></b></td></tr>"+
-					"<tr><td>verbruik:</td><td colspan=2>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
-					"<tr><td>retour:</td><td colspan=2>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
-					"<tr><td></td><td colspan=3>----------</td></tr>"+
-					"<tr><td class=green_text>productie:</td><td class=green_text colspan=2>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
+					"<tr><td colspan=2><b><u>Solar vandaag</u></b></td></tr>"+
+					"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
+					"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
+					"<tr><td></td><td>----------</td></tr>"+
+					"<tr><td class=green_text>productie:</td><td class=green_text>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
 					"</table>";
 
 			document.getElementById("inverter_text").innerHTML = "<table width=100% class=data-table>"+
@@ -549,10 +558,26 @@ omschrijving: hoofdprogramma
 		p1Usage = p1data[0]["Usage"];
 		p1UsageDeliv = p1data[0]["UsageDeliv"];
 		if (typeof p1servertime === 'undefined') {p1servertime = "";}
-		if (typeof p1CounterToday === 'undefined') {p1CounterToday = 0;}
-		if (typeof p1CounterDelivToday === 'undefined') {p1CounterDelivToday = 0;}
-		if (typeof p1Usage === 'undefined') {p1Usage = 0;}
-		if (typeof p1UsageDeliv === 'undefined') {p1UsageDeliv = 0;}
+		if (typeof p1CounterToday === 'undefined') {
+			p1CounterToday = 0;
+		} else {
+			p1CounterToday = parseFloat(p1CounterToday);
+		}
+		if (typeof p1CounterDelivToday === 'undefined') {
+			p1CounterDelivToday = 0;
+		} else {
+			p1CounterDelivToday = parseFloat(p1CounterDelivToday);
+		}
+		if (typeof p1Usage === 'undefined') {
+			p1Usage = 0;
+		} else {
+			p1Usage = parseFloat(p1Usage);
+		}
+		if (typeof p1UsageDeliv === 'undefined') {
+			p1UsageDeliv = 0;
+		} else {
+			p1UsageDeliv = parseFloat(p1UsageDeliv);
+		}
 		if( p1CounterToday == 0){
 			document.getElementById("arrow_RETURN").className = "";
 			document.getElementById("p1_text").className = "red_text";
@@ -560,11 +585,11 @@ omschrijving: hoofdprogramma
 		}else if( parseFloat(p1Usage) == 0){
 			document.getElementById("arrow_RETURN").className = "arrow_right_green";
 			document.getElementById("p1_text").className = "green_text";
-			document.getElementById("p1_text").innerHTML = parseFloat(p1UsageDeliv)+" Watt";
+			document.getElementById("p1_text").innerHTML = p1UsageDeliv +" Watt";
 		}else{
 			document.getElementById("arrow_RETURN").className = "arrow_left_red";
 			document.getElementById("p1_text").className = "red_text";
-			document.getElementById("p1_text").innerHTML = parseFloat(p1Usage)+" Watt";
+			document.getElementById("p1_text").innerHTML = p1Usage +" Watt";
 		}
 		var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
 		var cdiff  = "red_text";
@@ -575,11 +600,12 @@ omschrijving: hoofdprogramma
 		document.getElementById("meter_1").title = "<?php echo $ElecLeverancier?> P1 meter";
 
 		document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-				"<tr><td colspan=3><u><b><?php echo $ElecLeverancier?> vandaag</u></b> ("+p1servertime.substr(11,10)+")</td><td colspan=1></td></tr>" +
-				"<tr><td>verbruik:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
-				"<tr><td>retour:</td><td colspan=3>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
-				"<tr><td></td><td colspan=3>----------</td></tr>"+
-				"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" colspan=3>"+waarde(0,3,diff)+" kWh</td></tr>"+
+				"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
+				"<tr><td colspan=2><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td></tr>" +
+				"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
+				"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
+				"<tr><td></td><td>----------</td></tr>"+
+				"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
 				"</table>";
 
 
