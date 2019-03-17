@@ -2585,7 +2585,7 @@ omschrijving: hoofdprogramma
 			dataLabels: {
 				enabled: true,
 				inside: false,
-				align: 'left',
+				align: 'center',
 				verticalalign: 'top',
 				color: 'red',
 				formatter: function () {
