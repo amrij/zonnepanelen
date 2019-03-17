@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.21
+// versie: 1.22
 // auteur: André Rijkeboer
-// datum:  12-03-2019
+// datum:  17-03-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
 
 $d1 = $_GET['date'];

@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.10
+// versie: 1.11
 // auteur: André Rijkeboer
-// datum:  05-05-2018
+// datum:  17-03-2019
 // omschrijving: ophalen van de stroom en energie gegevens van de panelen en de inverter (15 dagen)
 
 $d1 = $_GET['date'];
@@ -42,7 +42,7 @@ $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 // haal gegevens van de panelen op
 $diff = array();
 $format = '%H:%i:%s';
-$query = sprintf("SELECT HEX(`op_id`) optimizer, `timestamp`, uptime, `v_in`*`i_in`*0.125*0.00625 vermogen, e_day*0.25 as energie 
+$query = sprintf("SELECT HEX(`op_id`) optimizer, `timestamp`, uptime, `v_in`*`i_in`*0.125*0.00625 vermogen, e_day*0.25 as energie, `temperature`
 	FROM  (
 	SELECT `op_id`,`timestamp`,`v_in`,`v_out`,`i_in`, `temperature`, `e_day`, `uptime`
 	FROM `telemetry_optimizers` 
@@ -73,6 +73,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 				$diff['sec'] = gmdate("s",$row['timestamp']);
 				$diff['p1_volume_prd'] = round($row['energie'] + $paneel[$i]['verschil'],3);
 				$diff['p1_current_power_prd'] = $row['vermogen'];
+				$diff['temperature'] = $row['temperature'];
 				$paneel[$i]['uptime'] = $row['uptime'];
 				$paneel[$i]['energie'] = $diff['p1_volume_prd'];
 			}else{
@@ -87,6 +88,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 				$paneel[$i]['verschil'] = $paneel[$i]['energie'];
 				$diff['p1_volume_prd'] = round($row['energie'] + $paneel[$i]['verschil'],3);
 				$diff['p1_current_power_prd'] = $row['vermogen'];
+				$diff['temperature'] = $row['temperature'];
 				$paneel[$i]['uptime'] = $row['uptime'];
 				$paneel[$i]['energie'] = $diff['p1_volume_prd'];
 			}
