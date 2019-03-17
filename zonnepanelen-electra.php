@@ -286,16 +286,17 @@ omschrijving: hoofdprogramma
 	var productie = ['<?php echo $productie[14]?>','<?php echo $productie[13]?>','<?php echo $productie[12]?>','<?php echo $productie[11]?>','<?php echo $productie[10]?>','<?php echo $productie[9]?>','<?php echo $productie[8]?>','<?php echo $productie[7]?>','<?php echo $productie[6]?>','<?php echo $productie[5]?>','<?php echo $productie[4]?>','<?php echo $productie[3]?>','<?php echo $productie[2]?>','voorafgaande dagen','<?php echo $productie[0]?>','<?php echo $productie[1]?>'];
 	var start_i = 0;
 	var inverter_redraw = 1;
-
+	var p1CounterToday = 0;
+	var p1CounterDelivToday = 0;
 
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 	function drawChart() {
+		p1_update();
 		zonmaan();
 		paneel();
 		inverter_chart.redraw();
 		vermogen_chart.redraw();
-		p1_update();
 		draw_p1_chart();
 		document.getElementById("panel_vermogen").innerHTML ="";
 		document.getElementById("panel_energy").innerHTML ="";
@@ -308,6 +309,9 @@ omschrijving: hoofdprogramma
 		}, 20000);
 		setInterval(function() {
 			zonmaan();
+		}, 3600000);
+
+		setInterval(function() {
 			paneel();
 			inverter_chart.redraw();
 			vermogen_chart.redraw();
@@ -416,13 +420,6 @@ omschrijving: hoofdprogramma
 	}
 
 	function paneel(){
-		var p1data = $.ajax({
-			url: "<?php echo $DataURL?>?period=c",
-			dataType: "json",
-			type: 'GET',
-			data: { },
-			async: false,
-		}).responseText;
 		var inv1Data = $.ajax({
 			url: "live-server-data-zon.php",
 			dataType: "json",
@@ -430,9 +427,6 @@ omschrijving: hoofdprogramma
 			data: { "date" : datum },
 			async: false,
 		}).responseText;
-		p1data = JSON.parse(p1data);
-		p1CounterToday = p1data[0]["CounterToday"];
-		p1CounterDelivToday = p1data[0]["CounterDelivToday"];
 		if (typeof p1CounterToday === 'undefined') {
 			p1CounterToday = 0;
 		} else {
@@ -1194,7 +1188,8 @@ omschrijving: hoofdprogramma
 					alignTicks:true,
 					spacingBottom: 0,
 					zoomType: 'none',
-					events: {load: requestData2}
+					//only needed once as I show both graphs and they use same data -> paneel_chartv
+					//events: {load: requestData2}
 				},
 				title: {
 					text: null
@@ -2461,7 +2456,7 @@ omschrijving: hoofdprogramma
 		setInterval(function() {
 			updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 			updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-		}, 60000);
+		}, 300000);
 	}
 	function updateP1graphs(ichart,gtype, periods) {
 		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods;
