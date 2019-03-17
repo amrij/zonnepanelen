@@ -218,8 +218,8 @@ omschrijving: hoofdprogramma
 				<img src="./img/zon/daglengte.gif"                style="top: 45.1%; left: 3%;  z-index: 10; width: 20%; height: 12%; position: absolute;" />
 				<div class='daglengte_text' id='daglengte_text'   style="top: 45.5%; left: 30%; z-index: 10; width: 50%; height: 15%; line-height: 1.1em; position: absolute;"></div>
 
-				<img src="./img/maan/maan_th_mask1.gif"           style="top: 55.0%; left: 75%; z-index: 20; width: 20%; position: absolute;" />
-				<img class="maan_th" id="maan_th" src=""          style="top: 55.0%; left: 75%; z-index: 10; width: 20%; position: absolute;"></img>
+				<img src="./img/maan/maan_th_mask1.gif"           style="top: 58.0%; left: 80%; z-index: 20; width: 20%; position: absolute;" />
+				<img class="maan_th" id="maan_th" src=""          style="top: 59.0%; left: 80%; z-index: 10; width: 20%; position: absolute;"></img>
 				<div class='fase_text' id='fase_text'             style="top: 68.0%; left: 30%; z-index: 10; width: 50%; height: 12%; line-height: 1.1em; position: absolute;"></div>
 				<div class='verlicht_text' id='verlicht_text'     style="top: 81.0%; left: 30%; z-index: 10; width: 50%; height: 12%; line-height: 1.1em; position: absolute;"></div>
 			</div>
@@ -1776,6 +1776,10 @@ omschrijving: hoofdprogramma
 				tooltip: {
 					formatter: function () {
 						var s ="";
+						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
+						if (typeof this.points[14] != 'undefined') {
+							s += "<b>" + this.points[14].series.name.substr(this.points[14].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[14].y,2) + ' kWh</b>';
+						}
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
 						});
@@ -1783,12 +1787,12 @@ omschrijving: hoofdprogramma
 							for (i=0; i<=14; i++){
 								if (this.series.name == productie[i]) {
 									if (s != ""){ s += '<br>'}
+										//s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
 									if (i == 14){
-										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
 									} else if (i != 13){
-										s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
+										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
 									} else {
-										s += productie[15].substr(productie[15].length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
+										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
 									}
 								}
 							}
@@ -2083,6 +2087,10 @@ omschrijving: hoofdprogramma
 				tooltip: {
 					formatter: function () {
 						var s = "";
+						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
+						if (typeof this.points[14] != 'undefined') {
+							s += "<b>" + this.points[14].series.name.substr(this.points[14].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[14].y,0) + ' W</b>';
+						}
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
 						});
@@ -2092,11 +2100,11 @@ omschrijving: hoofdprogramma
 								if (this.series.name == productie[i]) {
 									if (s != ""){ s += '<br>'}
 									if (i == 14){
-										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
+										//s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
 									} else if (i != 13){
-										s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
 									} else {
-										s += productie[15].substr(productie[15].length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
 									}
 								}
 							}
