@@ -170,6 +170,10 @@ omschrijving: hoofdprogramma
 		var inverter = '<?php echo $inverter?>';
 		var naam = '<?php echo $naam?>';
 		var aantal = '<?php echo $aantal?>';
+		var op_sn = [0,'<?php echo $op_id[1][0]; 
+		                      for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][0];} ?>'];
+		var pn_sn = [0,'<?php echo $op_id[1][3]; 
+		                      for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][3];} ?>'];
 		var op_id = [0,'<?php echo $op_id[1][1]; 
 		                      for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][1];} ?>'];
 		var rpan = [0,'<?php echo $op_id[1][2];
@@ -272,6 +276,26 @@ omschrijving: hoofdprogramma
 					paneel_chart.series[31].update({showInLegend: true, name: "Energie overige panelen"});
 					paneel_chart.yAxis[0].update({ title: { text: 'Energie (Wh)' }, });
 					paneel_chart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+				} else if (event.shiftKey) {
+					for (var i = 0; i < data_p.length; i++){
+						if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
+							if (data_p[i]['op_id'] < x ){
+								paneel_chart.series[data_p[i]['op_id']-1].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['temperature']*1], false, shift);
+							} else {
+								paneel_chart.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['temperature']*1], false, shift);
+							}
+						} else {
+							paneel_chart.series[33].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['temperature']*1], false, shift);
+						}
+					}
+					paneel_chart.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
+					paneel_chart.yAxis[0].update({ opposite: true });
+					paneel_chart.legend.update({x:10,y:20});
+					paneel_chart.series[33].update({name: "Temperatuur paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+					paneel_chart.series[32].update({showInLegend: false});
+					paneel_chart.series[31].update({showInLegend: true, name: "Temperatuur overige panelen"});
+					paneel_chart.yAxis[0].update({ title: { text: '°C' }, });
+					paneel_chart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
 				} else {
 					for(var i = 0; i < data_p.length; i++){
 						if (data_p[i]['op_id'] == x && data_p[i]['serie'] == 0){
@@ -369,7 +393,7 @@ omschrijving: hoofdprogramma
 				document.getElementById("arrow_PRD").className = "";
 			}
 			if (inverter == 1){
-				document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\nS AC:	"+inv1Data[0]["i_ac"]+" A\r\nV AC:	"+inv1Data[0]["v_ac"]+" V\r\nFre:	"+inv1Data[0]["frequency"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active"]+" kWh\r\nV DC:	"+inv1Data[0]["v_dc"]+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
+				document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\nS AC:	"+inv1Data[0]["i_ac"]+" A\r\nV AC:	"+inv1Data[0]["v_ac"]+" V\r\nFreqentie:"+inv1Data[0]["frequency"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active"]+" kWh\r\nV DC:	"+inv1Data[0]["v_dc"]+" V\r\nE:		"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
 			}else{
 				document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\n	L1	L2	L3\r\nS AC:	"+inv1Data[0]["i_ac1"]+"	"+inv1Data[0]["i_ac2"]+"	"+inv1Data[0]["i_ac3"]+" A\r\nV AC:	"+inv1Data[0]["v_ac1"]+"	"+inv1Data[0]["v_ac2"]+"	"+inv1Data[0]["v_ac3"]+" V\r\nFre:	"+inv1Data[0]["frequency1"]+"	"+inv1Data[0]["frequency2"]+"	"+inv1Data[0]["frequency3"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active1"]+"	"+inv1Data[0]["p_active2"]+"	"+inv1Data[0]["p_active3"]+" W\r\nV DC:	"+inv1Data[0]["v_dc"]+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
 			}
@@ -394,7 +418,9 @@ omschrijving: hoofdprogramma
 					document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 					document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
 				}	
-				document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VMT"+i] +"\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
+				document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nOptimizer SN   "+op_sn[i]+"\r\nPaneel SN        "+pn_sn[i]+ "\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VMT"+i] +"\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
+
+
 				if ( inv1Data[0]["C"+i] == 0) {
 					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000";
 				} else if ( inv1Data[0]["C"+i] < 0.1) {
