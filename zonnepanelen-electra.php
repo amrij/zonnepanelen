@@ -1776,15 +1776,21 @@ omschrijving: hoofdprogramma
 				tooltip: {
 					formatter: function () {
 						var s ="";
-						$.each(this.points, function () {
+						var sortedPoints = this.points.sort(function(a, b){
+							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+						});
+						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){
 								if (this.series.name == productie[i]) {
 									if (s != ""){ s += '<br>'}
-									if (i != 13){
-										s += Highcharts.dateFormat('%A ', this.series.name) + this.series.name + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' + this.y + ' kWh';
+									if (i == 14){
+										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
+									} else if (i != 13){
+										s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
 									} else {
-										s += Highcharts.dateFormat('%A ', productie[15]) + productie[15] + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' + this.y + ' kWh';
-									}								}
+										s += productie[15].substr(productie[15].length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
+									}
+								}
 							}
 						});
 						return s;
@@ -2077,13 +2083,21 @@ omschrijving: hoofdprogramma
 				tooltip: {
 					formatter: function () {
 						var s = "";
-						$.each(this.points, function () {
+						var sortedPoints = this.points.sort(function(a, b){
+							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+						});
+						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){
 								if (this.series.y == this.y) {};
 								if (this.series.name == productie[i]) {
 									if (s != ""){ s += '<br>'}
-									s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' +
-									Highcharts.numberFormat(this.y,0) + ' W';
+									if (i == 14){
+										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
+									} else if (i != 13){
+										s += this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+									} else {
+										s += productie[15].substr(productie[15].length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+									}
 								}
 							}
 						});
