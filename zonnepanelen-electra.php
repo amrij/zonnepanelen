@@ -160,11 +160,11 @@ omschrijving: hoofdprogramma
 						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">"></TD><TR>
 				</div>
 
-				<img src="./img/dummy.gif" style="top: 4%; left: 5.50%; z-index: 10; width: 15.00%; height: 28.00%; position: absolute;" usemap="#inverter"/>
+				<img src="./img/dummy.gif" style="top: 10%; left: 4.00%; z-index: 10; width: 18.00%; height: 22.00%; position: absolute;" usemap="#inverter"/>
 				<map name="inverter" style="z-index: 20;">
 					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="">
 				</map>
-				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 21%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 25.5%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='elec_text' id='elec_text' style="top: 65%; left: 18%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
