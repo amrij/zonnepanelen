@@ -1777,8 +1777,8 @@ omschrijving: hoofdprogramma
 					formatter: function () {
 						var s ="";
 						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
-						if (typeof this.points[14] != 'undefined') {
-							s += "<b>" + this.points[14].series.name.substr(this.points[14].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[14].y,2) + ' kWh</b>';
+						if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
+							s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' kWh</b>';
 						}
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
@@ -2088,8 +2088,8 @@ omschrijving: hoofdprogramma
 					formatter: function () {
 						var s = "";
 						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
-						if (typeof this.points[14] != 'undefined') {
-							s += "<b>" + this.points[14].series.name.substr(this.points[14].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[14].y,0) + ' W</b>';
+						if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
+							s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' W</b>';
 						}
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
