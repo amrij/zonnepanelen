@@ -116,9 +116,9 @@ div.text_div {
 
 div.box_Zonnepanelen {
     left: .5%;
-    top: 5%;
+    top: .5%;
     width: 20%;
-    height: 45%;
+    height: 49.8%;
     position: absolute;
 	background-color: white;
 	-webkit-transform:rotate(0deg);
@@ -145,9 +145,9 @@ div.box_sunrise {
 
 div.box_inverter {
     left: 20.1%;
-    top: 1.75%;
+    top: 0.5%;
     width: 24%;
-    height: 50%;
+    height: 52%;
     position: absolute;
 	font-family: arial;
 	font-size: .6vw
@@ -204,7 +204,7 @@ div.monthgraph {
 	}
 	div.box_inverter {
 		left: .1%;
-		top: 1.75%;
+		top: 0.5%;
 		width: 99%;
 		height: 50%;
 		font-size: 2.0vw;
@@ -268,7 +268,7 @@ div.monthgraph {
 
 	div.box_inverter {
 		left: .1%;
-		top: 1.75%;
+		top: 0.5%;
 		width: 99%;
 		height: 150%;
 		font-size: 2.0vw;

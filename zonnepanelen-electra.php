@@ -175,7 +175,7 @@ omschrijving: hoofdprogramma
 				<map name="meter" style="z-index: 20;">
 					<area id="meter_1" shape="rect" coords="0,0,67,100" title="P1_Meter">
 				</map>
-				<div class='p1_huis' id='p1_huis' style="top: 33.0%; left: 78.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
+				<div class='p1_huis' id='p1_huis' style="top: 30.0%; left: 64.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 				<img src="./img/dummy.gif" style="top: 3.5%; left: 60%; z-index: 10; width: 27%; height: 28%; position: absolute;" usemap="#huis"/>
 				<map name="huis" style="z-index: 20;">
 					<area id="huis_1" shape="rect" coords="0,0,150,150" title="thuis verbruik">
