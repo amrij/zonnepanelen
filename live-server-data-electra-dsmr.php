@@ -183,7 +183,7 @@ if ($period == 'c' ){
 		$inverter_data = $mysqli->query(
 				' SELECT * FROM ( ' .
 				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(de_day)/1000 as tzon ' .
+				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
 				'	 		FROM   solaredge.telemetry_inverter ' .
 				'			GROUP BY d  ' .
 				'		  ) t1 ' .
@@ -196,7 +196,7 @@ if ($period == 'c' ){
 		$inverter_data = $mysqli->query(
 				' SELECT * FROM ( ' .
 				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(de_day)/1000 as tzon ' .
+				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
 				'	 		FROM   solaredge.telemetry_inverter_3phase ' .
 				'			GROUP BY d  ' .
 				'		  ) t1 ' .

@@ -102,7 +102,7 @@ if ($period == 'c' ){
 								'			   FROM   P1_Meter ' .
 								'			   GROUP BY d ' .
 								'			   ) t2 ' .
-								'	 left join (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(de_day)/1000 as tzon ' .
+								'	 left join (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
 								'			   FROM   solaredge.telemetry_inverter ' .
 								'			   GROUP BY d  ' .
 								'			   ) t1 ' .
@@ -129,7 +129,7 @@ if ($period == 'c' ){
 								'			   FROM   P1_Meter ' .
 								'			   GROUP BY d ' .
 								'			   ) t2 ' .
-								'	 left join (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(de_day)/1000 as tzon ' .
+								'	 left join (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
 								'			   FROM   solaredge.telemetry_inverter_3phase ' .
 								'			   GROUP BY d  ' .
 								'			   ) t1 ' .
