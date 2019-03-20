@@ -175,8 +175,8 @@ omschrijving: hoofdprogramma
 				<map name="meter" style="z-index: 20;">
 					<area id="meter_1" shape="rect" coords="0,0,67,100" title="P1_Meter">
 				</map>
-				<div class='p1_huis' id='p1_huis' style="top: 30.0%; left: 64.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
-				<img src="./img/dummy.gif" style="top: 3.5%; left: 60%; z-index: 10; width: 27%; height: 28%; position: absolute;" usemap="#huis"/>
+				<div class='p1_huis' id='p1_huis' style="top: 30.0%; left: 61.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
+				<img src="./img/dummy.gif" style="top: 3.5%; left: 65%; z-index: 10; width: 27%; height: 28%; position: absolute;" usemap="#huis"/>
 				<map name="huis" style="z-index: 20;">
 					<area id="huis_1" shape="rect" coords="0,0,150,150" title="thuis verbruik">
 				</map>
@@ -286,17 +286,22 @@ omschrijving: hoofdprogramma
 	var productie = ['<?php echo $productie[14]?>','<?php echo $productie[13]?>','<?php echo $productie[12]?>','<?php echo $productie[11]?>','<?php echo $productie[10]?>','<?php echo $productie[9]?>','<?php echo $productie[8]?>','<?php echo $productie[7]?>','<?php echo $productie[6]?>','<?php echo $productie[5]?>','<?php echo $productie[4]?>','<?php echo $productie[3]?>','<?php echo $productie[2]?>','voorafgaande dagen','<?php echo $productie[0]?>','<?php echo $productie[1]?>'];
 	var start_i = 0;
 	var inverter_redraw = 1;
+	var SolarProdToday = 0;
 	var p1CounterToday = 0;
 	var p1CounterDelivToday = 0;
+	var wchart="";
+	var ychart="";
+	var pve = 0;
+	var pvs = 0;
+	var pse = 0;
+	var psv = 0;
+
 
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 	function drawChart() {
-		p1_update();
 		zonmaan();
 		paneel();
-		inverter_chart.redraw();
-		vermogen_chart.redraw();
 		draw_p1_chart();
 		document.getElementById("panel_vermogen").innerHTML ="";
 		document.getElementById("panel_energy").innerHTML ="";
@@ -306,15 +311,14 @@ omschrijving: hoofdprogramma
 		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
 		setInterval(function() {
 			p1_update();
-		}, 20000);
+		}, 10000);
+
 		setInterval(function() {
 			zonmaan();
 		}, 3600000);
 
 		setInterval(function() {
 			paneel();
-			inverter_chart.redraw();
-			vermogen_chart.redraw();
 		}, 60000);
 
 	}
@@ -427,34 +431,21 @@ omschrijving: hoofdprogramma
 			data: { "date" : datum },
 			async: false,
 		}).responseText;
-		if (typeof p1CounterToday === 'undefined') {
-			p1CounterToday = 0;
-		} else {
-			p1CounterToday = parseFloat(p1CounterToday);
-		}
-		if (typeof p1CounterDelivToday === 'undefined') {
-			p1CounterDelivToday = 0;
-		} else {
-			p1CounterDelivToday = parseFloat(p1CounterDelivToday);
-		}
+
 		inv1Data = eval(inv1Data)
+		SolarProdToday = inv1Data[0]["IE"];
+
+		if (p1CounterToday == 0) {
+			p1_update()
+		}
+
 		if (datum1 < tomorrow) {
 			if(inv1Data[0]["IVACT"] != 0){
 				document.getElementById("arrow_PRD").className = "arrow_right_green";
 			}else{
 				document.getElementById("arrow_PRD").className = "";
 			}
-			document.getElementById("p1_huis").className = "red_text";
-			if (p1CounterToday+p1CounterDelivToday > 0) {
-				document.getElementById("p1_huis").innerHTML = waarde(0,3,parseFloat(inv1Data[0]["IE"])-p1CounterDelivToday+p1CounterToday)+" kWh";
-				document.getElementById("huis_1").title = "thuis verbruik: \r\n"+
-						"Zonne energie: " + waarde(0,3,inv1Data[0]["IE"]-p1CounterDelivToday)+" kWh\r\n"+
-						"<?php echo $ElecLeverancier?> energie: " + waarde(0,3,p1CounterToday)+" kWh\r\n"+
-						"Totaal verbruik: "+ waarde(0,3,inv1Data[0]["IE"]-p1CounterDelivToday+p1CounterToday)+" kWh";
-			} else {
-				document.getElementById("p1_huis").innerHTML = "No Data";
-				document.getElementById("huis_1").innerHTML = "No Data";
-			}
+
 			document.getElementById("so_text").className = "green_text";
 			document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 			document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
@@ -464,12 +455,11 @@ omschrijving: hoofdprogramma
 					"<tr><td></td><td>----------</td></tr>"+
 					"<tr><td class=green_text>productie:</td><td class=green_text>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
 					"</table>";
-
 			document.getElementById("inverter_text").innerHTML = "<table width=100% class=data-table>"+
 					"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>"+
 					"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>"+
 					"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td><tr>"+
-					"<td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"])+"/"+waarde(0,1,inv1Data[0]["ITMIN"])+"/"+waarde(0,1,inv1Data[0]["ITMAX"])+" °C</td></tr>"+
+					"<td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"])+" / "+waarde(0,1,inv1Data[0]["ITMIN"])+" / "+waarde(0,1,inv1Data[0]["ITMAX"])+" °C</td></tr>"+
 					"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"])+"</td></tr></table>";
 		}else{
 			document.getElementById("inverter_text").innerHTML = "<b>Inverter:</b><br>D:&emsp;&emsp;&nbsp;&nbsp;"+inv1Data[0]["IT"]+"<br>Pmax:&nbsp;&nbsp;"+inv1Data[0]["IVMAX"]+" W<br><b>E:&emsp;&emsp;&emsp;"+waarde(0,3,inv1Data[0]["IE"])+" kWh</b><br>Tmin:&emsp;"+waarde(0,1,inv1Data[0]["ITMIN"])+" °C<br>Tmax:&nbsp;&nbsp;"+waarde(0,1,inv1Data[0]["ITMAX"])+" °C";
@@ -602,7 +592,56 @@ omschrijving: hoofdprogramma
 				"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
 				"</table>";
 
+		if (datum1 < tomorrow) {
+			document.getElementById("p1_huis").className = "red_text";
+			if (p1CounterToday+p1CounterDelivToday > 0) {
+				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
+				if ( cP1Huis == 0 || cP1Huis < SolarProdToday-p1CounterDelivToday+p1CounterToday) {
+					document.getElementById("p1_huis").innerHTML = waarde(0,3,SolarProdToday-p1CounterDelivToday+p1CounterToday)+" kWh";
+					document.getElementById("huis_1").title = "thuis verbruik: \r\n"+
+							"Zonne energie: " + waarde(0,3,SolarProdToday-p1CounterDelivToday)+" kWh\r\n"+
+							"<?php echo $ElecLeverancier?> energie: " + waarde(0,3,p1CounterToday)+" kWh\r\n"+
+							"Totaal verbruik: "+ waarde(0,3,SolarProdToday-p1CounterDelivToday+p1CounterToday)+" kWh";
+				}
+			} else {
+				document.getElementById("p1_huis").innerHTML = "No Data";
+				document.getElementById("huis_1").innerHTML = "No Data";
+			}
+		}else{
+			document.getElementById("p1_huis").innerHTML = "";
+			document.getElementById("huis_1").innerHTML = "";
+		}
 
+		if (wchart != "") {
+			// update current day info in graphs
+			var cdate = new Date();
+			var prod = SolarProdToday   ;      //Solar productie
+			var ve = p1CounterToday;
+			var vs = prod - p1CounterDelivToday;
+			var se = p1CounterDelivToday;
+			var sv = vs;
+			wchart.series[0].data[wchart.series[0].data.length-1].update(se);
+			wchart.series[1].data[wchart.series[1].data.length-1].update(sv);
+			wchart.series[2].data[wchart.series[2].data.length-1].update(ve);
+			wchart.series[3].data[wchart.series[3].data.length-1].update(vs);
+			//
+			// update huidige maand
+			var mse = ychart.series[0].data[ychart.series[0].data.length-1].y - pse + se;
+			var msv = ychart.series[1].data[ychart.series[1].data.length-1].y - psv + sv;
+			var mve = ychart.series[2].data[ychart.series[2].data.length-1].y - pve + ve;
+			var mvs = ychart.series[3].data[ychart.series[3].data.length-1].y - pvs + vs;
+			ychart.series[0].data[ychart.series[0].data.length-1].update(mse);
+			ychart.series[1].data[ychart.series[1].data.length-1].update(msv);
+			ychart.series[2].data[ychart.series[2].data.length-1].update(mve);
+			ychart.series[3].data[ychart.series[3].data.length-1].update(mvs);
+			pve = ve;
+			pvs = vs;
+			pse = se;
+			psv = sv;
+			//
+			wchart.redraw();
+			ychart.redraw();
+		}
 	}
 
 	function zonmaan(){
@@ -2459,26 +2498,22 @@ omschrijving: hoofdprogramma
 		chartoptions.chart.renderTo='daygraph';
 		chartoptions.xAxis.dateTimeLabelFormats.day='%a %d-%b';
 		chartoptions.xAxis.tickInterval=24 * 3600 * 1000;
-		var wchart = new Highcharts.Chart(chartoptions);
+		wchart = new Highcharts.Chart(chartoptions);
 
 
 		chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecMaandGraph?> maanden.';
 		chartoptions.chart.renderTo='monthgraph';
 		chartoptions.series.pointInterval=24 * 3600 * 1000*30;
 		chartoptions.xAxis.tickInterval=28*24*3600*1000;
-		var ychart = new Highcharts.Chart(chartoptions);
+		ychart = new Highcharts.Chart(chartoptions);
 
 		// voeg de data series toe aan de Charts
 		AddSeriestoChart(wchart, 0);
 		AddSeriestoChart(ychart, 0);
 
-		// lees data en update grafieken
+		// lees data en update grafieken alleen initieel
 		updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-		setInterval(function() {
-			updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
-			updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
-		}, 300000);
 	}
 	function updateP1graphs(ichart,gtype, periods) {
 		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods;
@@ -2517,6 +2552,10 @@ omschrijving: hoofdprogramma
 			datatableverbruikSolar.push([cdate, vs]);
 			datatableSolarElecNet.push([cdate, se]);
 			datatableSolarVerbruik.push([cdate, sv]);
+			pve = ve;
+			pvs = vs;
+			pse = se;
+			psv = sv;
 		});
 
 		var series;
@@ -2605,6 +2644,8 @@ omschrijving: hoofdprogramma
 				align: 'center',
 				verticalalign: 'top',
 				color: 'red',
+				y: -12,
+				rotation: 90,
 				formatter: function () {
 					if (chart.renderTo.id == "aYear") {
 						return Highcharts.numberFormat(this.point.stackTotal,0);
