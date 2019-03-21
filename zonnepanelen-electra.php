@@ -300,8 +300,8 @@ omschrijving: hoofdprogramma
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 	function drawChart() {
-		zonmaan();
 		paneel();
+		zonmaan();
 		draw_p1_chart();
 		document.getElementById("panel_vermogen").innerHTML ="";
 		document.getElementById("panel_energy").innerHTML ="";
@@ -612,7 +612,7 @@ omschrijving: hoofdprogramma
 			document.getElementById("huis_1").innerHTML = "";
 		}
 
-		if (wchart != "") {
+		if (wchart != "" && pse+psv+pve+pvs > 0) {
 			// update current day info in graphs
 			var cdate = new Date();
 			var prod = SolarProdToday   ;      //Solar productie
@@ -2552,10 +2552,12 @@ omschrijving: hoofdprogramma
 			datatableverbruikSolar.push([cdate, vs]);
 			datatableSolarElecNet.push([cdate, se]);
 			datatableSolarVerbruik.push([cdate, sv]);
+			if (chart.renderTo.id == "daygraph") {
 			pve = ve;
 			pvs = vs;
 			pse = se;
 			psv = sv;
+			}
 		});
 
 		var series;
@@ -2589,14 +2591,8 @@ omschrijving: hoofdprogramma
 				enabled: false,
 				color: 'green',
 				formatter: function () {
-					if (chart.renderTo.id == "aYear") {
-						return 'Solar :' + Highcharts.numberFormat(this.point.stackTotal,0) + '<br/><?php echo $ElecLeverancier?>:' + Highcharts.numberFormat(this.y,0);
-					} else if (chart.renderTo.id == "monthgraph") {
-						return Highcharts.numberFormat(this.point.stackTotal,0);
-					} else {
 						return Highcharts.numberFormat(this.point.stackTotal,1);
 					}
-				}
 
 			},
 			tooltip: {
@@ -2616,14 +2612,8 @@ omschrijving: hoofdprogramma
 				enabled: false,
 				color: 'green',
 				formatter: function () {
-					if (chart.renderTo.id == "aYear") {
-						return Highcharts.numberFormat(this.y,0);
-					} else if (chart.renderTo.id == "monthgraph") {
-						return Highcharts.numberFormat(this.y,0);
-					} else {
 						return Highcharts.numberFormat(this.y,1);
 					}
-				}
 			},
 			showInLegend: false,
 			tooltip: {
@@ -2644,16 +2634,21 @@ omschrijving: hoofdprogramma
 				align: 'center',
 				verticalalign: 'top',
 				color: 'red',
-				y: -12,
-				rotation: 90,
+				y: -2,
+				rotation: 0,
 				formatter: function () {
-					if (chart.renderTo.id == "aYear") {
-						return Highcharts.numberFormat(this.point.stackTotal,0);
-					} else if (chart.renderTo.id == "monthgraph") {
-						return Highcharts.numberFormat(this.point.stackTotal,0);
-					} else {
-						return Highcharts.numberFormat(this.point.stackTotal,0);
+					var color = "red";
+					var s = '';
+					if (this.series.chart.series["0"].stackedYData[this.point.index] > 0) {
+						var diff = this.series.chart.series["2"].stackedYData[this.point.index] - this.series.chart.series["0"].stackedYData[this.point.index];
+						if (this.series.chart.series["0"].stackedYData[this.point.index] > this.series.chart.series["2"].stackedYData[this.point.index]) {
+							color = "green";
 					}
+						s += '<span style="font-size:smaller; color:' + color + ';">' + Highcharts.numberFormat(diff,0) + '</span><br>';
+					}
+					s += '<span style="font-size:smaller; color: black;">' + Highcharts.numberFormat(this.point.stackTotal,0) + '</span>';
+					return s ;
+					//return '<span style="color: ' + color + '">' + Highcharts.numberFormat(this.point.stackTotal,0) + ' </span>';
 				}
 			},
 			tooltip: {
