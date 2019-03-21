@@ -145,15 +145,6 @@ if ($period == 'c' ){
 			}
 		}
 	}
-	// write last record
-	if ($savedate != 0){
-		$dsmrrec['d']= $td;
-		$dsmrrec['v1']= $tv1;
-		$dsmrrec['v2']= $tv2;
-		$dsmrrec['r1']= $tr1;
-		$dsmrrec['r2']= $tr2;
-		array_push($dsmrdata, $dsmrrec);
-	}
 	//Get today info for P1_ElectriciteitsMeter from DSMR server
 	$response = file_get_contents($dsmr_url.'/api/v2/consumption/today', null, stream_context_create(array(
 			'http' => array(
@@ -164,13 +155,22 @@ if ($period == 'c' ){
 	$dsmr_rest = json_decode($response,true);
 	$date = new DateTime();
 	$date = date("d-m-Y H:i:s",strtotime($dsmr_rest['day']));
-	$dsmrrec['d']= $date;
-	$dsmrrec['v1']= round(floatval($dsmr_rest['electricity1']),3);
-	$dsmrrec['v2']= round(floatval($dsmr_rest['electricity2']),3);
-	$dsmrrec['r1']= round(floatval($dsmr_rest['electricity1_returned']),3);
-	$dsmrrec['r2']= round(floatval($dsmr_rest['electricity2_returned']),3);
-	array_push($dsmrdata, $dsmrrec);
-
+	if ($savedate != 0){
+		if ($date != $savedate) {
+			$dsmrrec['d']= $td;
+			$dsmrrec['v1']= $tv1;
+			$dsmrrec['v2']= $tv2;
+			$dsmrrec['r1']= $tr1;
+			$dsmrrec['r2']= $tr2;
+			array_push($dsmrdata, $dsmrrec);
+		}
+	} else {
+		$dsmrrec['v1']= $tv1 + round(floatval($dsmr_rest['electricity1']),3);
+		$dsmrrec['v2']= $tv2 + round(floatval($dsmr_rest['electricity2']),3);
+		$dsmrrec['r1']= $tr1 + round(floatval($dsmr_rest['electricity1_returned']),3);
+		$dsmrrec['r2']= $tr2 + round(floatval($dsmr_rest['electricity2_returned']),3);
+		array_push($dsmrdata, $dsmrrec);
+	}
 	//-------------------------------------------------------------
 	//open MySQL database
 	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
