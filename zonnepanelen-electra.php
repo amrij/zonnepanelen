@@ -2632,6 +2632,8 @@ omschrijving: hoofdprogramma
 				enabled: true,
 				inside: false,
 				align: 'center',
+				crop: false,
+				overflow: 'none',
 				verticalalign: 'top',
 				color: 'red',
 				y: -2,
@@ -2648,7 +2650,6 @@ omschrijving: hoofdprogramma
 					}
 					s += '<span style="font-size:smaller; color: black;">' + Highcharts.numberFormat(this.point.stackTotal,0) + '</span>';
 					return s ;
-					//return '<span style="color: ' + color + '">' + Highcharts.numberFormat(this.point.stackTotal,0) + ' </span>';
 				}
 			},
 			tooltip: {
