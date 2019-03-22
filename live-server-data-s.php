@@ -42,9 +42,6 @@ $cols  = $inverter == 1 ? 'p_active'           : '(p_active1+p_active2+p_active3
 
 // haal de gegevens op
 $de_day_total = 0;
-$diff['jaar']   = gmdate("Y", strtotime($d1));
-$diff['maand']  = gmdate("m", strtotime($d1))-1;
-$diff['dag']    = gmdate("d", strtotime($d1));
 foreach ($mysqli->query(
 		'SELECT timestamp, de_day, ' . $cols .
 		' FROM ' . $table .
@@ -52,6 +49,9 @@ foreach ($mysqli->query(
 		' ORDER BY timestamp')
 		as $j => $row) {
 	$de_day_total += $row["de_day"];
+	$diff['jaar']   = gmdate("Y", $row['timestamp']);
+	$diff['maand']  = gmdate("m", $row['timestamp'])-1;
+	$diff['dag']    = gmdate("d", $row['timestamp']);
 	$diff['uur']    = gmdate("H", $row['timestamp']);
 	$diff['minuut'] = gmdate("i", $row['timestamp']);
 	$diff['sec']    = gmdate("s", $row['timestamp']);

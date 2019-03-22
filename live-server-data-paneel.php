@@ -54,14 +54,14 @@ $query = sprintf("SELECT HEX(op_id) optimizer, timestamp, uptime, v_in*i_in*0.12
 $result = $mysqli->query($query);
 
 //Zet de waarden bij het juiste paneel
-$diff['jaar']   = gmdate("Y", strtotime($d1));
-$diff['maand']  = gmdate("m", strtotime($d1))-1;
-$diff['dag']    = gmdate("d", strtotime($d1));
-$diff['serie']  = 0;
 while ($row = mysqli_fetch_assoc($result)) {
 	for ($i = 1; $i <= $aantal; $i++) {
 		if ($row['optimizer'] == $op_id[$i][0]) {
+			$diff['serie']  = 0;
 			$diff['op_id']  = $i;
+			$diff['jaar']   = gmdate("Y", $row['timestamp']);
+			$diff['maand']  = gmdate("m", $row['timestamp'])-1;
+			$diff['dag']    = gmdate("d", $row['timestamp']);
 			$diff['uur']    = gmdate("H", $row['timestamp']);
 			$diff['minuut'] = gmdate("i", $row['timestamp']);
 			$diff['sec']    = gmdate("s", $row['timestamp']);
