@@ -46,6 +46,9 @@ $sqlcols = $inverter == 1 ? 'v_ac, i_ac, v_dc, p_active'
 			  : '(v_ac1+v_ac2+v_ac3)/3 as v_ac, (i_ac1+i_ac2+i_ac3) as i_ac, v_dc, (p_active1+p_active2+p_active3) as p_active';
 // haal de gegevens van de inverter op
 $de_day_total = 0;
+$diff['jaar']   = gmdate("Y", strtotime($d1));
+$diff['maand']  = gmdate("m", strtotime($d1))-1;
+$diff['dag']    = gmdate("d", strtotime($d1));
 foreach ($mysqli->query(
 		'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, ' . $sqlcols .
 		' FROM ' . $table .
@@ -60,9 +63,6 @@ foreach ($mysqli->query(
 	$de_day_total += $row["de_day"];
 	$diff['op_id']  = "i";
 	$diff['serie']  = $dag[1];
-	$diff['jaar']   = gmdate("Y",$row['timestamp']);
-	$diff['maand']  = gmdate("m",$row['timestamp'])-1;
-	$diff['dag']    = gmdate("d",$row['timestamp']);
 	$diff['uur']    = gmdate("H",$row['timestamp']);
 	$diff['minuut'] = gmdate("i",$row['timestamp']);
 	$diff['sec']    = gmdate("s",$row['timestamp']);
