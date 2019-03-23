@@ -204,14 +204,10 @@ omschrijving: hoofdprogramma
 		var inverter = '<?php echo $inverter?>';
 		var naam = '<?php echo $naam?>';
 		var aantal = '<?php echo $aantal?>';
-		var op_sn = [0,'<?php echo $op_id[1][0]; 
-		                      for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][0];} ?>'];
-		var pn_sn = [0,'<?php echo $op_id[1][3]; 
-		                      for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][3];} ?>'];
-		var op_id = [0,'<?php echo $op_id[1][1]; 
-		                      for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][1];} ?>'];
-		var rpan = [0,'<?php echo $op_id[1][2];
-		                      for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][2];} ?>'];
+		var op_sn = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][0], "','";} ?>'];
+		var pn_sn = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][3], "','";} ?>'];
+		var op_id = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][1], "','";} ?>'];
+		var rpan  = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][2], "','";} ?>'];
 		var uur0 = '22';
 		var uur1 = '23';
 		var uur2 = '24';
@@ -453,29 +449,18 @@ omschrijving: hoofdprogramma
 					document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
 				}	
 				document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nOptimizer SN         "+op_sn[i]+"\r\nPaneel SN              "+pn_sn[i]+ "\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VMT"+i] +"\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
-				if ( inv1Data[0]["C"+i] == 0) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000";
-				} else if ( inv1Data[0]["C"+i] < 0.1) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16";
-				} else  if ( inv1Data[0]["C"+i] < 0.2) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d";
-				} else  if ( inv1Data[0]["C"+i] < 0.3) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44";
-				} else  if ( inv1Data[0]["C"+i] < 0.4) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a";
-				} else  if ( inv1Data[0]["C"+i] < 0.5) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71";
-				} else  if ( inv1Data[0]["C"+i] < 0.6) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88";
-				} else  if ( inv1Data[0]["C"+i] < 0.7) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e";
-				} else  if ( inv1Data[0]["C"+i] < 0.8) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5";
-				} else  if ( inv1Data[0]["C"+i] < 0.9) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc";
-				} else {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3";
-				}
+
+				if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000"; }
+				else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16"; }
+				else if ( inv1Data[0]["C"+i] < 0.2) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d"; }
+				else if ( inv1Data[0]["C"+i] < 0.3) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44"; }
+				else if ( inv1Data[0]["C"+i] < 0.4) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a"; }
+				else if ( inv1Data[0]["C"+i] < 0.5) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71"; }
+				else if ( inv1Data[0]["C"+i] < 0.6) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88"; }
+				else if ( inv1Data[0]["C"+i] < 0.7) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e"; }
+				else if ( inv1Data[0]["C"+i] < 0.8) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5"; }
+				else if ( inv1Data[0]["C"+i] < 0.9) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc"; }
+				else                                { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3"; }
 			}
 		}
 		 
@@ -1495,7 +1480,8 @@ omschrijving: hoofdprogramma
 						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">"></TD><TR>
 				</div>       
 				<div class="imageOver">
-					<img src="./img/<?php echo $zonnesysteem;?>" alt=""  style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -100;"/></div>
+					<img src="./img/<?php echo $zonnesysteem;?>" alt=""  style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -100;"/>
+				</div>
 				<img src="./img/dummy.gif" style="top: 1.59%; left: 21.24%; z-index: 10; width: 3.19%; height: 11.93%; position: absolute;" usemap="#inverter"/>
 				<map name="inverter" style="z-index: 20;">
 					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="" onmouseover="vermogenChart()" onmouseout="vermogenChartcl()">
