@@ -18,88 +18,60 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.1
+// versie: 1.2
 // auteur: André Rijkeboer
-// datum:  27-02-2019
-// omschrijving: ophalen van de stroom en energie gegevens van de panelen en de inverter (15 dagen)
+// datum:  18-03-2019
+// omschrijving: ophalen van de stroom en energie gegevens van de panelen en de inverter (1 dag)
+
+include('config.php');
 
 $d1 = $_GET['date'];
-if($d1 == ''){ 
-$d1 = date("d-m-Y H:i:s", time());
-}
-$d3 = date("Y-m-d", strtotime($d1));
-$d2 = time();
-$date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$op_id = array();
+if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
+$midnight = date("Y-m-d 00:00:00", strtotime($d1));
+$today    = (new DateTime("today " . $midnight))->getTimestamp();
+$tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
+
 $total = array();
-$mode = array();
 $diff = array();
-$paneel = array();
-include('config.php');
+
+$dagen = 14;
+$dag = [gmdate("d", $today-($dagen-1)*86400), $dagen];
+$date_i = $today-$dagen*86400;
+
 //open MySQL database
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
-// haal gegevens van de panelen op
-$diff = array();
-$dag = [gmdate("d",$date-13*86400), 14];
-$date_i = $date-14*86400;
-$p1revrow = ["se_day" => 0];
-if ($inverter == 1){
-	// haal de gegevens van de enkel fase inverter op
-	foreach($mysqli->query(
-			'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, v_ac, i_ac,v_dc, p_active ' .
-			'FROM telemetry_inverter ' .
-			'WHERE e_day>0 AND timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow . ' ' .
-			'ORDER BY timestamp') as $j => $row){
-		While ( $dag[0] != gmdate("d",$row['timestamp'])){
-			$dag[1]--;
-			$dag[0] = gmdate("d",$date-($dag[1]-1)*86400);
-			$prevrow['se_day'] = 0;
-		}
-		$row["se_day"] = $prevrow['se_day'] + $row["de_day"];
-		$prevrow = $row;
-		$diff['op_id'] = "i";
-		$diff['serie'] = $dag[1];
-		$diff['jaar'] = gmdate("Y", strtotime($d1));
-		$diff['maand'] = gmdate("m", strtotime($d1))-1;
-		$diff['dag'] = gmdate("d", strtotime($d1));
-		$diff['uur'] = gmdate("H",$row['timestamp']);
-		$diff['minuut'] = gmdate("i",$row['timestamp']);
-		$diff['sec'] = gmdate("s",$row['timestamp']);
-		$diff['p1_volume_prd'] = round($row["se_day"]/1000,3);
-		$diff['p1_current_power_prd'] = $row['p_active'];
-		//voeg het resultaat toe aan de total-array
-		array_push($total, $diff);
+// enkel of drie fase inverter
+$table   = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
+$sqlcols = $inverter == 1 ? 'v_ac, i_ac, v_dc, p_active'
+			  : '(v_ac1+v_ac2+v_ac3)/3 as v_ac, (i_ac1+i_ac2+i_ac3) as i_ac, v_dc, (p_active1+p_active2+p_active3) as p_active';
+// haal de gegevens van de inverter op
+$de_day_total = 0;
+$diff['jaar']   = gmdate("Y", strtotime($d1));
+$diff['maand']  = gmdate("m", strtotime($d1))-1;
+$diff['dag']    = gmdate("d", strtotime($d1));
+foreach ($mysqli->query(
+		'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, ' . $sqlcols .
+		' FROM ' . $table .
+		' WHERE e_day>0 AND timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow .
+		' ORDER BY timestamp')
+                as $j => $row) {
+	while ($dag[0] != gmdate("d", $row['timestamp'])) {
+		$dag[1]--;
+		$dag[0] = gmdate("d", $today-($dag[1]-1)*86400);
+		$de_day_total = 0;
 	}
-}else{	
-	// haal de gegevens van de 3 fase inverter op
-	foreach($mysqli->query(
-			'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, (v_ac1+v_ac2+v_ac3)/3 as v_ac,(i_ac1+i_ac2+i_ac3) as i_ac,v_dc,(p_active1+p_active2+p_active3) as p_active ' .
-			'FROM telemetry_inverter_3phase ' .
-			'WHERE e_day>0 AND timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow . ' ' .
-			'ORDER BY timestamp') as $j => $row){
-		While ( $dag[0] != gmdate("d",$row['timestamp'])){
-			$dag[1]--;
-			$dag[0] = gmdate("d",$date-($dag[1]-1)*86400);
-			$prevrow['se_day'] = 0;
-		}
-		$row["se_day"] = $prevrow['se_day'] + $row["de_day"];
-		$prevrow = $row;
-		$diff['op_id'] = "i";
-		$diff['serie'] = $dag[1];
-		$diff['jaar'] = gmdate("Y", strtotime($d1));
-		$diff['maand'] = gmdate("m", strtotime($d1))-1;
-		$diff['dag'] = gmdate("d", strtotime($d1));
-		$diff['uur'] = gmdate("H",$row['timestamp']);
-		$diff['minuut'] = gmdate("i",$row['timestamp']);
-		$diff['sec'] = gmdate("s",$row['timestamp']);
-		$diff['p1_volume_prd'] = round($row["se_day"]/1000,3);
-		$diff['p1_current_power_prd'] = $row['p_active'];
-		//voeg het resultaat toe aan de total-array
-		array_push($total, $diff);
-	}
+	$de_day_total += $row["de_day"];
+	$diff['op_id']  = "i";
+	$diff['serie']  = $dag[1];
+	$diff['uur']    = gmdate("H",$row['timestamp']);
+	$diff['minuut'] = gmdate("i",$row['timestamp']);
+	$diff['sec']    = gmdate("s",$row['timestamp']);
+	$diff['temperature'] = $row['temperature'] * 2;
+	$diff['p1_volume_prd'] = round($de_day_total/1000,3);
+	$diff['p1_current_power_prd'] = $row['p_active'];
+	//voeg het resultaat toe aan de total-array
+	array_push($total, $diff);
 }
-
 	
 // Sluit DB	
 $thread_id = $mysqli->thread_id;
