@@ -18,65 +18,49 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.0
+// versie: 1.1
 // auteur: André Rijkeboer
-// datum:  27-02-2018
-// omschrijving: ophalen van de stroom en energie gegevens inverter (1 dag) eerste keer
+// datum:  18-03-2019
+// omschrijving: ophalen van de stroom en energie gegevens van de inverter (1 dag) eerste keer
 
 include('config.php');
-// open MySQL database
-$mysqli = new mysqli($host, $user, $passwd, $db, $port);
+
+$d1 = $_GET['date'];
+if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
+$midnight = date("Y-m-d 00:00:00", strtotime($d1));
+$today    = (new DateTime("today " . $midnight))->getTimestamp();
+$tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
+
 $total = array();
 $diff = array();
-$d1 = $_GET['date'];
-if($d1 == ''){ 
-$d1 = date("d-m-Y H:i:s", time());
+
+// open MySQL database
+$mysqli = new mysqli($host, $user, $passwd, $db, $port);
+// enkel of drie fase inverter
+$table = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
+$cols  = $inverter == 1 ? 'p_active'           : '(p_active1+p_active2+p_active3) as p_active';
+
+// haal de gegevens op
+$de_day_total = 0;
+foreach ($mysqli->query(
+		'SELECT timestamp, de_day, ' . $cols .
+		' FROM ' . $table .
+		' WHERE timestamp BETWEEN ' . $today . ' AND ' . $tomorrow .
+		' ORDER BY timestamp')
+		as $j => $row) {
+	$de_day_total += $row["de_day"];
+	$diff['jaar']   = gmdate("Y", $row['timestamp']);
+	$diff['maand']  = gmdate("m", $row['timestamp'])-1;
+	$diff['dag']    = gmdate("d", $row['timestamp']);
+	$diff['uur']    = gmdate("H", $row['timestamp']);
+	$diff['minuut'] = gmdate("i", $row['timestamp']);
+	$diff['sec']    = gmdate("s", $row['timestamp']);
+	$diff['p1_volume_prd'] = round($de_day_total/1000,3);
+	$diff['p1_current_power_prd'] = $row['p_active'];
+	//voeg het resultaat toe aan de total-array
+	array_push($total, $diff);
 }
-$d3 = date("Y-m-d", strtotime($d1));
-$date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$prevrow = ["se_day" => 0];
-if ($inverter == 1){
-	// haal de gegevens van de enkel fase inverter op
-	foreach($mysqli->query(
-			'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, v_ac, i_ac,v_dc, p_active ' .
-			'FROM telemetry_inverter ' .
-			'WHERE timestamp BETWEEN ' . $date . ' AND ' . $tomorrow . ' ' .
-			'ORDER BY timestamp') as $j => $row){
-		$row["se_day"] = $prevrow['se_day'] + $row["de_day"];
-		$prevrow = $row;
-		$diff['jaar'] = gmdate("Y",$row['timestamp']);
-		$diff['maand'] = gmdate("m",$row['timestamp'])-1;
-		$diff['dag'] = gmdate("d",$row['timestamp']);
-		$diff['uur'] = gmdate("H",$row['timestamp']);
-		$diff['minuut'] = gmdate("i",$row['timestamp']);
-		$diff['sec'] = gmdate("s",$row['timestamp']);
-		$diff['p1_volume_prd'] = round($row["se_day"]/1000,3);
-		$diff['p1_current_power_prd'] = $row['p_active'];
-		//voeg het resultaat toe aan de total-array
-		array_push($total, $diff);
-	}
-}else{	
-	// haal de gegevens van de 3 fase inverter op
-	foreach($mysqli->query(
-			'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, (v_ac1+v_ac2+v_ac3)/3 as v_ac,(i_ac1+i_ac2+i_ac3) as i_ac,v_dc,(p_active1+p_active2+p_active3) as p_active ' .
-			'FROM telemetry_inverter_3phase ' .
-			'WHERE timestamp BETWEEN ' . $date . ' AND ' . $tomorrow . ' ' .
-			'ORDER BY timestamp') as $j => $row){
-		$row["se_day"] = $prevrow['se_day'] + $row["de_day"];
-		$prevrow = $row;
-		$diff['jaar'] = gmdate("Y",$row['timestamp']);
-		$diff['maand'] = gmdate("m",$row['timestamp'])-1;
-		$diff['dag'] = gmdate("d",$row['timestamp']);
-		$diff['uur'] = gmdate("H",$row['timestamp']);
-		$diff['minuut'] = gmdate("i",$row['timestamp']);
-		$diff['sec'] = gmdate("s",$row['timestamp']);
-		$diff['p1_volume_prd'] = round($row["se_day"]/1000,3);
-		$diff['p1_current_power_prd'] = $row['p_active'];
-		//voeg het resultaat toe aan de total-array
-		array_push($total, $diff);
-	}
-}
+
 // sluit DB		
 $thread_id = $mysqli->thread_id;
 $mysqli->kill($thread_id);
