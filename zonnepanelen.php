@@ -147,6 +147,40 @@ omschrijving: hoofdprogramma
 			else              {$s = $solar_noon_a;}
 			return $s;
 		}
+
+		function plotBands() {
+			print "plotBands: [\n";
+			for ($i=0; $i<25; $i+=2) {  print "			{
+					color: '#ebfbff',
+					from: Date.UTC(jaar, maand , dag, uur" . $i . "-winter),
+					to: Date.UTC(jaar, maand, dag, uur" . ($i+1) . "-winter),
+				},\n";
+			}
+			print "],\n";
+		}
+		function productieSeries() {
+			print "
+					series: [\n";
+			for ($i=0; $i<=13; $i++) {  print "			{
+						name: productie[" . $i . "],
+						showInLegend: false,
+						type: 'spline',
+						yAxis: 0,
+						color: '#d4d0d0',
+						data: []//this will be filled by requestData()
+					},";
+			}
+			print "
+					{
+						name: productie[14],
+						showInLegend: true,
+						type: 'spline',
+						yAxis: 0,
+						lineWidth: 2,
+						color: '#009900',
+						data: []//this will be filled by requestData()
+					}],\n";
+		}
 	?>
 
 	<script type="text/javascript">
@@ -598,59 +632,7 @@ omschrijving: hoofdprogramma
 							enabled: true,
 							crosshair: true
 						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
+						<?php plotBands(); ?>
 					}],
 					yAxis: [{
 						title: {
@@ -831,59 +813,7 @@ omschrijving: hoofdprogramma
 							enabled: true,
 							crosshair: true
 						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
+						<?php plotBands(); ?>
 					}],
 					yAxis: [{
 						title: {
@@ -1293,59 +1223,7 @@ omschrijving: hoofdprogramma
 							enabled: true,
 							crosshair: true
 						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
+						<?php plotBands(); ?>
 					}],
 					yAxis: [{
 						title: {
@@ -1441,113 +1319,7 @@ omschrijving: hoofdprogramma
 						filename: 'power_chart',
 						url: 'export.php'
 					},
-					series: [{
-						name: productie[0],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[1],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[2],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[3],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[4],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[5],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[6],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[7],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[8],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[9],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[10],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[11],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[12],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[13],
-						showInLegend: true,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[14],
-						showInLegend: true,               
-						type: 'spline',
-						yAxis: 0,
-						lineWidth: 2,
-						color: '#009900',
- 						data: []//this will be filled by requestData()
-					}]
+					<?php productieSeries() ?>
 				});
 			});
 			$(document).ready(function() {
@@ -1597,59 +1369,7 @@ omschrijving: hoofdprogramma
 							enabled: true,
 							crosshair: true
 						},
-						plotBands: [{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur0-winter),
-							to: Date.UTC(jaar, maand, dag, uur1-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur2-winter),
-							to: Date.UTC(jaar, maand, dag, uur3-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur4-winter),
-							to: Date.UTC(jaar, maand, dag, uur5-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur6-winter),
-							to: Date.UTC(jaar, maand, dag, uur7-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur8-winter),
-							to: Date.UTC(jaar, maand, dag, uur9-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur10-winter),
-							to: Date.UTC(jaar, maand, dag, uur11-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur12-winter),
-							to: Date.UTC(jaar, maand, dag, uur13-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur14-winter),
-							to: Date.UTC(jaar, maand, dag, uur15-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur16-winter),
-							to: Date.UTC(jaar, maand, dag, uur17-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur18-winter),
-							to: Date.UTC(jaar, maand, dag, uur19-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur20-winter),
-							to: Date.UTC(jaar, maand, dag, uur21-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur22-winter),
-							to: Date.UTC(jaar, maand, dag, uur23-winter),
-						},{
-							color: '#ebfbff',
-							from: Date.UTC(jaar, maand , dag, uur24-winter),
-							to: Date.UTC(jaar, maand, dag, uur25-winter),
-						}],
+						<?php plotBands(); ?>
 					}],
 					yAxis: [{
 						title: {
@@ -1742,113 +1462,7 @@ omschrijving: hoofdprogramma
 						filename: 'power_chart',
 						url: 'export.php'
 					},
-					series: [{
-						name: productie[0],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[1],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[2],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[3],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[4],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[5],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[6],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[7],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[8],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[9],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[10],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[11],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[12],
-						showInLegend: false,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[13],
-						showInLegend: true,               
-						type: 'spline',
-						yAxis: 0,
-						color: '#d4d0d0',
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[14],
-						showInLegend: true,               
- 						type: 'spline',
-						yAxis: 0,
-						lineWidth: 2,
-						color: '#009900',
- 						data: []//this will be filled by requestData()
-					}]
+					<?php productieSeries() ?>
 				});
 			});
 		});
