@@ -139,31 +139,28 @@ If ($d3 >= $begin) {
 	if ($inverter == 1){
 		// haal de gegevens van de enkel fase inverter op
 		$query = sprintf("SELECT datum, MIN(temperature) t_min, MAX(temperature) t_max, temperature t_act, p_active p_act,
-				MAX(p_active) p_max, MAX(se_day) e_day, mode, v_ac, i_ac, frequency, v_dc
-			FROM (
-				SELECT temperature, mode, v_ac, i_ac, frequency, v_dc, p_active, FROM_UNIXTIME(timestamp,'%s') datum,
-					@curdate := FROM_UNIXTIME(timestamp, '%s') date,
-					@prevsum := IF(@prevdate = @curdate, @prevsum + de_day, de_day) se_day,
-					@prevdate := @curdate date2
-				FROM telemetry_inverter
-				JOIN (SELECT @prevsum := 0, @curdate := NULL, @prevdate := NULL) vars
+				MAX(p_active) p_max, max(e_total)-min(e_total) e_day, mode, v_ac, i_ac, frequency, v_dc
+				FROM (
+					SELECT temperature, mode,v_ac, i_ac, frequency, v_dc, p_active, e_total,
+						FROM_UNIXTIME(timestamp,'%s') datum,
+						@curdate := FROM_UNIXTIME(timestamp, '%s') date
+					FROM telemetry_inverter
+					JOIN (SELECT @curdate := NULL) vars
 				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
 			) x
 			GROUP BY date", $format, $format1, $date, $tomorrow);
 	}else{
 		// haal de gegevens van de 3 fase inverter op
 		$query = sprintf("SELECT datum, MIN(temperature) t_min, MAX(temperature) t_max, temperature t_act, p_active p_act,
-				MAX(p_active) p_max, MAX(se_day) e_day, mode, v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3,
+				MAX(p_active) p_max, max(e_total)-min(e_total) e_day, mode, v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3,
 				v_dc,p_active1, p_active2, p_active3
 			FROM (
 				SELECT temperature, mode,v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3, v_dc,
-					p_active1, p_active2, p_active3, (p_active1+p_active2+p_active3) p_active,
+						p_active1, p_active2, p_active3, (p_active1+p_active2+p_active3) p_active, e_total,
 					FROM_UNIXTIME(timestamp,'%s') datum,
-					@curdate := FROM_UNIXTIME(timestamp, '%s') date,
-					@prevsum := IF(@prevdate = @curdate, @prevsum + de_day, de_day) se_day,
-					@prevdate := @curdate date2
+						@curdate := FROM_UNIXTIME(timestamp, '%s') date
 				FROM telemetry_inverter_3phase
-				JOIN (SELECT @prevsum := 0, @curdate := NULL, @prevdate := NULL) vars
+					JOIN (SELECT @curdate := NULL) vars
 				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
 			) x
 			GROUP BY date", $format, $format1, $date, $tomorrow);
