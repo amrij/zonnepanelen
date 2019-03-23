@@ -79,7 +79,7 @@ omschrijving: hoofdprogramma
 		$week[6] = "Zaterdag ";
 		$week[7] = "Zondag ";
 		$date = $_GET['date'];
-		setlocale(LC_ALL, 'nld_NLD');
+		setlocale(LC_ALL, 'nl_NL');
 		if($date == ''){ 
 			$date = date("d-m-Y H:i:s", time());
 		}
