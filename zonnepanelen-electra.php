@@ -22,7 +22,7 @@
 based on versie: 1.48 of zonnepanelen.php
 versie: 1.48.2
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  14-03-2019
+datum:  24-03-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -1840,9 +1840,9 @@ omschrijving: hoofdprogramma
 					formatter: function () {
 						var s ="";
 						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
-						if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
-							s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' kWh</b>';
-						}
+						//if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
+						//	s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' kWh</b>';
+						//}
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
 						});
@@ -1852,6 +1852,7 @@ omschrijving: hoofdprogramma
 									if (s != ""){ s += '<br>'}
 										//s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
 									if (i == 14){
+										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
 									} else if (i != 13){
 										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
 									} else {
@@ -2151,9 +2152,9 @@ omschrijving: hoofdprogramma
 					formatter: function () {
 						var s = "";
 						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
-						if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
-							s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' W</b>';
-						}
+						//if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
+						//	s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' W</b>';
+						//}
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
 						});
@@ -2163,7 +2164,7 @@ omschrijving: hoofdprogramma
 								if (this.series.name == productie[i]) {
 									if (s != ""){ s += '<br>'}
 									if (i == 14){
-										//s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
+										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
 									} else if (i != 13){
 										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
 									} else {
