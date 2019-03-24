@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.23
+// versie: 1.24
 // auteur: André Rijkeboer
-// datum:  23-03-2019
+// datum:  24-03-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
 
 $d1 = $_GET['date'];
@@ -142,11 +142,9 @@ If ($d3 >= $begin) {
 				MAX(p_active) p_max, (max(e_total)-min(e_total)) e_day, mode, v_ac, i_ac, frequency, v_dc
 			FROM (
 				SELECT temperature, e_total, mode, v_ac, i_ac, frequency, v_dc, p_active, FROM_UNIXTIME(timestamp,'%s') datum,
-					@curdate := FROM_UNIXTIME(timestamp, '%s') date,
-					@prevsum := IF(@prevdate = @curdate, @prevsum + de_day, de_day) se_day,
-					@prevdate := @curdate date2
+					@curdate := FROM_UNIXTIME(timestamp, '%s') date
 				FROM telemetry_inverter
-				JOIN (SELECT @prevsum := 0, @curdate := NULL, @prevdate := NULL) vars
+				JOIN (SELECT @curdate := NULL) vars
 				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
 			) x
 			GROUP BY date", $format, $format1, $date, $tomorrow);
@@ -159,11 +157,9 @@ If ($d3 >= $begin) {
 				SELECT temperature, e_total, mode,v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3, v_dc,
 					p_active1, p_active2, p_active3, (p_active1+p_active2+p_active3) p_active,
 					FROM_UNIXTIME(timestamp,'%s') datum,
-					@curdate := FROM_UNIXTIME(timestamp, '%s') date,
-					@prevsum := IF(@prevdate = @curdate, @prevsum + de_day, de_day) se_day,
-					@prevdate := @curdate date2
+					@curdate := FROM_UNIXTIME(timestamp, '%s') date
 				FROM telemetry_inverter_3phase
-				JOIN (SELECT @prevsum := 0, @curdate := NULL, @prevdate := NULL) vars
+				JOIN (SELECT @curdate := NULL) vars
 				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
 			) x
 			GROUP BY date", $format, $format1, $date, $tomorrow);
