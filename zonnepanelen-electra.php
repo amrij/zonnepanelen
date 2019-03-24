@@ -581,7 +581,6 @@ omschrijving: hoofdprogramma
 			cdiff  = "green_text";
 			diff = diff * -1;
 		}
-		document.getElementById("meter_1").title = "<?php echo $ElecLeverancier?> P1 meter";
 
 		document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
 				"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
@@ -641,6 +640,31 @@ omschrijving: hoofdprogramma
 			//
 			wchart.redraw();
 			ychart.redraw();
+			update_meter_1();
+		}
+	}
+
+	function update_meter_1() {
+		if (wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
+			var se = wchart.series[0].data[wchart.series[0].data.length-1].y;
+			var sv = wchart.series[1].data[wchart.series[1].data.length-1].y;
+			var ve = wchart.series[2].data[wchart.series[2].data.length-1].y;
+			var vs = wchart.series[3].data[wchart.series[3].data.length-1].y;
+			var mse = ychart.series[0].data[ychart.series[0].data.length-1].y;
+			var msv = ychart.series[1].data[ychart.series[1].data.length-1].y;
+			var mve = ychart.series[2].data[ychart.series[2].data.length-1].y;
+			var mvs = ychart.series[3].data[ychart.series[3].data.length-1].y;
+			var cur = document.getElementById("p1_text").innerHTML;
+
+			if ( document.getElementById("p1_text").className == "red_text") {
+				cur = "verbruik: " + cur;
+			} else {
+				cur = "retour:   " + cur;
+			}
+			document.getElementById("meter_1").title = "<?php echo $ElecLeverancier?> P1 meter" +
+					"\r\nHuidig\r\n"+cur+
+					"\r\n\r\nVandaag\r\nverbruik: "+waarde(0,3,ve)+" kWh\r\nretour:    "+waarde(0,3,se)+" kWh\r\nnetto:      "+waarde(0,3,ve-se)+" kWh"+
+					"\r\n\r\nMaand\r\nverbruik: "+waarde(0,3,mve)+" kWh\r\nretour:    "+waarde(0,3,mse)+" kWh\r\nnetto:      "+waarde(0,3,mve-mse)+" kWh";
 		}
 	}
 
@@ -2524,6 +2548,7 @@ omschrijving: hoofdprogramma
 					AddDataToUtilityChart(data1, ichart, 0);
 				}
 				ichart.redraw();
+				update_meter_1();
 		   }
 		);
 	}
