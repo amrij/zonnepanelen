@@ -23,11 +23,15 @@
 // datum:  24-03-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
 
+include('config.php');
+
 $d1 = $_GET['date'];
-if($d1 == ''){ $d1 = date("d-m-Y H:i:s", time()); }
+if($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
 $d3 = date("Y-m-d", strtotime($d1));
-$date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
+$midnight = date("Y-m-d 00:00:00", strtotime($d1));
+$today = (new DateTime(sprintf("today %s", $midnight))->getTimestamp();
+$tomorrow = (new DateTime(sprintf("tomorrow %s", $midnight))->getTimestamp();
+
 $op_id = array();
 $total = array();
 $mode = array();
@@ -43,8 +47,8 @@ $mode[6] = 'SHUTTING_DOWN';
 $mode[7] = '';
 $mode[8] = 'STANDBY';
 $mode[9] = '';
+
 //open MySQL database
-include('config.php');
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 if ($aantal > 33) { $aantal = 33;}
 if ($aantal < 0) { $aantal = 0;}
@@ -80,7 +84,7 @@ If ($d3 >= $begin) {
 			WHERE timestamp > %s AND timestamp <= %s
 			ORDER BY op_id, timestamp
 		) x
-		GROUP BY op_id;", $date, $tomorrow);
+		GROUP BY op_id;", $today, $tomorrow);
 	$result = $mysqli->query($query);
 	$max =0;
 
@@ -107,7 +111,7 @@ If ($d3 >= $begin) {
 			WHERE timestamp > %s AND timestamp < %s
 			GROUP BY HEX(op_id)
 			ORDER BY timestamp DESC;",
-			$format, $date, $tomorrow);
+			$format, $today, $tomorrow);
 	$result = $mysqli->query($query);
 
 	while ($row = mysqli_fetch_assoc($result)) {
@@ -130,7 +134,7 @@ If ($d3 >= $begin) {
 				WHERE (timestamp > %s AND timestamp < %s)
 				  and (%s = round(v_in*i_in*0.125*0.00625,2))
 				  and (HEX(op_id) = '%s');",
-				$formatt, $date, $tomorrow, $diff[sprintf('VM%s',$i)], $op_id[$i][0]);
+				$formatt, $today, $tomorrow, $diff[sprintf('VM%s',$i)], $op_id[$i][0]);
 		$result = $mysqli->query($query);
 		$row = mysqli_fetch_assoc($result);
 		$diff[sprintf('VMT%s',$i)]	= $row['time'];
@@ -147,7 +151,7 @@ If ($d3 >= $begin) {
 				JOIN (SELECT @curdate := NULL) vars
 				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
 			) x
-			GROUP BY date", $format, $format1, $date, $tomorrow);
+			GROUP BY date", $format, $format1, $today, $tomorrow);
 	}else{
 		// haal de gegevens van de 3 fase inverter op
 		$query = sprintf("SELECT datum, MIN(temperature) t_min, MAX(temperature) t_max, temperature t_act, p_active p_act,
@@ -162,7 +166,7 @@ If ($d3 >= $begin) {
 				JOIN (SELECT @curdate := NULL) vars
 				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
 			) x
-			GROUP BY date", $format, $format1, $date, $tomorrow);
+			GROUP BY date", $format, $format1, $today, $tomorrow);
 	}
 	$result = $mysqli->query($query);
 	$row = mysqli_fetch_assoc($result);
@@ -195,7 +199,7 @@ If ($d3 >= $begin) {
 		$diff['p_active2']	= round($row['p_active2'],0);
 		$diff['p_active3']	= round($row['p_active3'],0);
 	}
-}else{
+} else {
 	$diff['IT']	= $d3;
 	$diff['ITMIN']	= 0;
 	$diff['ITMAX']	= 0;
