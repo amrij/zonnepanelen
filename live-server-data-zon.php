@@ -27,12 +27,10 @@ include('config.php');
 
 $d1 = $_GET['date'];
 if($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
-$d3 = date("Y-m-d", strtotime($d1));
 $midnight = date("Y-m-d 00:00:00", strtotime($d1));
 $today = (new DateTime(sprintf("today %s", $midnight))->getTimestamp();
 $tomorrow = (new DateTime(sprintf("tomorrow %s", $midnight))->getTimestamp();
 
-$op_id = array();
 $total = array();
 $mode = array();
 $diff = array();
@@ -56,7 +54,7 @@ if ($aantal < 0) { $aantal = 0;}
 $query = sprintf("SELECT timestamp FROM telemetry_optimizers LIMIT 1");
 $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
-$begin = gmdate("Y-m-d",$row['timestamp']);
+$begin = gmdate("Y-m-d 00:00:00",$row['timestamp']);
 for ($i = 1; $i <= $aantal; $i++){
 	$diff[sprintf('O%s',$i)]	= 0;
 	$diff[sprintf('C%s',$i)]	= 0;
@@ -70,7 +68,7 @@ for ($i = 1; $i <= $aantal; $i++){
 	$diff[sprintf('VMT%s',$i)]	= 0;
 }
 // haal gegevens van de panelen op
-If ($d3 >= $begin) {
+If ($midnight >= $begin) {
 	$query = sprintf("SELECT HEX(op_id) optimizer, SUM(de_day*0.25) energy
 		FROM (
 		SELECT
@@ -200,7 +198,7 @@ If ($d3 >= $begin) {
 		$diff['p_active3']	= round($row['p_active3'],0);
 	}
 } else {
-	$diff['IT']	= $d3;
+	$diff['IT']	= $d1;
 	$diff['ITMIN']	= 0;
 	$diff['ITMAX']	= 0;
 	$diff['ITACT']	= 0;
