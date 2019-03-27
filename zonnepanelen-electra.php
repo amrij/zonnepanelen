@@ -289,13 +289,15 @@ omschrijving: hoofdprogramma
 	var SolarProdToday = 0;
 	var p1CounterToday = 0;
 	var p1CounterDelivToday = 0;
+	var s_lasttimestamp = 0;
+	var s_p1CounterToday = 0;
+	var s_p1CounterDelivToday = 0;
 	var wchart="";
 	var ychart="";
 	var pve = 0;
 	var pvs = 0;
 	var pse = 0;
 	var psv = 0;
-
 
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
@@ -437,21 +439,31 @@ omschrijving: hoofdprogramma
 
 		if (p1CounterToday == 0) {
 			p1_update()
+			s_p1CounterToday = p1CounterToday;
+			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
 
-		if (datum1 < tomorrow) {
+		if (datum1 < tomorrow && (s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT")) {
 			if(inv1Data[0]["IVACT"] != 0){
 				document.getElementById("arrow_PRD").className = "arrow_right_green";
 			}else{
 				document.getElementById("arrow_PRD").className = "";
 			}
+			if (inv1Data[0]["MODE"] == "MPPT") {
+				s_lasttimestamp = inv1Data[0]["IT"];
+			} else {
+				s_lasttimestamp = "";
+				s_p1CounterToday = p1CounterToday;
+				s_p1CounterDelivToday = p1CounterDelivToday;
+			}
 
 			document.getElementById("so_text").className = "green_text";
 			document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 			document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
+					"<tr><td colspan=2 style=\"font-size:smaller\">"+inv1Data[0]["IT"].substr(11,10)+"</td></tr>" +
 					"<tr><td colspan=2><b><u>Solar vandaag</u></b></td></tr>"+
-					"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
-					"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>"+
+					"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
+					"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
 					"<tr><td></td><td>----------</td></tr>"+
 					"<tr><td class=green_text>productie:</td><td class=green_text>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
 					"</table>";
@@ -591,26 +603,6 @@ omschrijving: hoofdprogramma
 				"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
 				"</table>";
 
-		if (datum1 < tomorrow) {
-			document.getElementById("p1_huis").className = "red_text";
-			if (p1CounterToday+p1CounterDelivToday > 0) {
-				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
-				if ( cP1Huis == 0 || cP1Huis < SolarProdToday-p1CounterDelivToday+p1CounterToday) {
-					document.getElementById("p1_huis").innerHTML = waarde(0,3,SolarProdToday-p1CounterDelivToday+p1CounterToday)+" kWh";
-					document.getElementById("huis_1").title = "thuis verbruik: \r\n"+
-							"Zonne energie: " + waarde(0,3,SolarProdToday-p1CounterDelivToday)+" kWh\r\n"+
-							"<?php echo $ElecLeverancier?> energie: " + waarde(0,3,p1CounterToday)+" kWh\r\n"+
-							"Totaal verbruik: "+ waarde(0,3,SolarProdToday-p1CounterDelivToday+p1CounterToday)+" kWh";
-				}
-			} else {
-				document.getElementById("p1_huis").innerHTML = "No Data";
-				document.getElementById("huis_1").innerHTML = "No Data";
-			}
-		}else{
-			document.getElementById("p1_huis").innerHTML = "";
-			document.getElementById("huis_1").innerHTML = "";
-		}
-
 		if (wchart != "" && pse+psv+pve+pvs > 0) {
 			// update current day info in graphs
 			var cdate = new Date();
@@ -640,11 +632,11 @@ omschrijving: hoofdprogramma
 			//
 			wchart.redraw();
 			ychart.redraw();
-			update_meter_1();
+			update_map_fields();
 		}
 	}
 
-	function update_meter_1() {
+	function update_map_fields() {
 		if (wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
 			var se = wchart.series[0].data[wchart.series[0].data.length-1].y;
 			var sv = wchart.series[1].data[wchart.series[1].data.length-1].y;
@@ -655,6 +647,45 @@ omschrijving: hoofdprogramma
 			var mve = ychart.series[2].data[ychart.series[2].data.length-1].y;
 			var mvs = ychart.series[3].data[ychart.series[3].data.length-1].y;
 			var cur = document.getElementById("p1_text").innerHTML;
+			var yse = mse;
+			var ysv = msv;
+			var yve = mve;
+			var yvs = mvs;
+			$.each(ychart.series[2].data, function(i, point) {
+				var cd = new Date();
+				var cm = cd.getMonth();
+				var cy = cd.getYear();
+				var pd = new Date(point.x);
+				var pm = pd.getMonth();
+				var py = pd.getYear();
+				if(cy == py && cm != pm) {
+					yse += ychart.series[0].data[i].y;
+					ysv += ychart.series[1].data[i].y;
+					yve += ychart.series[2].data[i].y;
+					yvs += ychart.series[3].data[i].y;
+				}
+			});
+
+			document.getElementById("p1_huis").className = "red_text";
+			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
+				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
+				if ( cP1Huis == 0 || cP1Huis < SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) {
+					document.getElementById("p1_huis").innerHTML = waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday)+" kWh";
+					document.getElementById("huis_1").title = "thuis verbruik: "+s_lasttimestamp+
+							"\r\nVandaag\r\nZonne energie: " + waarde(0,3,SolarProdToday - s_p1CounterDelivToday)+" kWh"+
+							"\r\n<?php echo $ElecLeverancier?> energie: " + waarde(0,3,s_p1CounterToday)+" kWh"+
+							"\r\nTotaal verbruik: "+ waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday)+" kWh" +
+							"\r\n\r\nMaand\r\nZonne energie: " + waarde(0,2,mvs)+" kWh"+
+							"\r\n<?php echo $ElecLeverancier?> energie: " + waarde(0,2,mve)+" kWh"+
+							"\r\nTotaal verbruik: "+ waarde(0,2,mve+mvs)+" kWh" +
+							"\r\n\r\nJaar\r\nZonne energie: " + waarde(0,1,yvs)+" kWh"+
+							"\r\n<?php echo $ElecLeverancier?> energie: " + waarde(0,1,yve)+" kWh"+
+							"\r\nTotaal verbruik: "+ waarde(0,1,yve+yvs)+" kWh";
+				}
+			} else {
+				document.getElementById("p1_huis").innerHTML = "No Data";
+				document.getElementById("huis_1").title = "No Data";
+			}
 
 			if ( document.getElementById("p1_text").className == "red_text") {
 				cur = "verbruik: " + cur;
@@ -664,7 +695,9 @@ omschrijving: hoofdprogramma
 			document.getElementById("meter_1").title = "<?php echo $ElecLeverancier?> P1 meter" +
 					"\r\nHuidig\r\n"+cur+
 					"\r\n\r\nVandaag\r\nverbruik: "+waarde(0,3,ve)+" kWh\r\nretour:    "+waarde(0,3,se)+" kWh\r\nnetto:      "+waarde(0,3,ve-se)+" kWh"+
-					"\r\n\r\nMaand\r\nverbruik: "+waarde(0,3,mve)+" kWh\r\nretour:    "+waarde(0,3,mse)+" kWh\r\nnetto:      "+waarde(0,3,mve-mse)+" kWh";
+					"\r\n\r\nMaand\r\nverbruik: "+waarde(0,2,mve)+" kWh\r\nretour:    "+waarde(0,2,mse)+" kWh\r\nnetto:      "+waarde(0,2,mve-mse)+" kWh" +
+					"\r\n\r\nJaar\r\nverbruik: "+waarde(0,1,yve)+" kWh\r\nretour:    "+waarde(0,1,yse)+" kWh\r\nnetto:      "+waarde(0,1,yve-yse)+" kWh";
+
 		}
 	}
 
@@ -2549,7 +2582,7 @@ omschrijving: hoofdprogramma
 					AddDataToUtilityChart(data1, ichart, 0);
 				}
 				ichart.redraw();
-				update_meter_1();
+				update_map_fields();
 		   }
 		);
 	}
