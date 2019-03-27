@@ -102,12 +102,16 @@ If ($d3 >= $begin) {
 		}
 	}
 	$format='%d-%m-%Y %H:%i:%s';
-	$query = sprintf("SELECT HEX(op_id) optimizer, FROM_UNIXTIME(timestamp, '%s') time, v_in, v_out, i_in, temperature, max(v_in*i_in) v_m
+	$query = sprintf("SELECT HEX(op_id) optimizer, FROM_UNIXTIME(timestamp, '%s') time,v_in,v_out,i_in, temperature
+		FROM  (
+		SELECT op_id,timestamp,v_in,v_out,i_in, temperature
 			FROM telemetry_optimizers
 			WHERE timestamp > %s AND timestamp < %s
-			GROUP BY HEX(op_id)
-			ORDER BY timestamp DESC;",
-			$format, $date, $tomorrow);
+		ORDER BY timestamp DESC
+		LIMIT 96
+		) x
+		GROUP BY op_id;", $format, $date, $tomorrow);
+
 	$result = $mysqli->query($query);
 
 	while ($row = mysqli_fetch_assoc($result)) {
@@ -119,6 +123,20 @@ If ($d3 >= $begin) {
 				$diff[sprintf('S%s',$i)]	= round($row['i_in']*0.00625,2);
 				$diff[sprintf('T%s',$i)]	= round($row['temperature']*2,2);
 				$diff[sprintf('E%s',$i)]	= round($row['v_in']*0.125*$row['i_in']*0.00625,2);
+				//$diff[sprintf('VM%s',$i)]	= round($row['v_m']*0.125*0.00625,2);
+			}
+		}
+	}
+	$query = sprintf("SELECT HEX(`op_id`) optimizer, max(v_in*i_in) v_m
+		FROM `telemetry_optimizers`
+		WHERE `timestamp` > %s AND `timestamp`< %s
+		GROUP BY `op_id`;", $date, $tomorrow);
+	$result = $mysqli->query($query);
+
+	while ($row = mysqli_fetch_assoc($result)) {
+
+		for ($i = 1; $i <= $aantal; $i++){
+			if ($row['optimizer'] == $op_id[$i][0]) {
 				$diff[sprintf('VM%s',$i)]	= round($row['v_m']*0.125*0.00625,2);
 			}
 		}
