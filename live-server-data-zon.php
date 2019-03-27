@@ -53,6 +53,18 @@ $query = sprintf("SELECT timestamp FROM telemetry_optimizers LIMIT 1");
 $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d",$row['timestamp']);
+for ($i = 1; $i <= $aantal; $i++){
+	$diff[sprintf('O%s',$i)]	= 0;
+	$diff[sprintf('C%s',$i)]	= 0;
+	$diff[sprintf('TM%s',$i)]	= 0;
+	$diff[sprintf('VI%s',$i)]	= 0;
+	$diff[sprintf('VU%s',$i)]	= 0;
+	$diff[sprintf('S%s',$i)]	= 0;
+	$diff[sprintf('T%s',$i)]	= 0;
+	$diff[sprintf('E%s',$i)]	= 0;
+	$diff[sprintf('VM%s',$i)]	= 0;
+	$diff[sprintf('VMT%s',$i)]	= 0;
+}
 // haal gegevens van de panelen op
 If ($d3 >= $begin) {
 	$query = sprintf("SELECT HEX(op_id) optimizer, SUM(de_day*0.25) energy
@@ -71,18 +83,6 @@ If ($d3 >= $begin) {
 		GROUP BY op_id;", $date, $tomorrow);
 	$result = $mysqli->query($query);
 	$max =0;
-	for ($i = 1; $i <= $aantal; $i++){
-		$diff[sprintf('O%s',$i)]	= 0;
-		$diff[sprintf('C%s',$i)]	= 0;
-		$diff[sprintf('TM%s',$i)]	= 0;
-		$diff[sprintf('VI%s',$i)]	= 0;
-		$diff[sprintf('VU%s',$i)]	= 0;
-		$diff[sprintf('S%s',$i)]	= 0;
-		$diff[sprintf('T%s',$i)]	= 0;
-		$diff[sprintf('E%s',$i)]	= 0;
-		$diff[sprintf('VM%s',$i)]	= 0;
-		$diff[sprintf('VMT%s',$i)]	= 0;
-	}
 
 	//Zet de waarden bij het juiste paneel
 	while ($row = mysqli_fetch_assoc($result)) {
@@ -196,16 +196,6 @@ If ($d3 >= $begin) {
 		$diff['p_active3']	= round($row['p_active3'],0);
 	}
 }else{
-	for ($i = 1; $i <= $aantal; $i++){
-		$diff[sprintf('O%s',$i)]	= 0;
-		$diff[sprintf('C%s',$i)]	= 0;
-		$diff[sprintf('TM%s',$i)]	= 0;
-		$diff[sprintf('VI%s',$i)]	= 0;
-		$diff[sprintf('VU%s',$i)]	= 0;
-		$diff[sprintf('S%s',$i)]	= 0;
-		$diff[sprintf('T%s',$i)]	= 0;
-		$diff[sprintf('E%s',$i)]	= 0;
-	}
 	$diff['IT']	= $d3;
 	$diff['ITMIN']	= 0;
 	$diff['ITMAX']	= 0;
@@ -213,7 +203,7 @@ If ($d3 >= $begin) {
 	$diff['IVACT']	= 0;
 	$diff['IVMAX']	= 0;
 	$diff['IE']	= 0;
-	$diff['MODE'] = 0;
+	$diff['MODE']	= '';
 }
 	
 //voeg het resultaat toe aan de total-array
