@@ -123,58 +123,51 @@ If ($midnight >= $begin) {
 		$diff['VMT' . $i] = substr($diff['VMT' . $i], 11);
 	}
 
-	$format1 = '%Y%m%d';
-	if ($inverter == 1){
-		// haal de gegevens van de enkel fase inverter op
-		$query = sprintf("SELECT datum, MIN(temperature) t_min, MAX(temperature) t_max, temperature t_act, p_active p_act,
-				MAX(p_active) p_max, (max(e_total)-min(e_total)) e_day, mode, v_ac, i_ac, frequency, v_dc
-			FROM (
-				SELECT temperature, e_total, mode, v_ac, i_ac, frequency, v_dc, p_active, FROM_UNIXTIME(timestamp,'%s') datum,
-					@curdate := FROM_UNIXTIME(timestamp, '%s') date
-				FROM telemetry_inverter
-				JOIN (SELECT @curdate := NULL) vars
-				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
-			) x
-			GROUP BY date", $format, $format1, $today, $tomorrow);
-	}else{
-		// haal de gegevens van de 3 fase inverter op
-		$query = sprintf("SELECT datum, MIN(temperature) t_min, MAX(temperature) t_max, temperature t_act, p_active p_act,
-				MAX(p_active) p_max, (max(e_total)-min(e_total)) e_day, mode, v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3,
-				v_dc,p_active1, p_active2, p_active3
-			FROM (
-				SELECT temperature, e_total, mode,v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3, v_dc,
-					p_active1, p_active2, p_active3, (p_active1+p_active2+p_active3) p_active,
-					FROM_UNIXTIME(timestamp,'%s') datum,
-					@curdate := FROM_UNIXTIME(timestamp, '%s') date
-				FROM telemetry_inverter_3phase
-				JOIN (SELECT @curdate := NULL) vars
-				WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC
-			) x
-			GROUP BY date", $format, $format1, $today, $tomorrow);
-	}
+	// INVERTER DATA
+	// Collect min/max over the day
+	// By using two queries there is no need to go through all data of the day
+	$table = $inverter == 1 ? "telemetry_inverter " : "telemetry_inverter_3phase ";
+	$cols = $inverter == 1 ? "p_active" : "p_active1+p_active2+p_active3";
+	$query = sprintf("SELECT MIN(temperature) t_min, MAX(temperature) t_max, MAX(%s) p_max, max(e_total)-min(e_total) e_day
+			  FROM %s
+			  WHERE timestamp BETWEEN %s AND %s
+			  ", $cols, $table, $today, $tomorrow);
 	$result = $mysqli->query($query);
 	$row = mysqli_fetch_assoc($result);
-	$diff['IT']	= $row['datum'];
 	$diff['ITMIN']	= round($row['t_min'],1);
 	$diff['ITMAX']	= round($row['t_max'],1);
-	$diff['ITACT']	= round($row['t_act'],1);
-	$diff['IVACT']	= round($row['p_act'],0);
 	$diff['IVMAX']	= round($row['p_max'],0);
 	$diff['IE']	= round($row['e_day']/1000,3);
-	$diff['MODE'] = $mode[$row['mode']];
+
+	// Collect last/current off the day
+	$cols = $inverter == 1 ? "v_ac, i_ac, frequency, p_active"
+				: "v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3, p_active1, p_active2, p_active3, p_active1+p_active2+p_active3 p_active";
+
+	$query = sprintf("SELECT FROM_UNIXTIME(timestamp, '%s') datum, temperature t_act, mode, v_dc,
+				 %s
+			  FROM %s
+			  WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC limit 1
+			  ", $format, $cols, $table, $today, $tomorrow);
+	$result = $mysqli->query($query);
+	$row = mysqli_fetch_assoc($result);
+
+	$diff['IT']	= $row['datum'];
+	$diff['ITACT']	= round($row['t_act'],1);
+	$diff['IVACT']	= round($row['p_active'],0);
+	$diff['MODE']	= $mode[$row['mode']];
 	$diff['v_dc']	= round($row['v_dc'],3);
-	if ($inverter == 1){
-		$diff['v_ac']	= round($row['v_ac'],1);
-		$diff['i_ac']	= round($row['i_ac'],3);
+	if ($inverter == 1) {
+		$diff['v_ac']		= round($row['v_ac'],1);
+		$diff['i_ac']		= round($row['i_ac'],3);
 		$diff['frequency']	= round($row['frequency'],2);
-		$diff['p_active']	= round($row['p_act'],0);
+		$diff['p_active']	= round($row['p_active'],0);
 	}else{
-		$diff['v_ac1']	= round($row['v_ac1'],1);
-		$diff['v_ac2']	= round($row['v_ac2'],1);
-		$diff['v_ac3']	= round($row['v_ac3'],1);
-		$diff['i_ac1']	= round($row['i_ac1'],3);
-		$diff['i_ac2']	= round($row['i_ac2'],3);
-		$diff['i_ac3']	= round($row['i_ac3'],3);
+		$diff['v_ac1']		= round($row['v_ac1'],1);
+		$diff['v_ac2']		= round($row['v_ac2'],1);
+		$diff['v_ac3']		= round($row['v_ac3'],1);
+		$diff['i_ac1']		= round($row['i_ac1'],3);
+		$diff['i_ac2']		= round($row['i_ac2'],3);
+		$diff['i_ac3']		= round($row['i_ac3'],3);
 		$diff['frequency1']	= round($row['frequency1'],2);
 		$diff['frequency2']	= round($row['frequency2'],2);
 		$diff['frequency3']	= round($row['frequency3'],2);
