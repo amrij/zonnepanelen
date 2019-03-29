@@ -19,15 +19,15 @@
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-based on versie: 1.48 of zonnepanelen.php
-versie: 1.48.3
+based on versie: 1.60 of zonnepanelen.php
+versie: 1.60.1
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  24-03-2019
+datum:  29-03-2019
 omschrijving: hoofdprogramma
 -->
 <html>
 <head>
-	<title>Zonnepanelen</title>
+	<title>Zonnepanelen-p1</title>
 	<link rel="shortcut icon" href="./img/sun.ico" type="image/x-icon"  />
 	<script type="text/javascript" src="js/loader.js"></script>
 	<script type="text/javascript" src="js/highcharts.js"></script>
@@ -36,7 +36,7 @@ omschrijving: hoofdprogramma
 	<script type="text/javascript" src="js/data.js"></script>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-		<meta name="description" content="">
+	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
 	<link rel="stylesheet" href="css/jquery.calendars.picker.css" id="theme">
 	<link rel="stylesheet" href="css/app.css">
@@ -48,30 +48,13 @@ omschrijving: hoofdprogramma
 	<script src="js/jquery.calendars.picker.js"></script>
 	<script src="js/jquery.calendars.picker.ext.js"></script>
 	<script src="js/jquery.calendars.validation.js"></script>
-	<script language="javascript" type="text/javascript">
-		function toonDatum(datum) {
-			var now = new Date();
-			var yy = now.getYear()+1900;
-			var mm = now.getMonth()+1;
-			var dd = now.getDate();
-			mm = "0"+mm;
-			mm = mm.slice(-2);
-			dd = "0"+dd;
-			dd = dd.slice(-2);
-			var tdatum =  yy + "-" + mm + "-" + dd;
-				url =  window.location.pathname;
-			if(tdatum!=datum) {
-				url = url + '?date=';
-				url = url + datum;
-				url = url + ' 00:00:00&ds=1';
-			}
-			window.location.replace(url);//do something after you receive the result
-		}
-	</script>
 	<?php
 		include('config.php');
-		if ($aantal > 33) { $aantal = 33;}
 		if ($aantal < 0) { $aantal = 0;}
+		for ($i=1; $i<=$aantal; $i++){
+			if ($op_id[$i][2] == 1){$pro[$i] =  "6%"; $top[$i] = "65%";}
+			else                   {$pro[$i] = "20%"; $top[$i] = "78%";}
+		}
 		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 		$query = sprintf("SELECT `timestamp` FROM `telemetry_optimizers` LIMIT 1");
 		$result = $mysqli->query($query);
@@ -96,12 +79,13 @@ omschrijving: hoofdprogramma
 		for ($i=0; $i<=14; $i++){
 			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)].date("d-m-Y", strtotime($date)-$i*86400);
 		}
-		$winter = date("I",(new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp())-1;
-		$jaar = date("Y",(new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp());
-		$maand = date("m",(new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp())-1;
-		$dag = date("d",(new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp())-1;
+		$today = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp();
+		$winter = date("I",$today)-1;
+		$jaar = date("Y",$today);
+		$maand = date("m",$today)-1;
+		$dag = date("d",$today)-1;
 		$datum1 = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", time()))))->getTimestamp();
-		$datumz = date("d-m-Y H:i:s",(new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp());
+		$datumz = date("d-m-Y H:i:s",$today);
 		$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp();
 		$date3 = date("Y-m-d", time());
 		$datev = date("d-m-Y", strtotime($date));
@@ -113,7 +97,7 @@ omschrijving: hoofdprogramma
 		$a = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
 		$date2 = strftime('%Y-%m-%d', $a);
 		$date4 = strftime('%Y,%m,%d', $d);
-		$datum = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp()/86400;
+		$datum = $today/86400;
 		$timezone = date('Z',strtotime($date))/3600;
 		$localtime = 0; //Time (pas local midnight)
 		$sunrise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0);
@@ -151,12 +135,79 @@ omschrijving: hoofdprogramma
 			$eq_of_time = 4*rad2deg($var_y*sin(2*deg2rad($geom_mean_long_sun))-2*$eccent_earth_orbit*sin(deg2rad($geom_mean_anom_sun))+4*$eccent_earth_orbit*$var_y*sin(deg2rad($geom_mean_anom_sun))*cos(2*deg2rad($geom_mean_long_sun))-0.5*$var_y*$var_y*sin(4*deg2rad($geom_mean_long_sun))-1.25*$eccent_earth_orbit*$eccent_earth_orbit*sin(2*deg2rad($geom_mean_anom_sun))); //Eq of Time
 			$ha_sunrise = rad2deg(acos(cos(deg2rad(90.833))/(cos(deg2rad($lat))*cos(deg2rad($sun_declin)))-tan(deg2rad($lat))*tan(deg2rad($sun_declin)))); //HA Sunrise (deg)
 			$solar_noon_a = (720-4*$long-$eq_of_time+$timezone*60)/1440; //Solar Noon
-			$sunrise_a = $solar_noon_a-$ha_sunrise*4/1440; // Sunrise
-			$sunset_a = $solar_noon_a+$ha_sunrise*4/1440; // Sunset
-			if ($i==0){ $s = $sunrise_a;}
-			if ($i==1){ $s = $solar_noon_a;}
-			if ($i==2){ $s = $sunset_a;}
+			if ($i==0)        {$s = $solar_noon_a-$ha_sunrise*4/1440;} // Sunrise
+			else if ($i == 2) {$s = $solar_noon_a+$ha_sunrise*4/1440;} // Sunset
+			else              {$s = $solar_noon_a;}
 			return $s;
+		}
+		function plotBands() {
+			print "plotBands: [\n";
+			for ($i=0; $i<25; $i+=2) {  print "			{
+					color: '#ebfbff',
+					from: Date.UTC(jaar, maand , dag, u[" . $i . "]-winter),
+					to: Date.UTC(jaar, maand, dag, u[" . ($i+1) . "]-winter),
+				},\n";
+			}
+			print "],\n";
+		}
+		function productieSeries() {
+			print "
+					series: [\n";
+			for ($i=0; $i<=13; $i++) {  print "			{
+						name: productie[" . $i . "],
+						showInLegend: false,
+						type: 'spline',
+						yAxis: 0,
+						color: '#d4d0d0',
+						data: []//this will be filled by requestData()
+					},";
+			}
+			print "
+					{
+						name: productie[14],
+						showInLegend: true,
+						type: 'spline',
+						yAxis: 0,
+						lineWidth: 2,
+						color: '#009900',
+						data: []//this will be filled by requestData()
+					}],\n";
+		}
+
+		function e_panelen($aantal) {
+			print "
+					series: [\n";
+			for ($i=$aantal; $i>=2; $i--) {  print "			{
+					name: 'Paneel_" . $i . "',
+					showInLegend: false,
+					type: 'spline',
+					yAxis: 0,
+					color: '#d4d0d0',
+					data: []//this will be filled by requestData()
+				},";
+			}
+			print "
+					{
+					name: 'Energie Productie',
+					showInLegend: true,
+					type: 'areaspline',
+					marker: {
+						symbol: 'triangle'
+					},
+					yAxis: 1,
+					showEmpty: true,
+					lineWidth: 1,
+					color: 'rgba(204,255,153,1)',
+					pointWidth: 2,
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Paneel_1',
+					showInLegend: true,
+					type: 'spline',
+					yAxis: 0,
+					color: '#009900',
+					data: []//this will be filled by requestData()
+				}],\n";
 		}
 	?>
 </head>
@@ -239,10 +290,6 @@ omschrijving: hoofdprogramma
 		</div>
 	</div>
 </body>
-
-
-
-
 <script type="text/javascript">
 	var ds = '<?php echo $ds ?>';
 	var datum = '<?php echo $date ?>';
@@ -265,39 +312,20 @@ omschrijving: hoofdprogramma
 	var inverter = '<?php echo $inverter?>';
 	var naam = '<?php echo $naam?>';
 	var aantal = '<?php echo $aantal?>';
-	var op_id = [0,'<?php echo $op_id[1][1]?>','<?php echo $op_id[2][1]?>','<?php echo $op_id[3][1]?>','<?php echo $op_id[4][1]?>','<?php echo $op_id[5][1]?>','<?php echo $op_id[6][1]?>','<?php echo $op_id[7][1]?>','<?php echo $op_id[8][1]?>','<?php echo $op_id[9][1]?>','<?php echo $op_id[10][1]?>','<?php echo $op_id[11][1]?>','<?php echo $op_id[12][1]?>','<?php echo $op_id[13][1]?>','<?php echo $op_id[14][1]?>','<?php echo $op_id[15][1]?>','<?php echo $op_id[16][1]?>','<?php echo $op_id[17][1]?>','<?php echo $op_id[18][1]?>','<?php echo $op_id[19][1]?>','<?php echo $op_id[20][1]?>','<?php echo $op_id[21][1]?>','<?php echo $op_id[22][1]?>','<?php echo $op_id[23][1]?>','<?php echo $op_id[24][1]?>','<?php echo $op_id[25][1]?>','<?php echo $op_id[26][1]?>','<?php echo $op_id[27][1]?>','<?php echo $op_id[28][1]?>','<?php echo $op_id[29][1]?>','<?php echo $op_id[30][1]?>','<?php echo $op_id[31][1]?>','<?php echo $op_id[32][1]?>','<?php echo $op_id[33][1]?>'];
-	var rpan = [0,'<?php echo $op_id[1][2]?>','<?php echo $op_id[2][2]?>','<?php echo $op_id[3][2]?>','<?php echo $op_id[4][2]?>','<?php echo $op_id[5][2]?>','<?php echo $op_id[6][2]?>','<?php echo $op_id[7][2]?>','<?php echo $op_id[8][2]?>','<?php echo $op_id[9][2]?>','<?php echo $op_id[10][2]?>','<?php echo $op_id[11][2]?>','<?php echo $op_id[12][2]?>','<?php echo $op_id[13][2]?>','<?php echo $op_id[14][2]?>','<?php echo $op_id[15][2]?>','<?php echo $op_id[16][2]?>','<?php echo $op_id[17][2]?>','<?php echo $op_id[18][2]?>','<?php echo $op_id[19][2]?>','<?php echo $op_id[20][2]?>','<?php echo $op_id[21][2]?>','<?php echo $op_id[22][2]?>','<?php echo $op_id[23][2]?>','<?php echo $op_id[24][2]?>','<?php echo $op_id[25][2]?>','<?php echo $op_id[26][2]?>','<?php echo $op_id[27][2]?>','<?php echo $op_id[28][2]?>','<?php echo $op_id[29][2]?>','<?php echo $op_id[30][2]?>','<?php echo $op_id[31][2]?>','<?php echo $op_id[32][2]?>','<?php echo $op_id[33][2]?>'];
-	var uur0 = '22';
-	var uur1 = '23';
-	var uur2 = '24';
-	var uur3 = '25';
-	var uur4 = '26';
-	var uur5 = '27';
-	var uur6 = '28';
-	var uur7 = '29';
-	var uur8 = '30';
-	var uur9 = '31';
-	var uur10 = '32';
-	var uur11 = '33';
-	var uur12 = '34';
-	var uur13 = '35';
-	var uur14 = '36';
-	var uur15 = '37';
-	var uur16 = '38';
-	var uur17 = '39';
-	var uur18 = '40';
-	var uur19 = '41';
-	var uur20 = '42';
-	var uur21 = '43';
-	var uur22 = '44';
-	var uur23 = '45';
-	var uur24 = '46';
-	var uur25 = '47';
+	var op_sn = [0,'<?php echo $op_id[1][0];
+						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][0];} ?>'];
+	var pn_sn = [0,'<?php echo $op_id[1][3];
+						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][3];} ?>'];
+	var op_id = [0,'<?php echo $op_id[1][1];
+						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][1];} ?>'];
+	var rpan = [0,'<?php echo $op_id[1][2];
+						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][2];} ?>'];
+	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
 	var data_p = [];
 	var data_i = [];
 	var chart_1 = "chart_energy";
 	var chart_2 = "chart_vermogen";
-	var productie = ['<?php echo $productie[14]?>','<?php echo $productie[13]?>','<?php echo $productie[12]?>','<?php echo $productie[11]?>','<?php echo $productie[10]?>','<?php echo $productie[9]?>','<?php echo $productie[8]?>','<?php echo $productie[7]?>','<?php echo $productie[6]?>','<?php echo $productie[5]?>','<?php echo $productie[4]?>','<?php echo $productie[3]?>','<?php echo $productie[2]?>','voorafgaande dagen','<?php echo $productie[0]?>','<?php echo $productie[1]?>'];
+		var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','voorafgaande dagen','$productie[0]','$productie[1]'"?>];
 	var start_i = 0;
 	var inverter_redraw = 1;
 	var SolarProdToday = 0;
@@ -315,6 +343,26 @@ omschrijving: hoofdprogramma
 
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
+
+	function toonDatum(datum) {
+		var now = new Date();
+		var yy = now.getYear()+1900;
+		var mm = now.getMonth()+1;
+		var dd = now.getDate();
+		mm = "0"+mm;
+		mm = mm.slice(-2);
+		dd = "0"+dd;
+		dd = dd.slice(-2);
+		var tdatum =  yy + "-" + mm + "-" + dd;
+		url =  window.location.pathname;
+		if(tdatum!=datum) {
+			url = url + '?date=';
+			url = url + datum;
+			url = url + ' 00:00:00&ds=1';
+		}
+		window.location.replace(url);//do something after you receive the result
+	}
+
 	function drawChart() {
 		paneel();
 		zonmaan();
@@ -362,52 +410,26 @@ omschrijving: hoofdprogramma
 						paneel_charte.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
 					}
 				} else {
-					paneel_chartv.series[33].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
-					paneel_charte.series[33].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
+					paneel_chartv.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
+					paneel_charte.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
 				}
 			}
 			paneel_chartv.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-			paneel_chartv.yAxis[0].update({
-				opposite: true
-			});
+				paneel_chartv.yAxis[0].update({ opposite: true });
 			paneel_charte.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-			paneel_charte.yAxis[0].update({
-				opposite: true
-			});
+				paneel_charte.yAxis[0].update({ opposite: true });
 			paneel_chartv.legend.update({x:10,y:20});
-			paneel_chartv.series[33].update({name: "Vermogen paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-			paneel_chartv.series[32].update({showInLegend: false});
-			paneel_chartv.series[31].update({showInLegend: true, name: "Vermogen overige panelen"});
-			paneel_chartv.yAxis[0].update({
-				title: {
-					text: 'Vermogen (W)'
-				},
-			});
-			paneel_chartv.yAxis[1].update({
-				labels: {
-					enabled: false
-				},
-				title: {
-					text: null
-				}
-			});
+				paneel_chartv.series[aantal].update({name: "Vermogen paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+				paneel_chartv.series[aantal-1].update({showInLegend: false});
+				paneel_chartv.series[aantal-2].update({showInLegend: true, name: "Vermogen overige panelen"});
+				paneel_chartv.yAxis[0].update({ title: { text: 'Vermogen (W)'},});
+				paneel_chartv.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
 			paneel_charte.legend.update({x:10,y:20});
-			paneel_charte.series[33].update({name: "Energie paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-			paneel_charte.series[32].update({showInLegend: false});
-			paneel_charte.series[31].update({showInLegend: true, name: "Energie overige panelen"});
-			paneel_charte.yAxis[0].update({
-				title: {
-					text: 'Energie (Wh)'
-				},
-			});
-			paneel_charte.yAxis[1].update({
-				labels: {
-					enabled: false
-				},
-				title: {
-					text: null
-				}
-			});
+				paneel_charte.series[aantal].update({name: "Energie paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+				paneel_charte.series[aantal-1].update({showInLegend: false});
+				paneel_charte.series[aantal-2].update({showInLegend: true, name: "Energie overige panelen"});
+				paneel_charte.yAxis[0].update({ title: { text: 'Energie (Wh)' }, });
+				paneel_charte.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
 			paneel_chartv.redraw();
 			paneel_charte.redraw();
 		}
@@ -417,7 +439,7 @@ omschrijving: hoofdprogramma
 		inverter_redraw = 1;
 		document.getElementById("panel_vermogen").innerHTML ="";
 		document.getElementById("panel_energy").innerHTML ="";
-		for (var i=0; i<=33; i++){
+			for (var i=0; i<=aantal; i++){
 			paneel_chartv.series[i].setData([]);
 			paneel_charte.series[i].setData([]);
 		}
@@ -508,9 +530,6 @@ omschrijving: hoofdprogramma
 		}else{
 			document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\n	L1	L2	L3\r\nS AC:	"+inv1Data[0]["i_ac1"]+"	"+inv1Data[0]["i_ac2"]+"	"+inv1Data[0]["i_ac3"]+" A\r\nV AC:	"+inv1Data[0]["v_ac1"]+"	"+inv1Data[0]["v_ac2"]+"	"+inv1Data[0]["v_ac3"]+" V\r\nFre:	"+inv1Data[0]["frequency1"]+"	"+inv1Data[0]["frequency2"]+"	"+inv1Data[0]["frequency3"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active1"]+"	"+inv1Data[0]["p_active2"]+"	"+inv1Data[0]["p_active3"]+" W\r\nV DC:	"+waarde(0,1,inv1Data[0]["v_dc"])+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
 		}
-//~ 			for (var i = Math.round(aantal)+1; i<=33; i++){
-//~ 				document.getElementById("tool_paneel_"+i).coords = "0,0,0,0";
-//~ 			}
 		for (var i=1; i<=aantal; i++){
 			document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
 			if (rpan[i] == 0){
@@ -529,39 +548,30 @@ omschrijving: hoofdprogramma
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 				document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
 			}
-			document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
+			document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+"\r\nPaneel "+op_id[i]+"\r\nOptimizer SN         "+op_sn[i]+"\r\nPaneel SN              "+pn_sn[i]+ "\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W\r\nVermogen (max.)	"+ inv1Data[0]["VMT"+i] +"\r\nStroom in	"+ inv1Data[0]["S"+i] +" A\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
 			if ( inv1Data[0]["C"+i] == 0) {
 				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000";
+			} else if ( inv1Data[0]["C"+i] < 0.1) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16";
+			} else  if ( inv1Data[0]["C"+i] < 0.2) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d";
+			} else  if ( inv1Data[0]["C"+i] < 0.3) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44";
+			} else  if ( inv1Data[0]["C"+i] < 0.4) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a";
+			} else  if ( inv1Data[0]["C"+i] < 0.5) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71";
+			} else  if ( inv1Data[0]["C"+i] < 0.6) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88";
+			} else  if ( inv1Data[0]["C"+i] < 0.7) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e";
+			} else  if ( inv1Data[0]["C"+i] < 0.8) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5";
+			} else  if ( inv1Data[0]["C"+i] < 0.9) {
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc";
 			} else {
-				if ( inv1Data[0]["C"+i] < 0.1) {
-					document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16";
-				} else {
-					if ( inv1Data[0]["C"+i] < 0.2) {
-						document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d";
-					} else {
-						if ( inv1Data[0]["C"+i] < 0.3) {
-							document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44";
-						} else {
-							if ( inv1Data[0]["C"+i] < 0.4) {
-								document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a";
-							} else {
-								if ( inv1Data[0]["C"+i] < 0.5) {
-									document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71";
-								} else {
-									if ( inv1Data[0]["C"+i] < 0.6) {
-										document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88";
-									} else {
-										if ( inv1Data[0]["C"+i] < 0.7) {
-											document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e";
-										} else {
-											if ( inv1Data[0]["C"+i] < 0.8) {
-												document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5";
-											} else {
-												if ( inv1Data[0]["C"+i] < 0.9) {
-													document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc";
-												} else {
-													document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3";
-			}	}	}	}	}	}	}	}	}	}
+				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3";
+			}
 		}
 	}
 
@@ -753,6 +763,7 @@ omschrijving: hoofdprogramma
 		document.getElementById("fase_text").innerHTML = inv4Data[0]["phase_naam"];
 		document.getElementById("verlicht_text").innerHTML = inv4Data[0]["illumination"]+'% Verlicht';
 	}
+
 	$(function() {
 		Highcharts.setOptions({
 			global: {
@@ -884,59 +895,7 @@ omschrijving: hoofdprogramma
 						enabled: true,
 						crosshair: true
 					},
-					plotBands: [{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur0-winter),
-						to: Date.UTC(jaar, maand, dag, uur1-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur2-winter),
-						to: Date.UTC(jaar, maand, dag, uur3-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur4-winter),
-						to: Date.UTC(jaar, maand, dag, uur5-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur6-winter),
-						to: Date.UTC(jaar, maand, dag, uur7-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur8-winter),
-						to: Date.UTC(jaar, maand, dag, uur9-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur10-winter),
-						to: Date.UTC(jaar, maand, dag, uur11-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur12-winter),
-						to: Date.UTC(jaar, maand, dag, uur13-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur14-winter),
-						to: Date.UTC(jaar, maand, dag, uur15-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur16-winter),
-						to: Date.UTC(jaar, maand, dag, uur17-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur18-winter),
-						to: Date.UTC(jaar, maand, dag, uur19-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur20-winter),
-						to: Date.UTC(jaar, maand, dag, uur21-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur22-winter),
-						to: Date.UTC(jaar, maand, dag, uur23-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur24-winter),
-						to: Date.UTC(jaar, maand, dag, uur25-winter),
-					}],
+					<?php plotBands(); ?>
 				}],
 				yAxis: [{
 					title: {
@@ -1051,251 +1010,7 @@ omschrijving: hoofdprogramma
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				series: [{
-					name: 'Paneel_33',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_32',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_31',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_30',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_29',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_28',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_27',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_26',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_25',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_24',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_23',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_22',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_21',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_20',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_19',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_18',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_17',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_16',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_15',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_14',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_13',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_12',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_11',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_10',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_9',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_8',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_7',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_6',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_5',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_4',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_3',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_2',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Energie Productie',
-					showInLegend: true,
-					type: 'areaspline',
-					marker: {
-						symbol: 'triangle'
-					},
-					yAxis: 1,
-					showEmpty: true,
-					lineWidth: 1,
-					color: 'rgba(204,255,153,1)',
-					pointWidth: 2,
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_1',
-					showInLegend: true,
-					type: 'spline',
-					yAxis: 0,
-					color: '#009900',
-					data: []//this will be filled by requestData()
-				}]
+					<?php e_panelen($aantal) ?>
 			});
 		});
 		$(document).ready(function() {
@@ -1344,59 +1059,7 @@ omschrijving: hoofdprogramma
 						enabled: true,
 						crosshair: true
 					},
-					plotBands: [{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur0-winter),
-						to: Date.UTC(jaar, maand, dag, uur1-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur2-winter),
-						to: Date.UTC(jaar, maand, dag, uur3-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur4-winter),
-						to: Date.UTC(jaar, maand, dag, uur5-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur6-winter),
-						to: Date.UTC(jaar, maand, dag, uur7-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur8-winter),
-						to: Date.UTC(jaar, maand, dag, uur9-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur10-winter),
-						to: Date.UTC(jaar, maand, dag, uur11-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur12-winter),
-						to: Date.UTC(jaar, maand, dag, uur13-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur14-winter),
-						to: Date.UTC(jaar, maand, dag, uur15-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur16-winter),
-						to: Date.UTC(jaar, maand, dag, uur17-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur18-winter),
-						to: Date.UTC(jaar, maand, dag, uur19-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur20-winter),
-						to: Date.UTC(jaar, maand, dag, uur21-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur22-winter),
-						to: Date.UTC(jaar, maand, dag, uur23-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur24-winter),
-						to: Date.UTC(jaar, maand, dag, uur25-winter),
-					}],
+					<?php plotBands(); ?>
 				}],
 				yAxis: [{
 					title: {
@@ -1511,251 +1174,7 @@ omschrijving: hoofdprogramma
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				series: [{
-					name: 'Paneel_33',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_32',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_31',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_30',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_29',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_28',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_27',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_26',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_25',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_24',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_23',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_22',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_21',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_20',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_19',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_18',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_17',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_16',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_15',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_14',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_13',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_12',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_11',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_10',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_9',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_8',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_7',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_6',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_5',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_4',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_3',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_2',
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Energie Productie',
-					showInLegend: true,
-					type: 'areaspline',
-					marker: {
-						symbol: 'triangle'
-					},
-					yAxis: 1,
-					showEmpty: true,
-					lineWidth: 1,
-					color: 'rgba(204,255,153,1)',
-					pointWidth: 2,
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Paneel_1',
-					showInLegend: true,
-					type: 'spline',
-					yAxis: 0,
-					color: '#009900',
-					data: []//this will be filled by requestData()
-				}]
+				<?php e_panelen($aantal); ?>
 			});
 		});
 		$(document).ready(function() {
@@ -1804,59 +1223,7 @@ omschrijving: hoofdprogramma
 						enabled: true,
 						crosshair: true
 					},
-					plotBands: [{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur0-winter),
-						to: Date.UTC(jaar, maand, dag, uur1-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur2-winter),
-						to: Date.UTC(jaar, maand, dag, uur3-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur4-winter),
-						to: Date.UTC(jaar, maand, dag, uur5-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur6-winter),
-						to: Date.UTC(jaar, maand, dag, uur7-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur8-winter),
-						to: Date.UTC(jaar, maand, dag, uur9-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur10-winter),
-						to: Date.UTC(jaar, maand, dag, uur11-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur12-winter),
-						to: Date.UTC(jaar, maand, dag, uur13-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur14-winter),
-						to: Date.UTC(jaar, maand, dag, uur15-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur16-winter),
-						to: Date.UTC(jaar, maand, dag, uur17-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur18-winter),
-						to: Date.UTC(jaar, maand, dag, uur19-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur20-winter),
-						to: Date.UTC(jaar, maand, dag, uur21-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur22-winter),
-						to: Date.UTC(jaar, maand, dag, uur23-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur24-winter),
-						to: Date.UTC(jaar, maand, dag, uur25-winter),
-					}],
+					<?php plotBands(); ?>
 				}],
 				yAxis: [{
 					title: {
@@ -1961,113 +1328,7 @@ omschrijving: hoofdprogramma
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				series: [{
-					name: productie[0],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[1],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[2],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[3],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[4],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[5],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[6],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[7],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[8],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[9],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[10],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[11],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[12],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[13],
-					showInLegend: true,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[14],
-					showInLegend: true,
-					type: 'spline',
-					yAxis: 0,
-					lineWidth: 2,
-					color: '#009900',
-					data: []//this will be filled by requestData()
-				}]
+				<?php productieSeries() ?>
 			});
 		});
 		$(document).ready(function() {
@@ -2116,59 +1377,7 @@ omschrijving: hoofdprogramma
 						enabled: true,
 						crosshair: true
 					},
-					plotBands: [{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur0-winter),
-						to: Date.UTC(jaar, maand, dag, uur1-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur2-winter),
-						to: Date.UTC(jaar, maand, dag, uur3-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur4-winter),
-						to: Date.UTC(jaar, maand, dag, uur5-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur6-winter),
-						to: Date.UTC(jaar, maand, dag, uur7-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur8-winter),
-						to: Date.UTC(jaar, maand, dag, uur9-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur10-winter),
-						to: Date.UTC(jaar, maand, dag, uur11-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur12-winter),
-						to: Date.UTC(jaar, maand, dag, uur13-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur14-winter),
-						to: Date.UTC(jaar, maand, dag, uur15-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur16-winter),
-						to: Date.UTC(jaar, maand, dag, uur17-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur18-winter),
-						to: Date.UTC(jaar, maand, dag, uur19-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur20-winter),
-						to: Date.UTC(jaar, maand, dag, uur21-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur22-winter),
-						to: Date.UTC(jaar, maand, dag, uur23-winter),
-					},{
-						color: '#ebfbff',
-						from: Date.UTC(jaar, maand , dag, uur24-winter),
-						to: Date.UTC(jaar, maand, dag, uur25-winter),
-					}],
+					<?php plotBands(); ?>
 				}],
 				yAxis: [{
 					title: {
@@ -2273,119 +1482,12 @@ omschrijving: hoofdprogramma
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				series: [{
-					name: productie[0],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[1],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[2],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[3],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[4],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[5],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[6],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[7],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[8],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[9],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[10],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[11],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[12],
-					showInLegend: false,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[13],
-					showInLegend: true,
-					type: 'spline',
-					yAxis: 0,
-					color: '#d4d0d0',
-					data: []//this will be filled by requestData()
-				},{
-					name: productie[14],
-					showInLegend: true,
-					type: 'spline',
-					yAxis: 0,
-					lineWidth: 2,
-					color: '#009900',
-					data: []//this will be filled by requestData()
-				}]
+				<?php productieSeries() ?>
 			});
 		});
 	});
 
-
-	$('#multiShowPicker').calendarsPicker({
+ 	$('#multiShowPicker').calendarsPicker({
 		pickerClass: 'noPrevNext', maxDate: +0, minDate: begin,
 		dateFormat: 'yyyy-mm-dd', defaultDate: date2, selectDefaultDate: true,
 		renderer: $.calendarsPicker.weekOfYearRenderer,
