@@ -209,7 +209,11 @@ if ($period == 'c' ){
 	for ($i=0; $i<=$limit-1; $i++) {
 		$pnum=$limit-$i-1;
 		$datafound = 0;
-		$checkdate = date($JSON_SUM, strtotime("-$pnum $JSON_period"));
+		if ($period == 'm') {
+			$checkdate = date($JSON_SUM, strtotime(date( 'Y-m-01' )." -$pnum $JSON_period"));
+		} else {
+			$checkdate = date($JSON_SUM, strtotime("-$pnum $JSON_period"));
+		}
 		$diff['idate'] = date("Y-m-d",strtotime(date($checkdate)));
 		$diff['serie'] = date($JSON_SUM,strtotime(date($checkdate)));
 
