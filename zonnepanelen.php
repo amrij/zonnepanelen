@@ -70,6 +70,7 @@ omschrijving: hoofdprogramma
 		$week[6] = "Zaterdag ";
 		$week[7] = "Zondag ";
 		$date = $_GET['date'];
+		$ds = $_GET['ds'];
 		setlocale(LC_ALL, 'nld_NLD');
 		if($date == ''){ 
 			$date = date("d-m-Y H:i:s", time());
@@ -279,11 +280,25 @@ omschrijving: hoofdprogramma
 </body>
 <script language="javascript" type="text/javascript">
 	function toonDatum(datum) {
-		url = '<?php echo $_SERVER[PATH_INFO]?>' + '?date='
-		url = url + datum 
-		url = url + ' 00:00:00'
+		var now = new Date();
+		var yy = now.getYear()+1900;
+		var mm = now.getMonth()+1;
+		var dd = now.getDate();
+		mm = "0"+mm;
+		mm = mm.slice(-2);
+		dd = "0"+dd;
+		dd = dd.slice(-2);
+		var tdatum =  yy + "-" + mm + "-" + dd;
+		url =  window.location.pathname;
+		if(tdatum!=datum) {
+			url = url + '?date=';
+			url = url + datum;
+			url = url + ' 00:00:00&ds=1';
+		}
 		window.location.replace(url);//do something after you receive the result
 	}
+
+	var ds = '<?php echo $ds ?>';
 	var datum = '<?php echo $date ?>';
 	var datumz = '<?php echo $datumz ?>';
 	var datum1 = '<?php echo $datum1 ?>';
@@ -334,6 +349,12 @@ omschrijving: hoofdprogramma
 		document.getElementById("sunset_text").innerHTML = sunset+" uur";
 		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
 		setInterval(function() {
+			var now = new Date();
+			var diff = <?php echo $tomorrow ?>-(+now/1000);
+			if (ds == '' && diff < 0 ) {
+				window.location = window.location.pathname;
+				return false;
+			}
 			zonmaan();
 			paneel();
 		}, 60000);
