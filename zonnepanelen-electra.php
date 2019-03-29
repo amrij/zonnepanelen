@@ -312,6 +312,12 @@ omschrijving: hoofdprogramma
 		document.getElementById("sunset_text").innerHTML = sunset+" uur";
 		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
 		setInterval(function() {
+			var now = new Date();
+			var diff = <?php echo $tomorrow ?>-(+now/1000);
+			if (diff < 0 ) {
+				window.location = window.location.pathname;
+				return false;
+			}
 			p1_update();
 		}, 10000);
 
