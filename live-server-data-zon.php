@@ -58,86 +58,71 @@ $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
 
 // haal gegevens van de panelen op
 for ($i = 1; $i <= $aantal; $i++) {
-	$diff['O' . $i]		= 0;
-	$diff['C' . $i]		= 0;
+	$diff['O' . $i]	= 0;
+	$diff['C' . $i]	= 0;
 	$diff['TM' . $i]	= 0;
 	$diff['VI' . $i]	= 0;
 	$diff['VU' . $i]	= 0;
-	$diff['S' . $i]		= 0;
-	$diff['T' . $i]		= 0;
-	$diff['E' . $i]		= 0;
+	$diff['S' . $i]	= 0;
+	$diff['T' . $i]	= 0;
+	$diff['E' . $i]	= 0;
 	$diff['VM' . $i]	= 0;
 	$diff['VMT' . $i]	= 0;
 }
 If ($midnight >= $begin) {
-	$query = sprintf("SELECT HEX(op_id) optimizer, SUM(de_day*0.25) energy
-		FROM (
-		SELECT
-		op_id,
-		IF(op_id = @prevop AND uptime > @prevup, e_day - @prevval, e_day) de_day,
-			@prevval := e_day,
-			@prevup := uptime,
-			@prevop := op_id
+	// PANEL DATA
+	// loop through all records and make calculations in php. Usin max() and sum() functions
+	// makes things complicated or needs multiple queries.
+	$format = '%d-%m-%Y %H:%i:%s';
+	$query = sprintf("SELECT HEX(op_id) optimizer, FROM_UNIXTIME(timestamp, '%s') time, v_in, v_out, i_in, temperature, uptime, e_day
 			FROM telemetry_optimizers
-			JOIN (SELECT @prevval := 0, @prevup := 0, @prevop := 0) vars
-			WHERE timestamp > %s AND timestamp <= %s
-			ORDER BY op_id, timestamp
-		) x
-		GROUP BY op_id;", $today, $tomorrow);
+			WHERE timestamp > %s AND timestamp < %s
+			order BY HEX(op_id), timestamp",
+			$format, $today, $tomorrow);
 	$result = $mysqli->query($query);
-	$max =0;
 
-	//Zet de waarden bij het juiste paneel
+	$prev_id = 0;
+	$prev_uptime = 0;
+	$prev_e_day = 0;
+	$max = 0;
 	while ($row = mysqli_fetch_assoc($result)) {
 		for ($i = 1; $i <= $aantal; $i++){
 			if ($row['optimizer'] == $op_id[$i][0]) {
-				$diff['O' . $i]	= round($row['energy'],2);
-				if ( $max < round($row['energy'],2)){
-					$max = round($row['energy'],2);
+				$diff['O' . $i] += ($i == $prev_id and $row['uptime'] > $prev_uptime)   ? $row['e_day'] - $prev_e_day
+													: $row['e_day'];
+				if ($max < $diff['O' . $i]){
+					$max = $diff['O' . $i];
+				}
+				$prev_id = $i;
+				$prev_uptime = $row['uptime'];
+				$prev_e_day = $row['e_day'];
+				$diff['TM' . $i]	= $row['time'];
+				$diff['VI' . $i]	= $row['v_in'];
+				$diff['VU' . $i]	= $row['v_out'];
+				$diff['S' . $i]	= $row['i_in'];
+				$diff['T' . $i]	= $row['temperature'];
+				$v_m = $row['v_in']*$row['i_in'];
+				if ($v_m > $diff['VM' . $i]) {
+					$diff['VM' . $i]	= $v_m;
+					$diff['VMT' . $i]	= $row['time'];
 				}
 			}
 		}
 	}
+	// convert to proper values
+	$max = round($max, 2);
+	for ($i = 1; $i <= $aantal; $i++) {
+		$diff['C' . $i]   = round($diff['O' . $i]/$max, 2);
+		$diff['O' . $i]   = round($diff['O' . $i] * 0.25, 2);
+		$diff['VI' . $i]  = round($diff['VI' . $i] * 0.125, 2);
+		$diff['VU' . $i]  = round($diff['VU' . $i] * 0.125, 2);
+		$diff['S' . $i]   = round($diff['S' . $i] * 0.00625, 2);
+		$diff['T' . $i]  *= 2;
+		$diff['E' . $i]   = round($diff['VI' . $i] * $diff['S' . $i], 2);
+		$diff['VM' . $i]  = round($diff['VM' . $i]*0.125*0.00625, 2);
+		$diff['VMT' . $i] = substr($diff['VMT' . $i], 11);
+	}
 
-	if ($max >0){
-		for ($i = 1; $i <= $aantal; $i++){
-			$diff['C' . $i]	= round($diff['O' . $i]/$max,2);
-		}
-	}
-	$format='%d-%m-%Y %H:%i:%s';
-	$query = sprintf("SELECT HEX(op_id) optimizer, FROM_UNIXTIME(timestamp, '%s') time, v_in, v_out, i_in, temperature, max(v_in*i_in) v_m
-			FROM telemetry_optimizers
-			WHERE timestamp > %s AND timestamp < %s
-			GROUP BY HEX(op_id)
-			ORDER BY timestamp DESC;",
-			$format, $today, $tomorrow);
-	$result = $mysqli->query($query);
-
-	while ($row = mysqli_fetch_assoc($result)) {
-		for ($i = 1; $i <= $aantal; $i++){
-			if ($row['optimizer'] == $op_id[$i][0]) {
-				$diff['TM' . $i]	= $row['time'];
-				$diff['VI' . $i]	= round($row['v_in']*0.125,2);
-				$diff['VU' . $i]	= round($row['v_out']*0.125,2);
-				$diff['S' . $i]		= round($row['i_in']*0.00625,2);
-				$diff['T' . $i]		= round($row['temperature']*2,2);
-				$diff['E' . $i]		= round($row['v_in']*0.125*$row['i_in']*0.00625,2);
-				$diff['VM' . $i]	= round($row['v_m']*0.125*0.00625,2);
-			}
-		}
-	}
-	$formatt='%H:%i:%s';
-	for ($i = 1; $i <= $aantal; $i++){
-		$query = sprintf("SELECT FROM_UNIXTIME(timestamp, '%s') time
-				FROM telemetry_optimizers
-				WHERE (timestamp > %s AND timestamp < %s)
-				  and (%s = round(v_in*i_in*0.125*0.00625,2))
-				  and (HEX(op_id) = '%s');",
-				$formatt, $today, $tomorrow, $diff[sprintf('VM%s',$i)], $op_id[$i][0]);
-		$result = $mysqli->query($query);
-		$row = mysqli_fetch_assoc($result);
-		$diff['VMT' . $i]	= $row['time'];
-	}
 	$format1 = '%Y%m%d';
 	if ($inverter == 1){
 		// haal de gegevens van de enkel fase inverter op
