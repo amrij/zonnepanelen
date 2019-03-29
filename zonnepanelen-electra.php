@@ -59,10 +59,9 @@ omschrijving: hoofdprogramma
 			dd = "0"+dd;
 			dd = dd.slice(-2);
 			var tdatum =  yy + "-" + mm + "-" + dd;
-			if(tdatum==datum) {
 				url =  window.location.pathname;
-			} else {
-				url =  window.location.pathname+'?date=';
+			if(tdatum!=datum) {
+				url = url + '?date=';
 				url = url + datum;
 				url = url + ' 00:00:00&ds=1';
 			}
