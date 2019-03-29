@@ -50,9 +50,22 @@ omschrijving: hoofdprogramma
 	<script src="js/jquery.calendars.validation.js"></script>
 	<script language="javascript" type="text/javascript">
 		function toonDatum(datum) {
-			url = '<?php echo $_SERVER[PATH_INFO]?>?date='
-			url = url + datum
-			url = url + ' 00:00:00'
+			var now = new Date();
+			var yy = now.getYear()+1900;
+			var mm = now.getMonth()+1;
+			var dd = now.getDate();
+			mm = "0"+mm;
+			mm = mm.slice(-2);
+			dd = "0"+dd;
+			dd = dd.slice(-2);
+			var tdatum =  yy + "-" + mm + "-" + dd;
+			if(tdatum==datum) {
+				url =  window.location.pathname;
+			} else {
+				url =  window.location.pathname+'?date=';
+				url = url + datum;
+				url = url + ' 00:00:00&ds=1';
+			}
 			window.location.replace(url);//do something after you receive the result
 		}
 	</script>
@@ -76,6 +89,7 @@ omschrijving: hoofdprogramma
 		$week[6] = "Zaterdag ";
 		$week[7] = "Zondag ";
 		$date = $_GET['date'];
+		$ds = $_GET['ds'];
 		setlocale(LC_ALL, 'nld_NLD');
 		if($date == ''){
 			$date = date("d-m-Y H:i:s", time());
@@ -231,6 +245,7 @@ omschrijving: hoofdprogramma
 
 
 <script type="text/javascript">
+	var ds = '<?php echo $ds ?>';
 	var datum = '<?php echo $date ?>';
 	var datumz = '<?php echo $datumz ?>';
 	var datum1 = '<?php echo $datum1 ?>';
@@ -314,7 +329,7 @@ omschrijving: hoofdprogramma
 		setInterval(function() {
 			var now = new Date();
 			var diff = <?php echo $tomorrow ?>-(+now/1000);
-			if (diff < 0 ) {
+			if (ds == '' && diff < 0 ) {
 				window.location = window.location.pathname;
 				return false;
 			}
@@ -449,36 +464,42 @@ omschrijving: hoofdprogramma
 			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
 
-		if (datum1 < tomorrow && (s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT")) {
-			if(inv1Data[0]["IVACT"] != 0){
-				document.getElementById("arrow_PRD").className = "arrow_right_green";
-			}else{
-				document.getElementById("arrow_PRD").className = "";
-			}
-			if (inv1Data[0]["MODE"] == "MPPT") {
-				s_lasttimestamp = inv1Data[0]["IT"];
-			} else {
-				s_lasttimestamp = "";
-				s_p1CounterToday = p1CounterToday;
-				s_p1CounterDelivToday = p1CounterDelivToday;
-			}
+		if (datum1 < tomorrow) {
+			var now = new Date();
+			var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
+			var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
+			var mdiff = (tnow - tlast)/60000;
+			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || mdiff > 10) {
+				if(inv1Data[0]["IVACT"] != 0){
+					document.getElementById("arrow_PRD").className = "arrow_right_green";
+				}else{
+					document.getElementById("arrow_PRD").className = "";
+				}
+				if (inv1Data[0]["MODE"] == "MPPT") {
+					s_lasttimestamp = inv1Data[0]["IT"];
+				} else {
+					s_lasttimestamp = "";
+					s_p1CounterToday = p1CounterToday;
+					s_p1CounterDelivToday = p1CounterDelivToday;
+				}
 
-			document.getElementById("so_text").className = "green_text";
-			document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
-			document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td colspan=2 style=\"font-size:smaller\">"+inv1Data[0]["IT"].substr(11,10)+"</td></tr>" +
-					"<tr><td colspan=2><b><u>Solar vandaag</u></b></td></tr>"+
-					"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
-					"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
-					"<tr><td></td><td>----------</td></tr>"+
-					"<tr><td class=green_text>productie:</td><td class=green_text>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
-					"</table>";
-			document.getElementById("inverter_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>"+
-					"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>"+
-					"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td><tr>"+
-					"<td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"])+" / "+waarde(0,1,inv1Data[0]["ITMIN"])+" / "+waarde(0,1,inv1Data[0]["ITMAX"])+" °C</td></tr>"+
-					"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"])+"</td></tr></table>";
+				document.getElementById("so_text").className = "green_text";
+				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
+				document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
+						"<tr><td colspan=2 style=\"font-size:smaller\">"+inv1Data[0]["IT"].substr(11,10)+"</td></tr>" +
+						"<tr><td colspan=2><b><u>Solar vandaag</u></b></td></tr>"+
+						"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
+						"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
+						"<tr><td></td><td>----------</td></tr>"+
+						"<tr><td class=green_text>productie:</td><td class=green_text>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr>"+
+						"</table>";
+				document.getElementById("inverter_text").innerHTML = "<table width=100% class=data-table>"+
+						"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>"+
+						"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>"+
+						"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td><tr>"+
+						"<td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"])+" / "+waarde(0,1,inv1Data[0]["ITMIN"])+" / "+waarde(0,1,inv1Data[0]["ITMAX"])+" °C</td></tr>"+
+						"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"])+"</td></tr></table>";
+			}
 		}else{
 			document.getElementById("inverter_text").innerHTML = "<b>Inverter:</b><br>D:&emsp;&emsp;&nbsp;&nbsp;"+inv1Data[0]["IT"]+"<br>Pmax:&nbsp;&nbsp;"+inv1Data[0]["IVMAX"]+" W<br><b>E:&emsp;&emsp;&emsp;"+waarde(0,3,inv1Data[0]["IE"])+" kWh</b><br>Tmin:&emsp;"+waarde(0,1,inv1Data[0]["ITMIN"])+" °C<br>Tmax:&nbsp;&nbsp;"+waarde(0,1,inv1Data[0]["ITMAX"])+" °C";
 			document.getElementById("arrow_PRD").className = "";
@@ -2618,10 +2639,10 @@ omschrijving: hoofdprogramma
 			datatableSolarElecNet.push([cdate, se]);
 			datatableSolarVerbruik.push([cdate, sv]);
 			if (chart.renderTo.id == "daygraph") {
-			pve = ve;
-			pvs = vs;
-			pse = se;
-			psv = sv;
+				pve = ve;
+				pvs = vs;
+				pse = se;
+				psv = sv;
 			}
 		});
 
@@ -2656,8 +2677,8 @@ omschrijving: hoofdprogramma
 				enabled: false,
 				color: 'green',
 				formatter: function () {
-						return Highcharts.numberFormat(this.point.stackTotal,1);
-					}
+					return Highcharts.numberFormat(this.point.stackTotal,1);
+				}
 
 			},
 			tooltip: {
@@ -2677,8 +2698,8 @@ omschrijving: hoofdprogramma
 				enabled: false,
 				color: 'green',
 				formatter: function () {
-						return Highcharts.numberFormat(this.y,1);
-					}
+					return Highcharts.numberFormat(this.y,1);
+				}
 			},
 			showInLegend: false,
 			tooltip: {
@@ -2710,7 +2731,7 @@ omschrijving: hoofdprogramma
 						var diff = this.series.chart.series["2"].stackedYData[this.point.index] - this.series.chart.series["0"].stackedYData[this.point.index];
 						if (this.series.chart.series["0"].stackedYData[this.point.index] > this.series.chart.series["2"].stackedYData[this.point.index]) {
 							color = "green";
-					}
+						}
 						s += '<span style="font-size:smaller; color:' + color + ';">' + Highcharts.numberFormat(diff,0) + '</span><br>';
 					}
 					s += '<span style="font-size:smaller; color: black;">' + Highcharts.numberFormat(this.point.stackTotal,0) + '</span>';
