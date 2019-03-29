@@ -475,7 +475,7 @@ omschrijving: hoofdprogramma
 		for (var i=1; i<=d; i++){
 			if (s.length<p+1+i) { s = s + "0";}
 		}
-		if (d == 0 && p+1 == s.length) { s=s.slice(0,p);}
+		if (d == 0 && p+1 <= s.length) { s=s.slice(0,p);}
 		if (d > 0 && p+1+d < s.length) { s=s.slice(0,p+1+d);}
 		if (n==0) { s="-"+s;}
 		return s;
