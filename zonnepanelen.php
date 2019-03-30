@@ -70,6 +70,7 @@ omschrijving: hoofdprogramma
 		$week[6] = "Zaterdag ";
 		$week[7] = "Zondag ";
 		$date = $_GET['date'];
+		$ds = $_GET['ds'];
 		setlocale(LC_ALL, 'nld_NLD');
 		if($date == ''){ 
 			$date = date("d-m-Y H:i:s", time());
@@ -279,11 +280,25 @@ omschrijving: hoofdprogramma
 </body>
 <script language="javascript" type="text/javascript">
 	function toonDatum(datum) {
-		url = '<?php echo $_SERVER[PATH_INFO]?>' + '?date='
-		url = url + datum 
-		url = url + ' 00:00:00'
+		var now = new Date();
+		var yy = now.getYear()+1900;
+		var mm = now.getMonth()+1;
+		var dd = now.getDate();
+		mm = "0"+mm;
+		mm = mm.slice(-2);
+		dd = "0"+dd;
+		dd = dd.slice(-2);
+		var tdatum =  yy + "-" + mm + "-" + dd;
+		url =  window.location.pathname;
+		if(tdatum!=datum) {
+			url = url + '?date=';
+			url = url + datum;
+			url = url + ' 00:00:00&ds=1';
+		}
 		window.location.replace(url);//do something after you receive the result
 	}
+
+	var ds = '<?php echo $ds ?>';
 	var datum = '<?php echo $date ?>';
 	var datumz = '<?php echo $datumz ?>';
 	var datum1 = '<?php echo $datum1 ?>';
@@ -334,6 +349,12 @@ omschrijving: hoofdprogramma
 		document.getElementById("sunset_text").innerHTML = sunset+" uur";
 		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
 		setInterval(function() {
+			var now = new Date();
+			var diff = <?php echo $tomorrow ?>-(+now/1000);
+			if (ds == '' && diff < 0 ) {
+				window.location = window.location.pathname;
+				return false;
+			}
 			zonmaan();
 			paneel();
 		}, 60000);
@@ -475,7 +496,7 @@ omschrijving: hoofdprogramma
 		for (var i=1; i<=d; i++){
 			if (s.length<p+1+i) { s = s + "0";}
 		}
-		if (d == 0 && p+1 == s.length) { s=s.slice(0,p);}
+		if (d == 0 && p+1 <= s.length) { s=s.slice(0,p);}
 		if (d > 0 && p+1+d < s.length) { s=s.slice(0,p+1+d);}
 		if (n==0) { s="-"+s;}
 		return s;
@@ -1094,14 +1115,24 @@ omschrijving: hoofdprogramma
 				tooltip: {
 					formatter: function () {
 						var s ="";
-						$.each(this.points, function () {
+						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
+						//if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
+						//	s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' kWh</b>';
+						//}
+						var sortedPoints = this.points.sort(function(a, b){
+							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+						});
+						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){ 
 								if (this.series.name == productie[i]) {
 									if (s != ""){ s += '<br>'}
-									if (i != 13){
-										s += Highcharts.dateFormat('%A ', this.series.name) + this.series.name + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' + this.y + ' kWh';
+										//s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + Highcharts.dateFormat(' %H:%M', this.x)+ ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
+									if (i == 14){
+										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
+									} else if (i != 13){
+										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
 									} else {
-										s += Highcharts.dateFormat('%A ', productie[15]) + productie[15] + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' + this.y + ' kWh';
+										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
 									}
 								}
 							}
@@ -1239,13 +1270,26 @@ omschrijving: hoofdprogramma
 				},
 				tooltip: {
 					formatter: function () {
-						var s ="";
-						$.each(this.points, function () {
+						var s = "";
+						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
+						//if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
+						//	s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' W</b>';
+						//}
+						var sortedPoints = this.points.sort(function(a, b){
+							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+						});
+						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){ 
+								if (this.series.y == this.y) {};
 								if (this.series.name == productie[i]) {
 									if (s != ""){ s += '<br>'}
-									s += Highcharts.dateFormat('%A ', this.series.name) + this.series.name + Highcharts.dateFormat(' %H:%M:%S', this.x)+': ' +
-									this.y + ' W';
+									if (i == 14){
+										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
+									} else if (i != 13){
+										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+									} else {
+										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+									}
 								}
 							}
 						});
