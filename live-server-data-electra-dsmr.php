@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.2
+// versie: 1.3
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  17-03-2018
+// datum:  30-03-2018
 // omschrijving: ophalen van de P1meter informatie uit DSMR server en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-dsmr.php/period=c
@@ -217,7 +217,11 @@ if ($period == 'c' ){
 	for ($i=0; $i<=$limit-1; $i++) {
 		$pnum=$limit-$i-1;
 		$datafound = 0;
-		$checkdate = date($JSON_SUM, strtotime("-$pnum $JSON_period"));
+		if ($period == 'm') {
+			$checkdate = date($JSON_SUM, strtotime(date( 'Y-m-01' )." -$pnum $JSON_period"));
+		} else {
+			$checkdate = date($JSON_SUM, strtotime("-$pnum $JSON_period"));
+		}
 		$diff['idate'] = date("Y-m-d",strtotime(date($checkdate)));
 		$diff['serie'] = date($JSON_SUM,strtotime(date($checkdate)));
 		$diff['prod'] = 0;
