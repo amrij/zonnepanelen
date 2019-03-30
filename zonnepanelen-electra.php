@@ -498,14 +498,13 @@ omschrijving: hoofdprogramma
 				}else{
 					document.getElementById("arrow_PRD").className = "";
 				}
+				s_p1CounterDelivToday = p1CounterDelivToday;
+				s_p1CounterToday = p1CounterToday;
 				if (inv1Data[0]["MODE"] == "MPPT") {
 					s_lasttimestamp = inv1Data[0]["IT"];
 				} else {
 					s_lasttimestamp = "";
-					s_p1CounterToday = p1CounterToday;
-					s_p1CounterDelivToday = p1CounterDelivToday;
 				}
-
 				document.getElementById("so_text").className = "green_text";
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				document.getElementById("sola_text").innerHTML = "<table width=100% class=data-table>"+
