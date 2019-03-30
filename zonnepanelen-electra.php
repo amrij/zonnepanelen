@@ -814,6 +814,9 @@ omschrijving: hoofdprogramma
 					   setTimeout(requestData1, 1000*86400);
 					}
 				},
+				error : function(xhr, textStatus, errorThrown ) {
+					   setTimeout(requestData1, 1000*10);
+				},
 				cache: false
 			});
 		}
@@ -829,6 +832,9 @@ omschrijving: hoofdprogramma
 					} else {
 					   setTimeout(requestData2, 1000*86400);
 					}
+				},
+				error : function(xhr, textStatus, errorThrown ) {
+					   setTimeout(requestData2, 1000*10);
 				},
 				cache: false
 			});
@@ -861,6 +867,9 @@ omschrijving: hoofdprogramma
 					} else {
 					   setTimeout(requestDatai, 1000*86400);
 					}
+				},
+				error : function(xhr, textStatus, errorThrown ) {
+					   setTimeout(requestDatai, 1000*10);
 				},
 				cache: false
 			});
