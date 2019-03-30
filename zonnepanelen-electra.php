@@ -823,6 +823,7 @@ omschrijving: hoofdprogramma
 				data: { "date" : datum }, //optional
 				success: function(data) {
 					data_i = eval(data);
+					if(inverter_redraw == 1) {
 					var series = inverter_chart.series[0];
 					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 					for (var i=0; i<=14; i++){
@@ -835,7 +836,6 @@ omschrijving: hoofdprogramma
 							vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_current_power_prd']*1], false, shift);
 						}
 					}
-					if(inverter_redraw == 1) {
 						inverter_chart.redraw();
 						vermogen_chart.redraw();
 					}
