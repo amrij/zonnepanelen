@@ -530,6 +530,7 @@ omschrijving: hoofdprogramma
 		}else{
 			document.getElementById("inverter_1").title = "Inverter: "+naam+"\r\n\r\n	L1	L2	L3\r\nS AC:	"+inv1Data[0]["i_ac1"]+"	"+inv1Data[0]["i_ac2"]+"	"+inv1Data[0]["i_ac3"]+" A\r\nV AC:	"+inv1Data[0]["v_ac1"]+"	"+inv1Data[0]["v_ac2"]+"	"+inv1Data[0]["v_ac3"]+" V\r\nFre:	"+inv1Data[0]["frequency1"]+"	"+inv1Data[0]["frequency2"]+"	"+inv1Data[0]["frequency3"]+" Hz\r\nPactive:	"+inv1Data[0]["p_active1"]+"	"+inv1Data[0]["p_active2"]+"	"+inv1Data[0]["p_active3"]+" W\r\nV DC:	"+waarde(0,1,inv1Data[0]["v_dc"])+" V\r\nE:	"+inv1Data[0]["IE"]+" kWh\r\nP(act):	"+inv1Data[0]["IVACT"]+" W";
 		}
+		update_map_fields();
 		for (var i=1; i<=aantal; i++){
 			document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
 			if (rpan[i] == 0){
@@ -673,7 +674,7 @@ omschrijving: hoofdprogramma
 	}
 
 	function update_map_fields() {
-		if (wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
+		if (wchart != "" && wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
 			var se = wchart.series[0].data[wchart.series[0].data.length-1].y;
 			var sv = wchart.series[1].data[wchart.series[1].data.length-1].y;
 			var ve = wchart.series[2].data[wchart.series[2].data.length-1].y;
@@ -733,6 +734,14 @@ omschrijving: hoofdprogramma
 					"\r\n\r\nVandaag\r\nverbruik: "+waarde(0,3,ve)+" kWh\r\nretour:    "+waarde(0,3,se)+" kWh\r\nnetto:      "+waarde(0,3,ve-se)+" kWh"+
 					"\r\n\r\nMaand\r\nverbruik: "+waarde(0,2,mve)+" kWh\r\nretour:    "+waarde(0,2,mse)+" kWh\r\nnetto:      "+waarde(0,2,mve-mse)+" kWh" +
 					"\r\n\r\nJaar\r\nverbruik: "+waarde(0,1,yve)+" kWh\r\nretour:    "+waarde(0,1,yse)+" kWh\r\nnetto:      "+waarde(0,1,yve-yse)+" kWh";
+
+			var curtext=document.getElementById("inverter_1").title;
+			var ins = curtext.indexOf("Vandaag")-4;
+			if (ins>0) {curtext = curtext.substring(0,ins);}
+			document.getElementById("inverter_1").title = curtext+
+					"\r\n\r\nVandaag:     " + waarde(0,2,SolarProdToday)+" kWh"+
+					"\r\nMaand:    " + waarde(0,2,mse + msv)+" kWh"+
+					"\r\nJaar:         " + waarde(0,2,yse + ysv)+" kWh";
 
 		}
 	}
