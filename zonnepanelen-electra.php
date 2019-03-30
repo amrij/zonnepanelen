@@ -291,6 +291,25 @@ omschrijving: hoofdprogramma
 	</div>
 </body>
 <script type="text/javascript">
+	function toonDatum(datum) {
+		var now = new Date();
+		var yy = now.getYear()+1900;
+		var mm = now.getMonth()+1;
+		var dd = now.getDate();
+		mm = "0"+mm;
+		mm = mm.slice(-2);
+		dd = "0"+dd;
+		dd = dd.slice(-2);
+		var tdatum =  yy + "-" + mm + "-" + dd;
+		url =  window.location.pathname;
+		if(tdatum!=datum) {
+			url = url + '?date=';
+			url = url + datum;
+			url = url + ' 00:00:00&ds=1';
+		}
+		window.location.replace(url);//do something after you receive the result
+	}
+
 	var ds = '<?php echo $ds ?>';
 	var datum = '<?php echo $date ?>';
 	var datumz = '<?php echo $datumz ?>';
@@ -343,25 +362,6 @@ omschrijving: hoofdprogramma
 
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
-
-	function toonDatum(datum) {
-		var now = new Date();
-		var yy = now.getYear()+1900;
-		var mm = now.getMonth()+1;
-		var dd = now.getDate();
-		mm = "0"+mm;
-		mm = mm.slice(-2);
-		dd = "0"+dd;
-		dd = dd.slice(-2);
-		var tdatum =  yy + "-" + mm + "-" + dd;
-		url =  window.location.pathname;
-		if(tdatum!=datum) {
-			url = url + '?date=';
-			url = url + datum;
-			url = url + ' 00:00:00&ds=1';
-		}
-		window.location.replace(url);//do something after you receive the result
-	}
 
 	function drawChart() {
 		paneel();
