@@ -562,7 +562,8 @@ omschrijving: hoofdprogramma
 									+ "\r\nStroom in	"+ inv1Data[0]["S"+i]
 									+ " A\r\nSpanning in	"+ inv1Data[0]["VI"+i]
 									+ " V\r\nSpanning uit	"+ inv1Data[0]["VU"+i]
-									+ " V\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C";
+									+ " V\r\nTemperatuur	"+ inv1Data[0]["T"+i]
+									+ " °C\r\nEfficientie        "+ waarde(0,3,(inv1Data[0]["O"+i]/vpan[i]));
 
 			if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000"; }
 			else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16"; }
