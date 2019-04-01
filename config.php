@@ -30,20 +30,10 @@ $user = 'gebruiker'; // gebruiker
 $passwd = 'password'; // paswoord gebruiker
 $db = 'solaredge'; // database naam
 
-
 // gegeven van de plaats waar de zonnepanelen staan
 $lat = 51.9515885; //Latitude North
 $long = 6.0045953; //Longitude East
 
-//#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
-$domohost = '192.168.0.??:8080';                        // ip:poort van domoticz
-$domoidx = "123";                                       // device IDX voor de Electriciteits P1 meter
-$ElecLeverancier = "Delta";                            // naam electra leverancier
-$ElecDagGraph = '60';                                   // aantal dagen in grafiek
-$ElecMaandGraph = '13';                                 // aantal maanden in grafiek
-$DataURL = 'live-server-data-electra-p1_meter_table.php';     // URL voor ophalen electra&Converter data
-$zonnesysteem_electra = "zonnesysteem-electra.gif";
-//#### einde aanpassing
 
 // Achtergrond image (in de img directory)
 $zonnesysteem = "zonnesysteem.gif";
@@ -75,7 +65,7 @@ $inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
 $naam = "SolarEdge SE7k"; //naam van de inverter
 $aantal = 22; // aantal zonnepanelen dat in database is opgenoen
 // optimizer id en positie paneel, de richting van de panelen Vertikaal = 0, Horizontaal = 1
-// en het serinummer van het paneel
+// het serienummer en het vermogen van het paneel
 //$op_id[id optimizer][inverter.string.paneelnummer][richting][id paneel][vermogen paneel]
 $op_id[1] = ['2020B2E3','1.1.1',1,'D5',300];
 $op_id[2] = ['2020B18C', '1.1.2',1,'D7',300];
