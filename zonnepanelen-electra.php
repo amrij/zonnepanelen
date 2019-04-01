@@ -20,9 +20,9 @@
 #
 
 based on versie: 1.60 of zonnepanelen.php
-versie: 1.60.2
+versie: 1.60.3
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  30-03-2019
+datum:  1-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -341,6 +341,8 @@ omschrijving: hoofdprogramma
 						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][2];} ?>'];
 	var vpan = [0,<?php echo $op_id[1][4];
 						  for ($i=2; $i<=$aantal; $i++){ echo ",", $op_id[$i][4];} ?>];
+	var PVGtxt = "<?php echo $PVGtxt; ?>";
+	var PVGis = [0<?php for ($i=0; $i<=11; $i++){ echo ",", $PVGis[$i];} ?>];
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
 	var data_p = [];
 	var data_i = [];
@@ -696,10 +698,10 @@ omschrijving: hoofdprogramma
 			var ysv = msv;
 			var yve = mve;
 			var yvs = mvs;
-			$.each(ychart.series[2].data, function(i, point) {
 				var cd = new Date();
 				var cm = cd.getMonth();
 				var cy = cd.getYear();
+			$.each(ychart.series[2].data, function(i, point) {
 				var pd = new Date(point.x);
 				var pm = pd.getMonth();
 				var py = pd.getYear();
@@ -746,11 +748,26 @@ omschrijving: hoofdprogramma
 			var curtext=document.getElementById("inverter_1").title;
 			var ins = curtext.indexOf("Vandaag")-4;
 			if (ins>0) {curtext = curtext.substring(0,ins);}
+
+			var PVGism = "";
+			var PVGisj = "";
+			if (PVGis[cm+1] > 0) {
+				PVGism = "\r\n"+PVGtxt+": 	" + waarde(0,2,PVGis[cm+1])+" kWh" ;
+				PVGism = " (" + waarde(0,0,PVGis[cm+1])+" kWh)" ;
+				var tPVGis=0;
+				for (i=1; i<=cm+1; i++) {
+					tPVGis += PVGis[i];
+				}
+				PVGisj = "\r\n"+PVGtxt+":   	" + waarde(0,2,tPVGis)+" kWh";
+				PVGisj = " (" + waarde(0,0,tPVGis)+" kWh)";
+			}
+
 			document.getElementById("inverter_1").title = curtext+
 					"\r\n\r\nVandaag:     " + waarde(0,2,SolarProdToday)+" kWh"+
 					"\r\nMaand:    " + waarde(0,2,mse + msv)+" kWh"+
-					"\r\nJaar:         " + waarde(0,2,yse + ysv)+" kWh";
-
+					PVGism+
+					"\r\nJaar:   	" + waarde(0,2,yse + ysv)+" kWh"+
+					PVGisj;
 		}
 	}
 
@@ -1624,11 +1641,14 @@ omschrijving: hoofdprogramma
 					sRE = 0;
 					sVS = 0;
 					sVE = 0;
+					sPVG = 0;
 					$.each(this.points, function(i, point) {
 						if(point.series.name == 'Solar Retour <?php echo $ElecLeverancier?>') {
 							sRE += point.y;
 						} else if(point.series.name == 'Solar verbruik') {
 							sVS += point.y;
+						} else if(point.series.name == PVGtxt+' schatting') {
+							sPVG += point.y;
 						} else if(point.series.name == 'Verbruik <?php echo $ElecLeverancier?>') {
 							sVE += point.y;
 						} ;
@@ -1643,6 +1663,9 @@ omschrijving: hoofdprogramma
 					if(sVS+sRE>0){
 						s += 'Solar verbruik&nbsp;: ' + Highcharts.numberFormat(sVS,1) + ' kWh<br/>';
 						s += '<b>Solar totaal&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat(sVS+sRE,1) + '</b> kWh<br/>';
+						if ( sPVG > 0) {
+							s += '<b>'+PVGtxt+' schatting&nbsp;: ' + sPVG + '</b> kWh<br/>';
+						}
 						s += '----------------------<br/>';
 						s += '<?php echo $ElecLeverancier?> verbruik: ' + Highcharts.numberFormat(sVE,1) + ' kWh<br/>';
 						s += '<?php echo $ElecLeverancier?> retour&nbsp;-: ' + Highcharts.numberFormat(sRE,1) + ' kWh<br/>';
@@ -1744,6 +1767,7 @@ omschrijving: hoofdprogramma
 	function AddDataToUtilityChart(data, chart, switchtype) {
 		var datatableverbruikElecNet = [];
 		var datatableverbruikSolar = [];
+		var datatableSolarPVGis = [];
 		var datatableSolarElecNet = [];
 		var datatableSolarVerbruik = [];
 		var datatableTotalUsage = [];
@@ -1762,6 +1786,11 @@ omschrijving: hoofdprogramma
 			var se = r1 + r2;
 			var sv = vs;
 			datatableverbruikElecNet.push([cdate, ve]);
+			var d = new Date(item.idate);
+			var m = d.getMonth();
+			if (chart.renderTo.id == "monthgraph" && PVGis[m+1] > 0) {
+				datatableSolarPVGis.push([cdate, PVGis[m+1]]);
+			}
 			datatableverbruikSolar.push([cdate, vs]);
 			datatableSolarElecNet.push([cdate, se]);
 			datatableSolarVerbruik.push([cdate, sv]);
@@ -1791,6 +1820,10 @@ omschrijving: hoofdprogramma
 		if (datatableverbruikSolar.length > 0) {
 			series = chart.get('verbruikSolar');
 			series.setData(datatableverbruikSolar, false);
+		}
+		if (chart.renderTo.id == "monthgraph" && chart.get('SolarPVGis') != null) {
+			series = chart.get('SolarPVGis');
+			series.setData(datatableSolarPVGis, false);
 		}
 	}
 	//
@@ -1888,6 +1921,33 @@ omschrijving: hoofdprogramma
 			stack: 'susage',
 			yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
 		}, false);
+
+		if (chart.renderTo.id == "monthgraph" && PVGis[1] > 0) {
+			chart.addSeries({
+				id: 'SolarPVGis',
+				type: 'line',
+				name: PVGtxt+' schatting',
+				dataLabels: {
+					enabled: false,
+					color: 'green',
+					formatter: function () {
+						return Highcharts.numberFormat(this.point.stackTotal,1);
+					}
+
+				},
+				tooltip: {
+					valueSuffix: (chart.subtitle.textStr != 'Last Day') ? ' kWh' : ' Watt',
+					valueDecimals: totDecimals
+				},
+				color: 'rgba(150,0,0,0.2)',
+				lineWidth: 1,
+				marker: {
+					radius: 2
+				},
+				stack: '',
+				yAxis: (chart.subtitle.textStr != 'Last Day') ? 0 : 1
+			}, false);
+		}
 	}
 
 	function GetDateFromString(s) {
