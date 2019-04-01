@@ -18,19 +18,16 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.24
+// versie: 1.25
 // auteur: André Rijkeboer
-// datum:  24-03-2019
+// datum:  30-03-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
-
 include('config.php');
-
 $d1 = $_GET['date'];
 if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
 $midnight = date("Y-m-d 00:00:00", strtotime($d1));
 $today    = (new DateTime("today " . $midnight))->getTimestamp();
 $tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
-
 $total = array();
 $mode = array();
 $diff = array();
@@ -45,7 +42,6 @@ $mode[6] = 'SHUTTING_DOWN';
 $mode[7] = '';
 $mode[8] = 'STANDBY';
 $mode[9] = '';
-
 //open MySQL database
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 if ($aantal > 33) { $aantal = 33;}
@@ -55,7 +51,6 @@ $query = sprintf("SELECT timestamp FROM telemetry_optimizers LIMIT 1");
 $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
-
 // haal gegevens van de panelen op
 for ($i = 1; $i <= $aantal; $i++) {
 	$diff['O' . $i]	= 0;
@@ -80,7 +75,6 @@ If ($midnight >= $begin) {
 			order BY HEX(op_id), timestamp",
 			$format, $today, $tomorrow);
 	$result = $mysqli->query($query);
-
 	$prev_id = 0;
 	$prev_uptime = 0;
 	$prev_e_day = 0;
@@ -122,7 +116,6 @@ If ($midnight >= $begin) {
 		$diff['VM' . $i]  = round($diff['VM' . $i]*0.125*0.00625, 2);
 		$diff['VMT' . $i] = substr($diff['VMT' . $i], 11);
 	}
-
 	// INVERTER DATA
 	// Collect min/max over the day
 	// By using two queries there is no need to go through all data of the day
@@ -138,11 +131,9 @@ If ($midnight >= $begin) {
 	$diff['ITMAX']	= round($row['t_max'],1);
 	$diff['IVMAX']	= round($row['p_max'],0);
 	$diff['IE']	= round($row['e_day']/1000,3);
-
 	// Collect last/current off the day
 	$cols = $inverter == 1 ? "v_ac, i_ac, frequency, p_active"
 				: "v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3, p_active1, p_active2, p_active3, p_active1+p_active2+p_active3 p_active";
-
 	$query = sprintf("SELECT FROM_UNIXTIME(timestamp, '%s') datum, temperature t_act, mode, v_dc,
 				 %s
 			  FROM %s
@@ -150,7 +141,6 @@ If ($midnight >= $begin) {
 			  ", $format, $cols, $table, $today, $tomorrow);
 	$result = $mysqli->query($query);
 	$row = mysqli_fetch_assoc($result);
-
 	$diff['IT']	= $row['datum'];
 	$diff['ITACT']	= round($row['t_act'],1);
 	$diff['IVACT']	= round($row['p_active'],0);
@@ -188,7 +178,6 @@ If ($midnight >= $begin) {
 	
 //voeg het resultaat toe aan de total-array
 array_push($total, $diff);
-
 // Sluit DB	
 $thread_id = $mysqli->thread_id;
 $mysqli->kill($thread_id);
