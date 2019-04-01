@@ -33,7 +33,7 @@ The main webpage is zonnepanelen-electra.php which will be automatically opened 
 The Config.php contains an extra number of variables and their purpose is described at the end of the line. This webpage will work on a PC, Laptop as on a mobile in portrait and Landscape.
 This is handled by means of the zonnepanelen-electra.css file containing the definition for each of these options.
 screenshots:</b>
-  ![Alt text](/docs/zonnepanelen-electra_LT.PNG?raw=true "Laptop")
+  ![Alt text](/docs/zonnepanelen-electra_LT_new.PNG?raw=true "Laptop")
   ![Alt text](/docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
 
 For more information see https://gathering.tweakers.net/forum/list_message/54439825#54439825
