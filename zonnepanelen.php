@@ -91,11 +91,9 @@ omschrijving: hoofdprogramma
 		$a = strptime($date, '%d-%m-%Y %H:%M:%S');
 		if ($a['tm_year']+1900 < 2000){
 			$a = strptime($date, '%Y-%m-%d');
-			$d = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
 		}
 		$a = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
 		$date2 = strftime('%Y-%m-%d', $a);
-		$date4 = strftime('%Y,%m,%d', $d);
 		$datum = $today/86400;
 		$timezone = date('Z',strtotime($date))/3600;
 		$localtime = 0; //Time (pas local midnight)
