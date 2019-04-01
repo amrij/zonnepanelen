@@ -53,7 +53,6 @@ $vermogen = 1; // 0 = nee, 1 = ja
 // gegevens van het zonnepanelensysteem
 $inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
 $naam = "SolarEdge SE7k"; //naam van de inverter
-$aantal = 22; // aantal zonnepanelen dat in database is opgenoen 
 // optimizer id en positie paneel, de richting van de panelen Vertikaal = 0, Horizontaal = 1
 // en het serinummer van het paneel
 //$op_id[id optimizer][inverter.string.paneelnummer][richting][id paneel][vermogen paneel]
@@ -81,13 +80,5 @@ $op_id[21] = ['20212017', '1.1.21',1,'78',300];
 $op_id[22] = ['20212166', '1.1.22',1,'C8',300];
 $op_id[23] = ['20211F32', '1.1.23',1,'92',300];
 $op_id[24] = ['20211FD6', '1.1.24',1,'36',300];
-$op_id[25] = ['0', '1.1.25',1,'a',0];
-$op_id[26] = ['0', '1.1.26',1,'a',0];
-$op_id[27] = ['0', '1.1.27',1,'a',0];
-$op_id[28] = ['0', '1.1.28',1,'a',0];
-$op_id[29] = ['0', '1.1.29',1,'a',0];
-$op_id[30] = ['0', '1.1.30',1,'a',0];
-$op_id[31] = ['0', '1.1.31',1,'a',0];
-$op_id[32] = ['0', '1.1.32',1,'a',0];
-$op_id[33] = ['0', '1.1.33',1,'a',0];
+$aantal = count($op_id); // aantal zonnepanelen dat in database is opgenomen
 ?>
