@@ -208,6 +208,7 @@ omschrijving: hoofdprogramma
 		}
 				
 	?>
+</head>
 <body>
 	<div class='mainpage'>
 		<div class='container'>
