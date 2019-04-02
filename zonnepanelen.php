@@ -213,26 +213,14 @@ omschrijving: hoofdprogramma
 	<div class='mainpage'>
 		<div class='container'>
 			<div id='container'></div>
-				<div Class='power_chart_body' id='power_chart_body' style="top: 42.2%; left: 12.35%; z-index: 3; width: 86.8108%; height: 56.4%; position: absolute;">
-					<table border="0", ALIGN=center>
-					</table  ALIGN=center>
-				</div>
-				<div Class='power_chart_paneel' id='power_chart_paneel' style="top: 0.26%; left: 54.05%; z-index: 3; width: 45.1%; height: 41.5%; position: absolute;">
-					<table border="0", ALIGN=center>
-					</table  ALIGN=center>				
-				</div>
-				<div Class='power_chart_inverter' id='power_chart_inverter' style="top: 0.26%; left: 54.05%; z-index: 4; width: 45.15%; height: 41.5%; position: absolute;">
-					<table border="0", ALIGN=center>
-					</table  ALIGN=center>				
-				</div>
-				<div Class='power_chart_vermogen' id='power_chart_vermogen' style="top: 0.26%; left: 54.05%; z-index: 3; width: 45.15%; height: 41.5%; position: absolute;">
-					<table border="0", ALIGN=center>
-					</table  ALIGN=center>				
-				</div>
+				<div Class='power_chart_body' id='power_chart_body' style="top: 42.2%; left: 12.35%; z-index: 3; width: 86.8108%; height: 56.4%; position: absolute;"></div>
+				<div Class='power_chart_paneel' id='power_chart_paneel' style="top: 0.26%; left: 54.05%; z-index: 3; width: 45.1%; height: 41.5%; position: absolute;"></div>
+				<div Class='power_chart_inverter' id='power_chart_inverter' style="top: 0.26%; left: 54.05%; z-index: 4; width: 45.15%; height: 41.5%; position: absolute;"></div>
+				<div Class='power_chart_vermogen' id='power_chart_vermogen' style="top: 0.26%; left: 54.05%; z-index: 3; width: 45.15%; height: 41.5%; position: absolute;"></div>
 				<div Class='datum' id='datum' style="top: .3vw; left: 1vw; z-index: 3; width: 14vw; height: 1.4vw; position: absolute;">
-						<TR style="text-align:center"><TD><input type="button" id="PrevDay" class="btn btn-success btn-sm" value="<">
+						<input type="button" id="PrevDay" class="btn btn-success btn-sm" value="<">
 						<input type="text" id="multiShowPicker" class="embed" size="8.5" style="font-size: .6vw; text-align:center;">
-						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">"></TD><TR>
+						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">">
 				</div>       
 				<div class="imageOver">
 					<img src="./img/<?php echo $zonnesysteem;?>" alt=""  style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -100;"/></div>
