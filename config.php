@@ -40,24 +40,24 @@ $zonnesysteem = "zonnesysteem.gif";
 
 //#### Toegevoegd voor zonnepanelen-electra.php tbv informatie ophalen van electra
 //** Algemene velden
-$ElecLeverancier = "Essent";        					// naam electra leverancier
-$ElecDagGraph = '45';               					// aantal dagen in grafiek
-$ElecMaandGraph = '14';             					// aantal maanden in grafiek
-$zonnesysteem_electra = "zonnesysteem-electra.gif";     // achtergrond. Let op: dit is een ander formaat dan het orgineel om het ook op Mobiel te kunnen laten zien.
+$ElecLeverancier = "Essent";                        // naam electra leverancier
+$ElecDagGraph = '45';                               // aantal dagen in grafiek
+$ElecMaandGraph = '14';                             // aantal maanden in grafiek
+$zonnesysteem_electra = "zonnesysteem-electra.gif"; // achtergrond. Let op: dit is een ander formaat dan het orgineel om het ook op Mobiel te kunnen laten zien.
 
 //** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
 $PVGtxt = "PVGis";                                           // Tekst waar de schatting vandaan komt bv: "PVGis"
 $PVGis = [144,233,461,628,660,641,630,574,440,296,154,116];  // schatting opbrengst iedere maand voor de installatie
 
 //** velden voor Electra info van Domoticz server
-$domohost = '192.168.0.??:8080';						// ip:poort van domoticz
-$domoidx = "123";    									// device IDX voor de Electriciteits P1 meter
-$DataURL = 'live-server-data-electra-domoticz.php'; 	// URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
+$domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
+$domoidx = "123";                                   // device IDX voor de Electriciteits P1 meter
+$DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
 
 //** velden voor Electra info van DSMR server(verwijder // om te activeren)
 // $dsmr_url='http://host-ip:1234';                     // URL voor DSMR inclusief
 // $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
-// $DataURL = 'live-server-data-electra-dsmr.php'; 	    // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
+// $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
 
 //#### einde aanpassing
 
