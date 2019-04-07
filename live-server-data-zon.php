@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.25
+// versie: 1.27
 // auteur: André Rijkeboer
-// datum:  30-03-2019
+// datum:  07-04-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
 
 include('config.php');
@@ -50,7 +50,7 @@ $mode[9] = '';
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 if ($aantal < 0) { $aantal = 0;}
 // bepaal de eerste dag van de data in de database
-$query = sprintf("SELECT timestamp FROM telemetry_optimizers LIMIT 1");
+$query = sprintf("SELECT timestamp FROM telemetry_optimizers ORDER BY timestamp LIMIT 1");
 $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
