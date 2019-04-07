@@ -20,7 +20,7 @@
 #
 
 based on versie: 1.60 of zonnepanelen.php
-versie: 1.60.3
+versie: 1.60.3a (aangepas door André Rijkeboer)
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
 datum:  1-04-2019
 omschrijving: hoofdprogramma
@@ -492,8 +492,12 @@ omschrijving: hoofdprogramma
 		if (datum1 < tomorrow) {
 			var now = new Date();
 			var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
-			var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
-			var mdiff = (tnow - tlast)/60000;
+			if (inv1Data[0]["IT"] != null){
+				var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
+				var mdiff = (tnow - tlast)/60000;
+			} else {
+					var mdiff = 0;
+			}
 			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || mdiff > 10) {
 				if(inv1Data[0]["IVACT"] != 0){
 					document.getElementById("arrow_PRD").className = "arrow_right_green";
