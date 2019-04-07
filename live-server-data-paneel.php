@@ -35,7 +35,6 @@ $total = array();
 $diff = array();
 $paneel = array();
 
-if ($aantal > 33) { $aantal = 33; }
 if ($aantal < 0) { $aantal = 0; }
 for ($i = 1; $i <= $aantal; $i++) {
 	$paneel[$i]['uptime'] = 0;
