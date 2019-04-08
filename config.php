@@ -34,20 +34,19 @@ $db = 'solaredge'; // database naam
 $lat = 51.9515885; //Latitude North
 $long = 6.0045953; //Longitude East
 
-
 // Achtergrond image (in de img directory)
 $zonnesysteem = "zonnesysteem.gif";
 
 //#### Toegevoegd voor zonnepanelen-electra.php tbv informatie ophalen van electra
 //** Algemene velden
-$ElecLeverancier = "Essent";                        // naam electra leverancier
-$ElecDagGraph = '45';                               // aantal dagen in grafiek
-$ElecMaandGraph = '14';                             // aantal maanden in grafiek
+$ElecLeverancier = "Delta";                         // naam electra leverancier
+$ElecDagGraph = '60';                               // aantal dagen in grafiek
+$ElecMaandGraph = '13';                             // aantal maanden in grafiek
 $zonnesysteem_electra = "zonnesysteem-electra.gif"; // achtergrond. Let op: dit is een ander formaat dan het orgineel om het ook op Mobiel te kunnen laten zien.
 
 //** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
-$PVGtxt = "PVGis";                                           // Tekst waar de schatting vandaan komt bv: "PVGis"
-$PVGis = [144,233,461,628,660,641,630,574,440,296,154,116];  // schatting opbrengst iedere maand voor de installatie
+$PVGtxt = "PVGis";                                  // Tekst waar de schatting vandaan komt bv: "PVGis"
+$PVGis = [0,0,0,0,0,0,0,0,0,0,0,0];                 // schatting opbrengst iedere maand voor de installatie
 
 //** velden voor Electra info van Domoticz server
 $domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
@@ -55,7 +54,7 @@ $domoidx = "123";                                   // device IDX voor de Electr
 $DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
 
 //** velden voor Electra info van DSMR server(verwijder // om te activeren)
-// $dsmr_url='http://host-ip:1234';                     // URL voor DSMR inclusief
+// $dsmr_url='http://host-ip:8888';                     // URL voor DSMR inclusief
 // $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
 // $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
 
@@ -67,7 +66,6 @@ $vermogen = 1; // 0 = nee, 1 = ja
 // gegevens van het zonnepanelensysteem
 $inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
 $naam = "SolarEdge SE7k"; //naam van de inverter
-$aantal = 22; // aantal zonnepanelen dat in database is opgenoen
 // optimizer id en positie paneel, de richting van de panelen Vertikaal = 0, Horizontaal = 1
 // het serienummer en het vermogen van het paneel
 //$op_id[id optimizer][inverter.string.paneelnummer][richting][id paneel][vermogen paneel]
@@ -95,13 +93,5 @@ $op_id[21] = ['20212017', '1.1.21',1,'78',300];
 $op_id[22] = ['20212166', '1.1.22',1,'C8',300];
 $op_id[23] = ['20211F32', '1.1.23',1,'92',300];
 $op_id[24] = ['20211FD6', '1.1.24',1,'36',300];
-$op_id[25] = ['0', '1.1.25',1,'a',0];
-$op_id[26] = ['0', '1.1.26',1,'a',0];
-$op_id[27] = ['0', '1.1.27',1,'a',0];
-$op_id[28] = ['0', '1.1.28',1,'a',0];
-$op_id[29] = ['0', '1.1.29',1,'a',0];
-$op_id[30] = ['0', '1.1.30',1,'a',0];
-$op_id[31] = ['0', '1.1.31',1,'a',0];
-$op_id[32] = ['0', '1.1.32',1,'a',0];
-$op_id[33] = ['0', '1.1.33',1,'a',0];
+$aantal = count($op_id); // aantal zonnepanelen dat in database is opgenomen
 ?>
