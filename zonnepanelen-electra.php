@@ -489,16 +489,16 @@ omschrijving: hoofdprogramma
 			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
 
-			var now = new Date();
+		var now = new Date();
 		var datesol = new Date(inv1Data[0]["IT"]);
 		var dsol = datesol.getDate();
 		var msol = datesol.getMonth()+1;
 		var ysol = datesol.getYear()+1900;
 		var dayssol = daysInMonth(msol, ysol);
-			var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
+		var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
 		if ( inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = datumz;}
-				var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
-				var mdiff = (tnow - tlast)/60000;
+		var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
+		var mdiff = (tnow - tlast)/60000;
 		if (datum1 < tomorrow) {
 			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || mdiff > 10) {
 				if(inv1Data[0]["IVACT"] != 0){
@@ -674,52 +674,52 @@ omschrijving: hoofdprogramma
 		var wdate = new Date(date2);
 		var cdate = new Date();
 		if (datum1 < tomorrow) {
-		var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
-		var cdiff  = "red_text";
-		if (diff < 0) {
-			cdiff  = "green_text";
-			diff = diff * -1;
-		}
-		document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-				"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
-				"<tr><td colspan=2><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td></tr>" +
-				"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
-				"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
-				"<tr><td></td><td>----------</td></tr>"+
-				"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
-				"</table>";
+			var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
+			var cdiff  = "red_text";
+			if (diff < 0) {
+				cdiff  = "green_text";
+				diff = diff * -1;
+			}
+			document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
+					"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
+					"<tr><td colspan=2><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td></tr>" +
+					"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
+					"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
+					"<tr><td></td><td>----------</td></tr>"+
+					"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
+					"</table>";
 
 			if (pse+psv+pve+pvs > 0) {
-			// update current day info in graphs
-			var prod = SolarProdToday   ;      //Solar productie
-			var ve = p1CounterToday;
-			var vs = prod - p1CounterDelivToday;
-			var se = p1CounterDelivToday;
-			var sv = vs;
-			wchart.series[0].data[wchart.series[0].data.length-1].update(se);
-			wchart.series[1].data[wchart.series[1].data.length-1].update(sv);
-			wchart.series[2].data[wchart.series[2].data.length-1].update(ve);
-			wchart.series[3].data[wchart.series[3].data.length-1].update(vs);
-			//
-			// update huidige maand
-			var mse = ychart.series[0].data[ychart.series[0].data.length-1].y - pse + se;
-			var msv = ychart.series[1].data[ychart.series[1].data.length-1].y - psv + sv;
-			var mve = ychart.series[2].data[ychart.series[2].data.length-1].y - pve + ve;
-			var mvs = ychart.series[3].data[ychart.series[3].data.length-1].y - pvs + vs;
-			ychart.series[0].data[ychart.series[0].data.length-1].update(mse);
-			ychart.series[1].data[ychart.series[1].data.length-1].update(msv);
-			ychart.series[2].data[ychart.series[2].data.length-1].update(mve);
-			ychart.series[3].data[ychart.series[3].data.length-1].update(mvs);
-			pve = ve;
-			pvs = vs;
-			pse = se;
-			psv = sv;
-			//
-			wchart.redraw();
-			ychart.redraw();
-			update_map_fields();
+				// update current day info in graphs
+				var prod = SolarProdToday   ;      //Solar productie
+				var ve = p1CounterToday;
+				var vs = prod - p1CounterDelivToday;
+				var se = p1CounterDelivToday;
+				var sv = vs;
+				wchart.series[0].data[wchart.series[0].data.length-1].update(se);
+				wchart.series[1].data[wchart.series[1].data.length-1].update(sv);
+				wchart.series[2].data[wchart.series[2].data.length-1].update(ve);
+				wchart.series[3].data[wchart.series[3].data.length-1].update(vs);
+				//
+				// update huidige maand
+				var mse = ychart.series[0].data[ychart.series[0].data.length-1].y - pse + se;
+				var msv = ychart.series[1].data[ychart.series[1].data.length-1].y - psv + sv;
+				var mve = ychart.series[2].data[ychart.series[2].data.length-1].y - pve + ve;
+				var mvs = ychart.series[3].data[ychart.series[3].data.length-1].y - pvs + vs;
+				ychart.series[0].data[ychart.series[0].data.length-1].update(mse);
+				ychart.series[1].data[ychart.series[1].data.length-1].update(msv);
+				ychart.series[2].data[ychart.series[2].data.length-1].update(mve);
+				ychart.series[3].data[ychart.series[3].data.length-1].update(mvs);
+				pve = ve;
+				pvs = vs;
+				pse = se;
+				psv = sv;
+				//
+				wchart.redraw();
+				ychart.redraw();
+				update_map_fields();
+			}
 		}
-	}
 	}
 
 	function update_map_fields() {
@@ -795,15 +795,15 @@ omschrijving: hoofdprogramma
 			var cur = document.getElementById("p1_text").innerHTML;
 
 			if ( document.getElementById("p1_text").className == "red_text") {
-				cur = "verbruik: " + cur;
+				cur = "verbruik:	" + cur;
 			} else {
-				cur = "retour:   " + cur;
+				cur = "retour:	" + cur;
 			}
 			document.getElementById("meter_1").title = "<?php echo $ElecLeverancier?> P1 meter" +
 					"\r\nHuidig\r\n"+cur+
-					"\r\n\r\nVandaag\r\nverbruik: "+waarde(0,3,ve)+" kWh\r\nretour:    "+waarde(0,3,se)+" kWh\r\nnetto:      "+waarde(0,3,ve-se)+" kWh"+
-					"\r\n\r\nMaand\r\nverbruik: "+waarde(0,2,mve)+" kWh\r\nretour:    "+waarde(0,2,mse)+" kWh\r\nnetto:      "+waarde(0,2,mve-mse)+" kWh" +
-					"\r\n\r\nJaar\r\nverbruik: "+waarde(0,1,yve)+" kWh\r\nretour:    "+waarde(0,1,yse)+" kWh\r\nnetto:      "+waarde(0,1,yve-yse)+" kWh";
+					"\r\n\r\nVandaag\r\nverbruik:	"+waarde(0,3,ve)+" kWh\r\nretour:  	"+waarde(0,3,se)+" kWh\r\nnetto:   	"+waarde(0,3,ve-se)+" kWh"+
+					"\r\n\r\nMaand\r\nverbruik:	"+waarde(0,2,mve)+" kWh\r\nretour:  	"+waarde(0,2,mse)+" kWh\r\nnetto:   	"+waarde(0,2,mve-mse)+" kWh" +
+					"\r\n\r\nJaar\r\nverbruik:	"+waarde(0,1,yve)+" kWh\r\nretour:  	"+waarde(0,1,yse)+" kWh\r\nnetto:   	"+waarde(0,1,yve-yse)+" kWh";
 
 			var curtext=document.getElementById("inverter_1").title;
 			var ins = curtext.indexOf("Vandaag")-4;
@@ -828,9 +828,9 @@ omschrijving: hoofdprogramma
 				PVGisj = " (" + waarde(0,0,tPVGis+(PVGis[cm]/dayssol*dsol))+" kWh)";
 			}
 			document.getElementById("inverter_1").title = curtext+
-					"\r\n\r\nVandaag:     " + waarde(0,2,SolarProdToday)+" kWh"+
+					"\r\n\r\nVandaag:	" + waarde(0,2,SolarProdToday)+" kWh"+
 					PVGisd+
-					"\r\nMaand:    " + waarde(0,2,mse + msv)+" kWh"+
+					"\r\nMaand:  	" + waarde(0,2,mse + msv)+" kWh"+
 					PVGism+
 					"\r\nJaar:   	" + waarde(0,2,yse + ysv)+" kWh"+
 					PVGisj;
@@ -930,18 +930,18 @@ omschrijving: hoofdprogramma
 				success: function(data) {
 					data_i = eval(data);
 					if(inverter_redraw == 1) {
-					var series = inverter_chart.series[0];
-					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-					for (var i=0; i<=14; i++){
-						inverter_chart.series[i].setData([]);
-						vermogen_chart.series[i].setData([]);
-					}
-					for(var i = 0; i < data_i.length; i++){
-						if (data_i[i]['op_id'] == "i"){
-							inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
-							vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_current_power_prd']*1], false, shift);
+						var series = inverter_chart.series[0];
+						var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+						for (var i=0; i<=14; i++){
+							inverter_chart.series[i].setData([]);
+							vermogen_chart.series[i].setData([]);
 						}
-					}
+						for(var i = 0; i < data_i.length; i++){
+							if (data_i[i]['op_id'] == "i"){
+								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
+								vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_current_power_prd']*1], false, shift);
+							}
+						}
 						inverter_chart.redraw();
 						vermogen_chart.redraw();
 					}
@@ -1573,7 +1573,7 @@ omschrijving: hoofdprogramma
 							symbol: 'circle',
 							states: {
 								hover: {
-								enabled: true
+									enabled: true
 								}
 							}
 						}
@@ -1585,7 +1585,7 @@ omschrijving: hoofdprogramma
 							type: 'triangle',
 							states: {
 								hover: {
-								enabled: true,
+									enabled: true,
 								}
 							}
 						}
@@ -1740,12 +1740,12 @@ omschrijving: hoofdprogramma
 						s += 'Solar verbruik&nbsp;: ' + Highcharts.numberFormat(sVS,1) + ' kWh<br/>';
 						s += '<b>Solar totaal&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat(sVS+sRE,1) + '</b> kWh<br/>';
 						if (this.points[0].series.chart.renderTo.id == "monthgraph") {
-						if ( sPVG > 0) {
+							if ( sPVG > 0) {
 								if ( sPVGm > 0) {
 									s += '<b>'+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + sPVGm + '</b> kWh<br/>';
 								}
 								s += '<b>'+PVGtxt+' maand&nbsp;: ' + sPVG + '</b> kWh<br/>';
-						}
+							}
 						} else {
 								s += '<b>'+PVGtxt+' dag gem.: ' + sPVG + '</b> kWh<br/>';
 						}
