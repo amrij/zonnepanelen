@@ -56,7 +56,7 @@ omschrijving: hoofdprogramma
 			else                   {$pro[$i] = "20%"; $top[$i] = "78%";}
 		}
 		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
-		$query = "SELECT timestamp FROM telemetry_optimizers ORDER timestamp LIMIT 1";
+		$query = "SELECT timestamp FROM telemetry_optimizers ORDER BY timestamp LIMIT 1";
 		$result = $mysqli->query($query);
 		$row = mysqli_fetch_assoc($result);
 		$begin = gmdate("Y-m-d",$row['timestamp']);
