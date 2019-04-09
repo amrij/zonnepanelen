@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.3
+// versie: 1.4
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  30-03-2018
+// datum:  9-04-2018
 // omschrijving: ophalen van de P1meter informatie uit DSMR server en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-dsmr.php/period=c
@@ -70,7 +70,7 @@ $dsmrdata = array();
 $dsmrrec = array();
 $diff = array();
 include('config.php');
-//~ $period='c';
+
 // Get current info for P1_ElectriciteitsMeter from DSMR server
 if ($period == 'c' ){
 	//Get current info for P1_ElectriciteitsMeter from DSMR server
@@ -164,13 +164,13 @@ if ($period == 'c' ){
 			$dsmrrec['r2']= $tr2;
 			array_push($dsmrdata, $dsmrrec);
 		}
-	} else {
-		$dsmrrec['v1']= $tv1 + round(floatval($dsmr_rest['electricity1']),3);
-		$dsmrrec['v2']= $tv2 + round(floatval($dsmr_rest['electricity2']),3);
-		$dsmrrec['r1']= $tr1 + round(floatval($dsmr_rest['electricity1_returned']),3);
-		$dsmrrec['r2']= $tr2 + round(floatval($dsmr_rest['electricity2_returned']),3);
-		array_push($dsmrdata, $dsmrrec);
 	}
+	$dsmrrec['d']= $date;
+	$dsmrrec['v1']= round(floatval($dsmr_rest['electricity1']),3);
+	$dsmrrec['v2']= round(floatval($dsmr_rest['electricity2']),3);
+	$dsmrrec['r1']= round(floatval($dsmr_rest['electricity1_returned']),3);
+	$dsmrrec['r2']= round(floatval($dsmr_rest['electricity2_returned']),3);
+	array_push($dsmrdata, $dsmrrec);
 	//-------------------------------------------------------------
 	//open MySQL database
 	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
@@ -234,7 +234,6 @@ if ($period == 'c' ){
 		foreach($inverter_data as $j => $row){
 			$compdate = date($JSON_SUM,strtotime(date($row['iDate'])));
 			if ($compdate==$checkdate) {
-				//~ 			echo "! yes compdate:".$compdate." \n";
 				$diff['prod'] = round($row["prod"],2);
 				$datafound = 1;
 			}
