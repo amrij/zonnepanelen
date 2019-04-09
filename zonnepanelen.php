@@ -439,16 +439,6 @@ omschrijving: hoofdprogramma
 		document.getElementById("power_chart_inverter").innerHTML ="";
 		document.getElementById("power_chart_paneel").innerHTML ="";
 		document.getElementById("power_chart_vermogen").innerHTML ="";
-		for (var i=0; i<=14; i++){
-			vermogen_chart.series[i].setData([]);
-		}
-		var series = inverter_chart.series[0];
-		var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-		for(var i = 0; i < data_i.length; i++){
-			if (data_i[i]['op_id'] == "i"){
-				vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],data_i[i]['sec']),data_i[i]['p1_current_power_prd']*1], false, shift);
-			}
-		}
 		vermogen_chart.redraw();
 	}
 
@@ -667,14 +657,16 @@ omschrijving: hoofdprogramma
 					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 					for (var i=0; i<=14; i++){
 						inverter_chart.series[i].setData([]);
+						vermogen_chart.series[i].setData([]);
 					}
 					for(var i = 0; i < data_i.length; i++){
 						if (data_i[i]['op_id'] == "i"){
 							inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
+							vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],data_i[i]['minuut'],data_i[i]['sec']),data_i[i]['p1_current_power_prd']*1], false, shift);
 						}
 					}
-					if(inverter_redraw == 1) {inverter_chart.redraw();}
-					if (datum1 < tomorrow) {
+					if(inverter_redraw == 1) {inverter_chart.redraw();} // default is energie chart
+					if (datum1 < reportEndStamp) {
 					   setTimeout(requestDatai, 1000*60);
 					} else {
 					   setTimeout(requestDatai, 1000*86400);
