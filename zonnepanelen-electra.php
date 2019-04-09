@@ -1375,18 +1375,18 @@ omschrijving: hoofdprogramma
 					formatter: function () {
 						var s ="";
 						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
-						//if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
-						//	s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' kWh</b>';
-						//}
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
 						});
 						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){
 								if (this.series.name == productie[i]) {
+									this.point.series.options.marker.states.hover.enabled = false;
 									if (s != ""){ s += '<br>'}
 									if (this.series.state == "hover") {
 										s += '<b>*</b>';
+										this.point.series.options.marker.states.hover.enabled = true;
+										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
 									if (i == 14){
 										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
@@ -1416,7 +1416,7 @@ omschrijving: hoofdprogramma
 							symbol: 'circle',
 							states: {
 								hover: {
-								enabled: true
+									enabled: false
 								}
 							}
 						}
@@ -1428,7 +1428,7 @@ omschrijving: hoofdprogramma
 							type: 'triangle',
 							states: {
 								hover: {
-								enabled: true,
+									enabled: false,
 								}
 							}
 						}
@@ -1541,9 +1541,12 @@ omschrijving: hoofdprogramma
 							for (i=0; i<=14; i++){
 								if (this.series.y == this.y) {};
 								if (this.series.name == productie[i]) {
+									this.point.series.options.marker.states.hover.enabled = false;
 									if (s != ""){ s += '<br>'}
 									if (this.series.state == "hover") {
 										s += '<b>*</b>';
+										this.point.series.options.marker.states.hover.enabled = true;
+										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
 									if (i == 14){
 										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
