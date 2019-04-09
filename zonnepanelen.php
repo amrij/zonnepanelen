@@ -342,6 +342,33 @@ omschrijving: hoofdprogramma
 			paneel();
 		}, 60000);
 	}
+	var paneelGraph = {
+			'Vermogen':     { 'metric': 'p1_current_power_prd', 'tekst': 'Vermogen',    'unit': 'W' },
+			'Energie':      { 'metric': 'p1_volume_prd',        'tekst': 'Energie',     'unit': 'Wh' },
+			'Temperatuur':  { 'metric': 'temperature',          'tekst': 'Temperatuur', 'unit': '°C' },
+			'V_in':         { 'metric': 'vin',                  'tekst': 'Spanning In', 'unit': 'V' },
+			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning In', 'unit': 'V' },
+			'I_in':         { 'metric': 'iin',                  'tekst': 'Stroom In',   'unit': 'A' }
+		};
+	function paneelFillSeries(metric, shift, x) {
+		for (var i = 0; i < data_p.length; i++){
+			if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
+				var sIdx = data_p[i]['op_id'] - 1;
+				if (data_p[i]['op_id'] > x ){ --sIdx; }
+				paneel_chart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+			} else {
+				paneel_chart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+			}
+		}
+		paneel_chart.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
+		paneel_chart.legend.update({x:10,y:20});
+		paneel_chart.series[aantal].update({name: paneelGraph[metric]['tekst'] + " paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+		paneel_chart.series[aantal-1].update({showInLegend: false});
+		paneel_chart.series[aantal-2].update({showInLegend: true, name: paneelGraph[metric]['tekst'] + " overige panelen"});
+		paneel_chart.yAxis[0].update({ opposite: true });
+		paneel_chart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
+		paneel_chart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+	}
 	function paneelChart(event,x) {
 		if (x <= aantal){
 			inverter_redraw = 0;
@@ -349,60 +376,11 @@ omschrijving: hoofdprogramma
 			var series = paneel_chart.series[0];
 			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 			if (event.ctrlKey) {
-				for (var i = 0; i < data_p.length; i++){
-					if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
-						var sIdx = data_p[i]['op_id'] - 1;
-						if (data_p[i]['op_id'] > x ){ --sIdx; }
-						paneel_chart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['p1_current_power_prd']*1], false, shift);
-					} else {
-						paneel_chart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['p1_current_power_prd']*1], false, shift);
-					}
-				}
-				paneel_chart.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-				paneel_chart.yAxis[0].update({ opposite: true });
-				paneel_chart.legend.update({x:10,y:20});
-				paneel_chart.series[aantal].update({name: "Vermogen paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-				paneel_chart.series[aantal-1].update({showInLegend: false});
-				paneel_chart.series[aantal-2].update({showInLegend: true, name: "Vermogen overige panelen"});
-				paneel_chart.yAxis[0].update({ title: { text: 'Vermogen (W)' }, });
-				paneel_chart.yAxis[1].update({ labels: { enabled: false }, title: { text: null }
-				});
+				paneelFillSeries('Vermogen', shift, x);
 			} else if (event.altKey) {
-				for (var i = 0; i < data_p.length; i++){
-					if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
-						var sIdx = data_p[i]['op_id'] - 1;
-						if (data_p[i]['op_id'] > x ){ --sIdx; }
-						paneel_chart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['p1_volume_prd']*1], false, shift);
-					} else {
-						paneel_chart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['p1_volume_prd']*1], false, shift);
-					}
-				}
-				paneel_chart.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-				paneel_chart.yAxis[0].update({ opposite: true });
-				paneel_chart.legend.update({x:10,y:20});
-				paneel_chart.series[aantal].update({name: "Energie paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-				paneel_chart.series[aantal-1].update({showInLegend: false});
-				paneel_chart.series[aantal-2].update({showInLegend: true, name: "Energie overige panelen"});
-				paneel_chart.yAxis[0].update({ title: { text: 'Energie (Wh)' }, });
-				paneel_chart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+				paneelFillSeries('Energie', shift, x);
 			} else if (event.shiftKey) {
-				for (var i = 0; i < data_p.length; i++){
-					if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
-						var sIdx = data_p[i]['op_id'] - 1;
-						if (data_p[i]['op_id'] > x ){ --sIdx; }
-						paneel_chart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['temperature']*1], false, shift);
-					} else {
-						paneel_chart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i]['temperature']*1], false, shift);
-					}
-				}
-				paneel_chart.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-				paneel_chart.yAxis[0].update({ opposite: true });
-				paneel_chart.legend.update({x:10,y:20});
-				paneel_chart.series[aantal].update({name: "Temperatuur paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-				paneel_chart.series[aantal-1].update({showInLegend: false});
-				paneel_chart.series[aantal-2].update({showInLegend: true, name: "Temperatuur overige panelen"});
-				paneel_chart.yAxis[0].update({ title: { text: 'Temperatuur (°C)' }, });
-				paneel_chart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+				paneelFillSeries('Temperatuur', shift, x);
 			} else {
 				for(var i = 0; i < data_p.length; i++){
 					if (data_p[i]['op_id'] == x && data_p[i]['serie'] == 0){
