@@ -390,9 +390,9 @@ omschrijving: hoofdprogramma
 				}
 				paneel_chart.legend.update({x:50,y:20});
 				paneel_chart.series[aantal-2].update({showInLegend: false});
-				paneel_chart.series[aantal-1].update({name: "Vermogen"});
+				paneel_chart.series[aantal-1].update({name: "Energie"});
 				paneel_chart.series[aantal-1].update({showInLegend: true});
-				paneel_chart.series[aantal].update({name: "Energie"});
+				paneel_chart.series[aantal].update({name: "Vermogen"});
 				paneel_chart.setTitle(null, { text: 'Paneel: '+op_id[x], x: 55, style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
 				paneel_chart.yAxis[0].update({ opposite: false });
 				paneel_chart.yAxis[1].update({ labels: { enabled: true }, title: { text: 'Energie (Wh)' } });
