@@ -137,9 +137,19 @@ omschrijving: hoofdprogramma
 			else              {$s = $solar_noon_a;}
 			return $s;
 		}
-		function plotBands() {
-			print "plotBands: [\n";
-			for ($i=0; $i<25; $i+=2) {  print "			{
+		function genxAxis() {
+			print "
+					type: 'datetime',
+					pointstart: Date.UTC(1970,01,01),
+					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
+					title: { text: null },
+					startOnTick: true,
+					minPadding: 0,
+					maxPadding: 0,
+					labels: { overflow: 'justify' },
+					tooltip: { enabled: true, crosshair: true },
+					plotBands: [\n";
+			for ($i = 0; $i < 25; $i += 2) {  print "			{
 					color: '#ebfbff',
 					from: Date.UTC(jaar, maand , dag, u[" . $i . "]-winter),
 					to: Date.UTC(jaar, maand, dag, u[" . ($i+1) . "]-winter),
@@ -684,25 +694,7 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
 						text: 'Vermogen (W)'
@@ -865,25 +857,7 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
 						text: 'Vermogen(W)'
@@ -1031,25 +1005,7 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
 						text: 'Energie (kWh)'
@@ -1187,25 +1143,7 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
 						text: 'Vermogen (W)'
