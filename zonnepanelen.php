@@ -19,7 +19,7 @@
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-versie: 1.61
+versie: 1.64
 auteur: André Rijkeboer
 datum:  30-03-2019
 omschrijving: hoofdprogramma
@@ -562,17 +562,17 @@ omschrijving: hoofdprogramma
 		}else{
 			document.getElementById("NextDay").disabled = false;
 		}
-		if (date2 <= "2016-01-01"){
+		if (date2 <= begin){
 			document.getElementById("PrevDay").disabled = true;
 		}
 		if (datum1 < tomorrow) {
-			datumz = Date();
+			datumz = "";
 		}
 		var inv4Data = $.ajax({
 			url: "maanfase.php",
 			dataType: "json",
 			type: 'GET',
-			data: { "date" : datumz },
+			data: { "date" : datumz.replace("00:00:00", `${(new Date()).getHours()}:00:00`) },
 			async: false,
 		}).responseText;
 		inv4Data = eval(inv4Data)
