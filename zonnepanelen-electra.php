@@ -19,10 +19,10 @@
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-based on versie: 1.60 of zonnepanelen.php
-versie: 1.60.4
+based on versie: 1.64 of zonnepanelen.php
+versie: 1.64.1
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  7-04-2019
+datum:  12-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -72,7 +72,7 @@ omschrijving: hoofdprogramma
 		$week[7] = "Zondag ";
 		$date = $_GET['date'];
 		$ds = $_GET['ds'];
-		setlocale(LC_ALL, 'nld_NLD');
+		setlocale(LC_ALL, 'nl_NL');
 		if($date == ''){
 			$date = date("d-m-Y H:i:s", time());
 		}
@@ -92,11 +92,9 @@ omschrijving: hoofdprogramma
 		$a = strptime($date, '%d-%m-%Y %H:%M:%S');
 		if ($a['tm_year']+1900 < 2000){
 			$a = strptime($date, '%Y-%m-%d');
-			$d = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
 		}
 		$a = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
 		$date2 = strftime('%Y-%m-%d', $a);
-		$date4 = strftime('%Y,%m,%d', $d);
 		$datum = $today/86400;
 		$timezone = date('Z',strtotime($date))/3600;
 		$localtime = 0; //Time (pas local midnight)
@@ -140,9 +138,19 @@ omschrijving: hoofdprogramma
 			else              {$s = $solar_noon_a;}
 			return $s;
 		}
-		function plotBands() {
-			print "plotBands: [\n";
-			for ($i=0; $i<25; $i+=2) {  print "			{
+		function genxAxis() {
+			print "
+					type: 'datetime',
+					pointstart: Date.UTC(1970,01,01),
+					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
+					title: { text: null },
+					startOnTick: true,
+					minPadding: 0,
+					maxPadding: 0,
+					labels: { overflow: 'justify' },
+					tooltip: { enabled: true, crosshair: true },
+					plotBands: [\n";
+			for ($i = 0; $i < 25; $i += 2) {  print "			{
 					color: '#ebfbff',
 					from: Date.UTC(jaar, maand , dag, u[" . $i . "]-winter),
 					to: Date.UTC(jaar, maand, dag, u[" . ($i+1) . "]-winter),
@@ -187,7 +195,7 @@ omschrijving: hoofdprogramma
 				},";
 			}
 			print "
-					{
+				{
 					name: 'Energie Productie',
 					showInLegend: true,
 					type: 'areaspline',
@@ -218,10 +226,13 @@ omschrijving: hoofdprogramma
 				<div class="imageOver">
 					<img src="./img/<?php echo $zonnesysteem_electra;?>" alt=""  style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -100;"/>
 				</div>
-				<div Class='datum' id='datum' style="top: 0.1; left: 25%; z-index: 3; width: 40%; height: 5%; position: absolute;">
-						<TR style="text-align:center"><TD><input type="button" id="PrevDay" class="btn btn-success btn-sm" value="<">
+				<div Class='datum' id='datum' style="top: 0.1; left: 5%; z-index: 3; width: 75%; height: 5%; position: absolute;">
+						<TR style="text-align:center"><TD>
+						<input type="button" id="PrevDay" class="btn btn-success btn-sm" value="<" title="Vorige dag">
 						<input type="text" id="multiShowPicker" class="embed" size="8.5" style="text-align:center;">
-						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">"></TD><TR>
+						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">" title="Volgende dag">
+						<input type="button" id="Today" class="btn btn-success btn-sm" value=">|" title="Vandaag">
+						</TD><TR>
 				</div>
 
 				<img src="./img/dummy.gif" style="top: 10%; left: 4.00%; z-index: 10; width: 18.00%; height: 22.00%; position: absolute;" usemap="#inverter"/>
@@ -230,6 +241,7 @@ omschrijving: hoofdprogramma
 				</map>
 				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 25.5%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
+				<div class='sum_text' id='sum_text' style="top: 40%; left: 3%; width: 45%; height: 50%; line-height: 120%; position: absolute;"></div>
 				<div class='elec_text' id='elec_text' style="top: 65%; left: 18%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
 				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
 				<div class="" id="arrow_PRD"      style="top: 34.05%; left: 29.0%; width: 0.01%; height: 0.7% ; z-index: 20; position: absolute;"></div>
@@ -290,10 +302,10 @@ omschrijving: hoofdprogramma
 		</div>
 	</div>
 </body>
-<script type="text/javascript">
+<script language="javascript" type="text/javascript">
 	function toonDatum(datum) {
 		var now = new Date();
-		var yy = now.getYear()+1900;
+		var yy = now.getFullYear();
 		var mm = now.getMonth()+1;
 		var dd = now.getDate();
 		mm = "0"+mm;
@@ -331,16 +343,11 @@ omschrijving: hoofdprogramma
 	var inverter = '<?php echo $inverter?>';
 	var naam = '<?php echo $naam?>';
 	var aantal = '<?php echo $aantal?>';
-	var op_sn = [0,'<?php echo $op_id[1][0];
-						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][0];} ?>'];
-	var pn_sn = [0,'<?php echo $op_id[1][3];
-						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][3];} ?>'];
-	var op_id = [0,'<?php echo $op_id[1][1];
-						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][1];} ?>'];
-	var rpan = [0,'<?php echo $op_id[1][2];
-						  for ($i=2; $i<=$aantal; $i++){ echo "','", $op_id[$i][2];} ?>'];
-	var vpan = [0,<?php echo $op_id[1][4];
-						  for ($i=2; $i<=$aantal; $i++){ echo ",", $op_id[$i][4];} ?>];
+	var op_sn = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][0], "','";} ?>'];
+	var pn_sn = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][3], "','";} ?>'];
+	var op_id = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][1], "','";} ?>'];
+	var rpan  = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][2], "','";} ?>'];
+	var vpan  = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][4], ",";} ?>];
 	var PVGtxt = "<?php echo $PVGtxt; ?>";
 	var PVGis = [0<?php for ($i=0; $i<=11; $i++){ echo ",", $PVGis[$i];} ?>];
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
@@ -368,8 +375,8 @@ omschrijving: hoofdprogramma
 	google.charts.setOnLoadCallback(drawChart);
 
 	function drawChart() {
-		paneel();
 		zonmaan();
+		paneel();
 		draw_p1_chart();
 		document.getElementById("panel_vermogen").innerHTML ="";
 		document.getElementById("panel_energy").innerHTML ="";
@@ -377,24 +384,25 @@ omschrijving: hoofdprogramma
 		document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
 		document.getElementById("sunset_text").innerHTML = sunset+" uur";
 		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
-		setInterval(function() {
-			var now = new Date();
-			var diff = <?php echo $tomorrow ?>-(+now/1000);
-			if (ds == '' && diff < 0 ) {
-				window.location = window.location.pathname;
-				return false;
-			}
-			p1_update();
-		}, 10000);
+		if (datum1 < tomorrow) {
+			setInterval(function() {
+				var now = new Date();
+				var diff = <?php echo $tomorrow ?>-(+now/1000);
+				if (ds == '' && diff < 0 ) {
+					window.location = window.location.pathname;
+					return false;
+				}
+				p1_update();
+			}, 10000);
 
-		setInterval(function() {
-			zonmaan();
-		}, 3600000);
+			setInterval(function() {
+				zonmaan();
+			}, 600000);
 
-		setInterval(function() {
-			paneel();
-		}, 60000);
-
+			setInterval(function() {
+				paneel();
+			}, 60000);
+		}
 	}
 	function paneelChart(event,x) {
 		if (x <= aantal){
@@ -493,7 +501,7 @@ omschrijving: hoofdprogramma
 		var datesol = new Date(inv1Data[0]["IT"]);
 		var dsol = datesol.getDate();
 		var msol = datesol.getMonth()+1;
-		var ysol = datesol.getYear()+1900;
+		var ysol = datesol.getFullYear();
 		var dayssol = daysInMonth(msol, ysol);
 		var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
 		if ( inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = datumz;}
@@ -596,29 +604,18 @@ omschrijving: hoofdprogramma
 				"\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V"+
 				"\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C"+
 				"\r\nEfficiëntie	"+ waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) +" kWh/kWp";
-			if ( inv1Data[0]["C"+i] == 0) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000";
-			} else if ( inv1Data[0]["C"+i] < 0.1) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16";
-			} else  if ( inv1Data[0]["C"+i] < 0.2) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d";
-			} else  if ( inv1Data[0]["C"+i] < 0.3) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44";
-			} else  if ( inv1Data[0]["C"+i] < 0.4) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a";
-			} else  if ( inv1Data[0]["C"+i] < 0.5) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71";
-			} else  if ( inv1Data[0]["C"+i] < 0.6) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88";
-			} else  if ( inv1Data[0]["C"+i] < 0.7) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e";
-			} else  if ( inv1Data[0]["C"+i] < 0.8) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5";
-			} else  if ( inv1Data[0]["C"+i] < 0.9) {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc";
-			} else {
-				document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3";
-			}
+			if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000"; }
+			else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16"; }
+			else if ( inv1Data[0]["C"+i] < 0.2) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d"; }
+			else if ( inv1Data[0]["C"+i] < 0.3) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#182e44"; }
+			else if ( inv1Data[0]["C"+i] < 0.4) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#203d5a"; }
+			else if ( inv1Data[0]["C"+i] < 0.5) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#294d71"; }
+			else if ( inv1Data[0]["C"+i] < 0.6) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#315c88"; }
+			else if ( inv1Data[0]["C"+i] < 0.7) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#396b9e"; }
+			else if ( inv1Data[0]["C"+i] < 0.8) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5"; }
+			else if ( inv1Data[0]["C"+i] < 0.9) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc"; }
+			else                                { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3"; }
+
 		}
 	}
 
@@ -627,7 +624,7 @@ omschrijving: hoofdprogramma
 			url: "<?php echo $DataURL?>?period=c",
 			dataType: "json",
 			type: 'GET',
-			data: { },
+			data: { "date" : datumz },
 			async: false,
 		}).responseText;
 		p1data = JSON.parse(p1data);
@@ -657,20 +654,21 @@ omschrijving: hoofdprogramma
 		} else {
 			p1UsageDeliv = parseFloat(p1UsageDeliv);
 		}
-		if( p1CounterToday == 0){
-			document.getElementById("arrow_RETURN").className = "";
-			document.getElementById("p1_text").className = "red_text";
-			document.getElementById("p1_text").innerHTML = "No data";
-		}else if( parseFloat(p1Usage) == 0){
-			document.getElementById("arrow_RETURN").className = "arrow_right_green";
-			document.getElementById("p1_text").className = "green_text";
-			document.getElementById("p1_text").innerHTML = p1UsageDeliv +" Watt";
-		}else{
-			document.getElementById("arrow_RETURN").className = "arrow_left_red";
-			document.getElementById("p1_text").className = "red_text";
-			document.getElementById("p1_text").innerHTML = p1Usage +" Watt";
+		if (datum1 < tomorrow) {
+			if( p1CounterToday == 0){
+				document.getElementById("arrow_RETURN").className = "";
+				document.getElementById("p1_text").className = "red_text";
+				document.getElementById("p1_text").innerHTML = "No data";
+			}else if( parseFloat(p1Usage) == 0){
+				document.getElementById("arrow_RETURN").className = "arrow_right_green";
+				document.getElementById("p1_text").className = "green_text";
+				document.getElementById("p1_text").innerHTML = p1UsageDeliv +" Watt";
+			}else{
+				document.getElementById("arrow_RETURN").className = "arrow_left_red";
+				document.getElementById("p1_text").className = "red_text";
+				document.getElementById("p1_text").innerHTML = p1Usage +" Watt";
+			}
 		}
-
 		var wdate = new Date(date2);
 		var cdate = new Date();
 		if (datum1 < tomorrow) {
@@ -728,7 +726,7 @@ omschrijving: hoofdprogramma
 			var cdate = new Date(date2);
 			var cd = cdate.getDate();
 			var cm = cdate.getMonth()+1;
-			var cy = cdate.getYear()+1900;
+			var cy = cdate.getFullYear();
 			var ve = 0;
 			var vs = 0;
 			var se = 0;
@@ -741,7 +739,7 @@ omschrijving: hoofdprogramma
 				var pdate = new Date(point.x);
 				var pd = pdate.getDate();
 				var pm = pdate.getMonth()+1;
-				var py = pdate.getYear()+1900;
+				var py = pdate.getFullYear();
 				if(cy == py && cm == pm && cd >= pd) {
 					if (cd == pd) {
 						se += wchart.series[0].data[i].y;
@@ -763,7 +761,7 @@ omschrijving: hoofdprogramma
 				var pdate = new Date(point.x);
 				var pd = pdate.getDate();
 				var pm = pdate.getMonth()+1;
-				var py = pdate.getYear()+1900;
+				var py = pdate.getFullYear();
 				if(cy == py && cm != pm) {
 					yse += ychart.series[0].data[i].y;
 					ysv += ychart.series[1].data[i].y;
@@ -776,7 +774,7 @@ omschrijving: hoofdprogramma
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
 				if ( cP1Huis == 0 || cP1Huis < SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) {
-					document.getElementById("p1_huis").innerHTML = waarde(0,3,sv + s_p1CounterToday)+" kWh";
+					if (datum1 < tomorrow) {document.getElementById("p1_huis").innerHTML = waarde(0,3,sv + s_p1CounterToday)+" kWh"};
 					document.getElementById("huis_1").title = "thuis verbruik: "+s_lasttimestamp.substr(1,10)+
 							"\r\nVandaag\r\nZonne energie: " + waarde(0,3,vs)+" kWh"+
 							"\r\n<?php echo $ElecLeverancier?> energie: " + waarde(0,3,ve)+" kWh"+
@@ -792,15 +790,16 @@ omschrijving: hoofdprogramma
 				document.getElementById("p1_huis").innerHTML = "No Data";
 				document.getElementById("huis_1").title = "No Data";
 			}
-			var cur = document.getElementById("p1_text").innerHTML;
 
+			var cur = document.getElementById("p1_text").innerHTML;
 			if ( document.getElementById("p1_text").className == "red_text") {
-				cur = "verbruik:	" + cur;
+				cur = "\r\nHuidig\r\nverbruik:	" + cur;
 			} else {
-				cur = "retour:	" + cur;
+				cur = "\r\nHuidig\r\nretour:	" + cur;
 			}
+			if (datum1 >= tomorrow) {cur = "";}
 			document.getElementById("meter_1").title = "<?php echo $ElecLeverancier?> P1 meter" +
-					"\r\nHuidig\r\n"+cur+
+					cur+
 					"\r\n\r\nVandaag\r\nverbruik:	"+waarde(0,3,ve)+" kWh\r\nretour:  	"+waarde(0,3,se)+" kWh\r\nnetto:   	"+waarde(0,3,ve-se)+" kWh"+
 					"\r\n\r\nMaand\r\nverbruik:	"+waarde(0,2,mve)+" kWh\r\nretour:  	"+waarde(0,2,mse)+" kWh\r\nnetto:   	"+waarde(0,2,mve-mse)+" kWh" +
 					"\r\n\r\nJaar\r\nverbruik:	"+waarde(0,1,yve)+" kWh\r\nretour:  	"+waarde(0,1,yse)+" kWh\r\nnetto:   	"+waarde(0,1,yve-yse)+" kWh";
@@ -812,14 +811,13 @@ omschrijving: hoofdprogramma
 			var datesol = new Date(date2);
 			var dsol = datesol.getDate();
 			var msol = datesol.getMonth()+1;
-			var ysol = datesol.getYear()+1900;
+			var ysol = datesol.getFullYear();
 			var dayssol = daysInMonth(msol, ysol);
 			var PVGisd = "";
 			var PVGism = "";
 			var PVGisj = "";
 			if (PVGis[cm] > 0) {
 				PVGisd = " ("+waarde(0,0,PVGis[cm]/dayssol)+" kWh)" ;
-				//PVGism = " ("+waarde(0,0,PVGis[cm]/dayssol*dsol)+" kWh/" + waarde(0,0,PVGis[cm])+" kWh)" ;
 				PVGism = " ("+waarde(0,0,PVGis[cm]/dayssol*dsol)+" kWh)" ;
 				var tPVGis=0;
 				for (i=1; i<msol; i++) {
@@ -834,26 +832,63 @@ omschrijving: hoofdprogramma
 					PVGism+
 					"\r\nJaar:   	" + waarde(0,2,yse + ysv)+" kWh"+
 					PVGisj;
+
+			if (datum1 >= tomorrow) {
+				var ddiff=ve-se;
+				var mdiff=mve-mse;
+				var ydiff=yve-yse;
+				var dcdiff  = "red_text";
+				var mcdiff  = "red_text";
+				var ycdiff  = "red_text";
+				if (ddiff < 0) {
+					dcdiff  = "green_text";
+					ddiff = ddiff * -1;
+				}
+				if (mdiff < 0) {
+					mcdiff  = "green_text";
+					mdiff = mdiff * -1;
+				}
+				if (ydiff < 0) {
+					ycdiff  = "green_text";
+					ydiff = ydiff * -1;
+				}
+				document.getElementById("sum_text").innerHTML = "<table width=100% class=data-table>"+
+						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+datev+"</b></td></tr>" +
+						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>JTD</u></td></tr>" +
+						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv)+"</td></tr>"+
+						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/dayssol)+'</td><td>'+waarde(0,0,PVGis[cm]/dayssol*dsol)+ '</td><td>'+waarde(0,0,tPVGis+(PVGis[cm]/dayssol*dsol))+'</td></tr>'}` +
+						"<tr><td colspan=5><br><u>Huis verbruik</u></td></tr>" +
+						"<tr><td colspan=2>solar:</td><td>"+waarde(0,0,sv)+"</td><td>"+waarde(0,0,msv)+"</td><td>"+waarde(0,0,ysv)+"</td></tr>"+
+						"<tr><td colspan=2>net:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve)+"</td></tr>"+
+						"<tr><td colspan=2><b>Totaal:</b></td><td><b>"+waarde(0,0,ve+sv)+"</b></td><td><b>"+waarde(0,0,mve+msv)+"</b></td><td><b>"+waarde(0,0,yve+ysv)+"</b></td></tr>"+
+						"<tr><td colspan=5><br><u><?php echo $ElecLeverancier?></u></td></tr>" +
+						"<tr><td colspan=2>verbruik:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve)+"</td></tr>"+
+						"<tr><td colspan=2>retour:</td><td>"+waarde(0,0,se)+"</td><td>"+waarde(0,0,mse)+"</td><td>"+waarde(0,0,yse)+"</td></tr>"+
+						"<tr><td colspan=2><b>Netto:</b></td><td class="+dcdiff+"><b>"+waarde(0,0,ddiff)+"</b></td><td class="+mcdiff+"><b>"+waarde(0,0,mdiff)+"</b></td><td class="+ycdiff+"><b>"+waarde(0,0,ydiff)+"</b></td></tr>"+
+						"</table>";
+			}
 		}
 	}
 
 	function zonmaan(){
 		if (date2 >= date3){
 			document.getElementById("NextDay").disabled = true;
+			document.getElementById("Today").disabled = true;
 		}else{
 			document.getElementById("NextDay").disabled = false;
+			document.getElementById("Today").disabled = false;
 		}
-		if (date2 <= "2016-01-01"){
+		if (date2 <= begin){
 			document.getElementById("PrevDay").disabled = true;
 		}
 		if (datum1 < tomorrow) {
-			datumz = Date();
+			datumz = "";
 		}
 		var inv4Data = $.ajax({
 			url: "maanfase.php",
 			dataType: "json",
 			type: 'GET',
-			data: { "date" : datumz },
+			data: { "date" : datumz.replace("00:00:00", `${(new Date()).getHours()}:00:00`) },
 			async: false,
 		}).responseText;
 		inv4Data = eval(inv4Data)
@@ -863,7 +898,6 @@ omschrijving: hoofdprogramma
 		document.getElementById("fase_text").innerHTML = inv4Data[0]["phase_naam"];
 		document.getElementById("verlicht_text").innerHTML = inv4Data[0]["illumination"]+'% Verlicht';
 	}
-
 	$(function() {
 		Highcharts.setOptions({
 			global: {
@@ -987,30 +1021,11 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
-						text: 'Vermogen(W)'
+						text: 'Vermogen (W)'
 					},
-					showEmpty: false,
 					tickPositioner: function () {
 						var positions = [],
 						tick = Math.floor(0),
@@ -1030,7 +1045,7 @@ omschrijving: hoofdprogramma
 					}
 				}, {
 					title: {
-						text: 'Energie (Wh)'
+						text: 'Energie (kWh)'
 					},
 					tickPositioner: function () {
 						var positions = [],
@@ -1151,25 +1166,7 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
 						text: 'Vermogen(W)'
@@ -1315,25 +1312,7 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
 						text: 'Energie (kWh)'
@@ -1471,25 +1450,7 @@ omschrijving: hoofdprogramma
 					},
 					floating: true
 				},
-				xAxis: [{
-					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
-					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
-					title: {
-						text: null
-					},
-					startOnTick: true,
-					minPadding: 0,
-					maxPadding: 0,
-					labels: {
-						overflow: 'justify'
-					},
-					tooltip: {
-						enabled: true,
-						crosshair: true
-					},
-					<?php plotBands(); ?>
-				}],
+				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
 						text: 'Vermogen (W)'
@@ -1612,6 +1573,24 @@ omschrijving: hoofdprogramma
 		onShow: $.calendarsPicker.multipleEvents(
 		$.calendarsPicker.selectWeek, $.calendarsPicker.showStatus),
 		onClose: function(dates) { toonDatum(dates); },
+	});
+	$('#Today').click(function() {
+		var date = new Date();
+		var day = date.getDate();
+		if (day < 10){
+			day = "0" + String(day);
+		}else{
+			day = String(day);
+		}
+		var month = date.getMonth()+1;
+		if (month < 10){
+		month = "0" + String(month);
+		}else{
+		month = String(month);
+		}
+		var year = date.getFullYear();
+		var datum = String(year) + "-" + month + "-" + day;
+		toonDatum(datum);
 	});
 	$('#PrevDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
@@ -1759,6 +1738,11 @@ omschrijving: hoofdprogramma
 						s += '&nbsp;<br/>';
 						s += '<b>Totaal verbruik: <b>' + Highcharts.numberFormat(sVE+sVS,1) + '</b> kWh';
 					} else {
+						if (this.points[0].series.chart.renderTo.id == "monthgraph") {
+							if ( sPVG > 0) {
+								s += '<b>'+PVGtxt+' maand&nbsp;: ' + sPVG + '</b> kWh<br/>';
+							}
+						}
 						s += '<b><?php echo $ElecLeverancier?> verbruik: <b>' + Highcharts.numberFormat(sVE-sRE,1) + '</b> kWh';
 					}
 					return s;
@@ -1837,7 +1821,7 @@ omschrijving: hoofdprogramma
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
 	}
 	function updateP1graphs(ichart,gtype, periods) {
-		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods;
+		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods+"&date="+datumz;
 		$.getJSON(url,
 			function(data1){
 				var series = [], domoData= data1.result;
@@ -1876,16 +1860,18 @@ omschrijving: hoofdprogramma
 			var datesol = new Date(date2);
 			var dsol = datesol.getDate();
 			var msol = datesol.getMonth()+1;
-			var ysol = datesol.getYear()+1900;
+			var ysol = datesol.getFullYear();
 			var dayssol = daysInMonth(msol, ysol);
 			var d = new Date(item.idate);
 			var dm = d.getMonth()+1;
-			var dy = d.getYear()+1900;
+			var dy = d.getFullYear();
 			if (PVGis[dm] > 0) {
 				if (chart.renderTo.id == "monthgraph") {
 					if ( dm == msol && dy == ysol) {
 						datatableSolarPVGis.push([cdate, parseInt(PVGis[dm]/dayssol*dsol)]);
-						datatableSolarPVGis.push([cdate, PVGis[dm]]);
+						if (chart.renderTo.id == "monthgraph") {
+							datatableSolarPVGis.push([cdate, PVGis[dm]]);
+						}
 					} else {
 						datatableSolarPVGis.push([cdate, PVGis[dm]]);
 					}

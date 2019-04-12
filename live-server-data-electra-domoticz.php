@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.4
+// versie: 1.5
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  29-03-2018
+// datum:  12-04-2018
 // omschrijving: ophalen van de P1meter informatie uit Domoticz en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-domoticz.php/period=c
@@ -36,10 +36,12 @@
 //~ ]
 
 $limit = $_GET['aantal'];
+$period = $_GET['period'];
+$d1 = $_GET['date'];
+
 if($limit == ''){
 	$limit = '30';
 }
-$period = $_GET['period'];
 
 $SQLdatefilter = '"%Y-%m-%d"';
 if($period == '' || $period == 'd' ) {
@@ -55,13 +57,9 @@ if($period == '' || $period == 'd' ) {
 	$JSON_SUM = "Y-m-d";
 	$JSON_period = "day";
 }
-//~ $d1 = $_GET['date'];
-$d1 = '';
 if($d1 == ''){
 	$d1 = date("d-m-Y H:i:s", time());
 }
-$d3 = date("Y-m-d", strtotime($d1));
-$d2 = time();
 $date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
 $tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
 $total = array();
@@ -89,7 +87,9 @@ if ($period == 'c' ){
 	$domo_data_cy = $domo_rest['result'];
 
 	// ==================================================================================================
-	$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period"));
+	$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
+	$checkdates = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
+	$checkdatee = date("Y-m-d", $date);
 	$i=0;
 	$savedate=0;
 	// process all Domoticz data and sum for the requested period
@@ -98,7 +98,8 @@ if ($period == 'c' ){
 		$domo_data_py = $domo_rest['resultprev'];
 		foreach($domo_data_py as $item) {
 			$compdate = date($JSON_SUM,strtotime($item['d']));
-			if($compdate>=$checkdate){
+			$compdate2 = date("Y-m-d",strtotime($item['d']));
+			if($compdate>=$checkdates && $compdate2<=$checkdatee){
 				if($savedate!=$compdate) {
 					if ($savedate!=0) {
 						$domorec['d']= $td;
@@ -128,7 +129,8 @@ if ($period == 'c' ){
 	// process this year data
 	foreach($domo_data_cy as $item) {
 		$compdate = date($JSON_SUM,strtotime($item['d']));
-		if($compdate>=$checkdate){
+		$compdate2 = date("Y-m-d",strtotime($item['d']));
+		if($compdate>=$checkdates && $compdate2<=$checkdatee){
 			if($savedate!=$compdate) {
 				if ($savedate!=0) {
 					$domorec['d']= $td;
@@ -168,7 +170,7 @@ if ($period == 'c' ){
 	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 	// haal gegevens van de inverter op
 	$diff = array();
-	$date_i = $date-365*86400;
+	$date_e = (new DateTime(sprintf("today %s",date("Y-m-d 23:59:59", strtotime($checkdatee)))))->getTimestamp();
 	$p1revrow = ["se_day" => 0];
 	if ($inverter == 1){
 		// haal de gegevens van de enkel fase inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
@@ -177,6 +179,7 @@ if ($period == 'c' ){
 				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
 				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
 				'	 		FROM   solaredge.telemetry_inverter ' .
+				'			WHERE timestamp < ' . $tomorrow.
 				'			GROUP BY d  ' .
 				'		  ) t1 ' .
 				' GROUP BY oDate ' .
@@ -190,6 +193,7 @@ if ($period == 'c' ){
 				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
 				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
 				'	 		FROM   solaredge.telemetry_inverter_3phase ' .
+				'			WHERE timestamp < ' . $tomorrow.
 				'			GROUP BY d  ' .
 				'		  ) t1 ' .
 				' GROUP BY oDate ' .
@@ -210,9 +214,9 @@ if ($period == 'c' ){
 		$pnum=$limit-$i-1;
 		$datafound = 0;
 		if ($period == 'm') {
-			$checkdate = date($JSON_SUM, strtotime(date( 'Y-m-01' )." -$pnum $JSON_period"));
+			$checkdate = date($JSON_SUM, strtotime(date( 'Y-m-01' )." -$pnum $JSON_period",$date));
 		} else {
-			$checkdate = date($JSON_SUM, strtotime("-$pnum $JSON_period"));
+			$checkdate = date($JSON_SUM, strtotime("-$pnum $JSON_period",$date));
 		}
 		$diff['idate'] = date("Y-m-d",strtotime(date($checkdate)));
 		$diff['serie'] = date($JSON_SUM,strtotime(date($checkdate)));
@@ -221,7 +225,6 @@ if ($period == 'c' ){
 		foreach($inverter_data as $j => $row){
 			$compdate = date($JSON_SUM,strtotime(date($row['iDate'])));
 			if ($compdate==$checkdate) {
-				//~ 			echo "! yes compdate:".$compdate." \n";
 				$diff['prod'] = round($row["prod"],2);
 				$datafound = 1;
 			}
