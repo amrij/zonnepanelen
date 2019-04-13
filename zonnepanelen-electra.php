@@ -55,7 +55,7 @@ omschrijving: hoofdprogramma
 		if (mysqli_connect_errno())
 		{
 			echo "<div style=background-color:Red;color:white;>";
-			echo "<p>We found a problem connecting to the SQL datase ".$host.":".$port." db:".$db."<br>";
+			echo "<p>We found a problem connecting to the SQL database ".$host.":".$port." db:".$db."<br>";
 			echo "Error:".mysqli_connect_error()."</p>";
 			echo "The website can't be shown until this issue is fixed.</p>";
 			echo "</div>";

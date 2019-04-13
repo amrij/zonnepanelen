@@ -49,7 +49,7 @@ In css/zonnepanelen-electra.css the following is arranged:
   ![Alt text](docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
 
 ## SQL issues
-The websites will check the SQL settings and connectivity and will report the error returned in case of issues connecting to the SolarEdge database:
+The websites will check the SQL settings and connectivity at startup, and will report the error returned in case of issues connecting to the SolarEdge database. For example:
 
 ![Alt text](docs/sql-error.png?raw=true "Mobile portrait")
 
