@@ -1,18 +1,21 @@
 <?php
 //
-// versie: 1.3
+// versie: 1.6
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  13-03-2018
+// datum:  13-04-2018
 
 // omschrijving: ophalen van de P1 en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
+//
 //
 // Extra tabel definitie voor de solaredge database:
 // 		USE solaredge;
 // 		CREATE TABLE P1_Meter (
 // 			timestamp   INT      UNSIGNED NOT NULL,
-// 			v1          FLOAT  COMMENT 'Verbruik Laag tarief',
+// 			Usage          FLOAT  COMMENT 'Verbruik Laag tarief',
 // 			v2          FLOAT  COMMENT 'Verbruik Hoog tarief',
+// 			r1          FLOAT  COMMENT 'Teruglevering Laag tarief',
+// 			r2          FLOAT  COMMENT 'Teruglevering Hoog tarief',
 // 			r1          FLOAT  COMMENT 'Teruglevering Laag tarief',
 // 			r2          FLOAT  COMMENT 'Teruglevering Hoog tarief',
 // 			PRIMARY KEY (timestamp),
@@ -49,11 +52,14 @@
 //~ ]
 
 $limit = $_GET['aantal'];
+$period = $_GET['period'];
+$d1 = $_GET['date'];
+
 if($limit == ''){
 	$limit = '30';
 }
-$period = $_GET['period'];
 
+$SQLdatefilter = '"%Y-%m-%d"';
 if( $period == '' || $period == 'd' ) {
 	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 } elseif ($period == 'm') {
@@ -61,14 +67,9 @@ if( $period == '' || $period == 'd' ) {
 } else {
 	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 }
-
-//~ $d1 = $_GET['date'];
-$d1 = '';
 if($d1 == ''){
 	$d1 = date("d-m-Y H:i:s", time());
 }
-$d3 = date("Y-m-d", strtotime($d1));
-$d2 = time();
 $date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
 $tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
 $total = array();
@@ -77,22 +78,21 @@ include('config.php');
 
 // Get current info for P1_ElectriciteitsMeter from domoticz
 if ($period == 'c' ){
-	//Get current info for P1_ElectriciteitsMeter from domoticz
-	$response = file_get_contents('http://'.$domohost.'&/json.htm?type=devices&rid='.$domoidx);
-	$domo_rest = json_decode($response,true);
-	$diff['ServerTime'] = $domo_rest["ServerTime"];
-	$diff['CounterDelivToday'] = $domo_rest["result"][0]['CounterDelivToday'];
-	$diff['CounterToday'] = $domo_rest["result"][0]['CounterToday'];
-	$diff['Usage'] = $domo_rest["result"][0]['Usage'];
-	$diff['UsageDeliv'] = $domo_rest["result"][0]['UsageDeliv'];
+	// ***************************************************************************************************************
+	// Haal huidig energy verbruik/retour op van de P1_ElectriciteitsMeter .... ????
+	// Dit is afhankelijk van de installatie en zal dus nog gecodeerd moeten worden, de waardes worden nu op 0 gezet.
+	// ***************************************************************************************************************
+	$diff['ServerTime'] = date("d-m-Y H:i:s", time());
+	$diff['CounterToday'] = 0;
+	$diff['CounterDelivToday'] = 0;
+	$diff['Usage'] = 0;
+	$diff['UsageDeliv'] = 0;
 	array_push($total, $diff);
 } else {
-
 	//open MySQL database
 	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 	// haal gegevens van de panelen op
 	$diff = array();
-	$date_i = $date-365*86400;
 	$p1revrow = ["se_day" => 0];
 	if ($inverter == 1){
 		// haal de gegevens van de enkel fase inverter op
@@ -107,6 +107,7 @@ if ($period == 'c' ){
 								'			   GROUP BY d  ' .
 								'			   ) t1 ' .
 								' ON t1.d = t2.d  ' .
+								' WHERE timestamp < ' . $tomorrow .
 								' GROUP BY oDate ' .
 								' ORDER by t2.d desc ' .
 								' LIMIT '.$limit.') output' .
@@ -134,6 +135,7 @@ if ($period == 'c' ){
 								'			   GROUP BY d  ' .
 								'			   ) t1 ' .
 								' ON t1.d = t2.d  ' .
+								' WHERE timestamp < ' . $tomorrow.
 								' GROUP BY oDate ' .
 								' ORDER by t2.d desc ' .
 								' LIMIT '.$limit.') output' .
@@ -147,6 +149,7 @@ if ($period == 'c' ){
 			$diff['r2'] = round($row["r2"],2);
 			//voeg het resultaat toe aan de total-array
 			array_push($total, $diff);
+		}
 	}
 	// Sluit DB
 	$thread_id = $mysqli->thread_id;
