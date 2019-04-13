@@ -20,27 +20,27 @@ Define in index.htm which of the 2 pages you want to open by default.
 </script>
 ```
 3. Customize config.php  
-In config.php the following information is defined:
-  - data for access to the database;
-  - the latitude and longitude of the location of the panels;
-  - name of the background image;
-  - indicate power on the panels;
-  - type of inverter (1 or 3 phase);
-  - the name of the inverter (type number);
-  - the optimizer id, number of the panel, the direction, panel SN and panel power in pW.
+In config.php the following information is defined:  
+   - data for access to the database;
+   - the latitude and longitude of the location of the panels;
+   - name of the background image;
+   - indicate power on the panels;
+   - type of inverter (1 or 3 phase);
+   - the name of the inverter (type number);
+   - the optimizer id, number of the panel, the direction, panel SN and panel power in pW.
    - Extra information for p1:  
-     - P1 script to be used to retrieve the information.
-     - Electricity supplier.
-     - Number of Days and Month to show in the graph.
-     - Background image to use.
-     - PVGis information when you want to have that included in the graphs.
+    - P1 script to be used to retrieve the information.
+    - Electricity supplier.
+    - Number of Days and Month to show in the graph.
+    - Background image to use.
+    - PVGis information when you want to have that included in the graphs.
 4. Customize css/zonnepanelen.css for zonnepanelen.php  
-In css/zonnepanelen.css the following is fixed:
-  - div.box_Zonnepanelen: place, dimensions and possible rotation;
-  - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
+In css/zonnepanelen.css the following is fixed:  
+   - div.box_Zonnepanelen: place, dimensions and possible rotation;
+   - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
 5. Customize css/zonnepanelen-electra.css for zonnepanelen-electra.php  
-In css/zonnepanelen-electra.css the following is arranged:
-  - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
+In css/zonnepanelen-electra.css the following is arranged:  
+   - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
 
 ## screenshot zonnepanelen.php:
   ![Alt text](docs/zonnepanelen.png?raw=true "zonnepanelen.php")
