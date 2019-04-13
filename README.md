@@ -2,7 +2,7 @@
 This Website will show telemetry data from the TCP traffic of SolarEdge PV inverters with zonnepanelen.php, or both the SolarEdge and P1 meter information with zonnepanelen-electra.php.
 The website is based on se-logger (https://github.com/jbuehl/solaredge/)
 It is suitable for single-phase inverters and 3-phase inverters.
-It also contains P1 information retrieval scripts for Domoticz, DSMR and an extra added to the SolarEdge database.
+It also contains P1 information retrieval scripts for Domoticz, DSMR and an extra P1_Meter table which can to be added to the SolarEdge database.
 
 ## How it works
 The website is based on the database of se-logger.
@@ -11,8 +11,7 @@ Then the website can be started with solar panels.php.
 
 ## Installation steps
 1. Unpack the file img/maan/maan.zip.
-2. Customize index.htm
-Define in index.htm which of the 2 pages you want to open by default.
+2. Customize index.htm to define which of the 2 pages you want to open by default.
 ```
 <script>
 	window.location.replace("zonnepanelen.php");
@@ -48,5 +47,10 @@ In css/zonnepanelen-electra.css the following is arranged:
 ## screenshots zonnepanelen-electra.php:
   ![Alt text](docs/zonnepanelen-electra_LT_new.PNG?raw=true "Laptop")
   ![Alt text](docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
+
+## SQL issues
+The websites will check the SQL settings and connectivity and will report the error returned in case of issues connecting to the SolarEdge database:
+
+![Alt text](docs/sql-error.png?raw=true "Mobile portrait")
 
 For more information see https://gathering.tweakers.net/forum/list_message/54439825#54439825

@@ -50,6 +50,21 @@ omschrijving: hoofdprogramma
 	<script src="js/jquery.calendars.validation.js"></script>
 	<?php
 		include('config.php');
+		// Added to check settings for SQL database server and report when error occures
+		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
+		if (mysqli_connect_errno())
+		{
+			echo "<div style=background-color:Red;color:white;>";
+			echo "<p>We found a problem connecting to the SQL datase ".$host.":".$port." db:".$db."<br>";
+			echo "Error:".mysqli_connect_error()."</p>";
+			echo "The website can't be shown until this issue is fixed.</p>";
+			echo "</div>";
+			exit();
+		}
+		$thread_id = $mysqli->thread_id;
+		$mysqli->kill($thread_id);
+		$mysqli->close();
+		// end SQL database check
 		if ($aantal < 0) { $aantal = 0;}
 		for ($i=1; $i<=$aantal; $i++){
 			if ($op_id[$i][2] == 1){$pro[$i] =  "6%"; $top[$i] = "65%";}
