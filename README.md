@@ -5,9 +5,9 @@ It is suitable for single-phase inverters and 3-phase inverters.
 It also contains P1 information retrieval scripts for Domoticz, DSMR and an extra P1_Meter table which can to be added to the SolarEdge database.
 
 ## How it works
-The website is based on the database of se-logger.
-To configure the website config.php and css / zonnepanelen.css have to be modified.
-Then the website can be started with solar panels.php.
+The website is based on the database of se-logger.  
+To configure the website, both config.php and css/zonnepanelen(-electra).css have to be modified.
+After configuration, the website can be started by going to the root of the Website (index.htm),  zonnepanelen.php or zonnepanelen-electra.php depending for which page you have chosen.
 
 ## Installation steps
 1. Unpack the file img/maan/maan.zip.
