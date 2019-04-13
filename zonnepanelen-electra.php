@@ -20,9 +20,9 @@
 #
 
 based on versie: 1.64 of zonnepanelen.php
-versie: 1.64.1
+versie: 1.64.2
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  12-04-2019
+datum:  13-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -419,6 +419,33 @@ omschrijving: hoofdprogramma
 			}, 60000);
 		}
 	}
+	var paneelGraph = {
+			'Vermogen':     { 'metric': 'p1_current_power_prd', 'tekst': 'Vermogen',    'unit': 'W' },
+			'Energie':      { 'metric': 'p1_volume_prd',        'tekst': 'Energie',     'unit': 'Wh' },
+			'Temperatuur':  { 'metric': 'temperature',          'tekst': 'Temperatuur', 'unit': '°C' },
+			'V_in':         { 'metric': 'vin',                  'tekst': 'Spanning In', 'unit': 'V' },
+			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning In', 'unit': 'V' },
+			'I_in':         { 'metric': 'iin',                  'tekst': 'Stroom In',   'unit': 'A' }
+		};
+	function paneelFillSeries(metric, shift, x, ichart) {
+		for (var i = 0; i < data_p.length; i++){
+			if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
+				var sIdx = data_p[i]['op_id'] - 1;
+				if (data_p[i]['op_id'] > x ){ --sIdx; }
+				ichart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+			} else {
+				ichart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+			}
+		}
+		ichart.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
+		ichart.legend.update({x:10,y:20});
+		ichart.series[aantal].update({name: paneelGraph[metric]['tekst'] + " paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+		ichart.series[aantal-1].update({showInLegend: false});
+		ichart.series[aantal-2].update({showInLegend: true, name: paneelGraph[metric]['tekst'] + " overige panelen"});
+		ichart.yAxis[0].update({ opposite: true });
+		ichart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
+		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+	}
 	function paneelChart(event,x) {
 		if (x <= aantal){
 			inverter_redraw = 0;
@@ -427,38 +454,13 @@ omschrijving: hoofdprogramma
 			// #### Vermogen  #####
 			var series = paneel_chartv.series[0];
 			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-			for (var i = 0; i < data_p.length; i++){
-				if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
-					if (data_p[i]['op_id'] < x ){
-						paneel_chartv.series[data_p[i]['op_id']-1].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
-						paneel_charte.series[data_p[i]['op_id']-1].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
-					} else {
-						paneel_chartv.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
-						paneel_charte.series[data_p[i]['op_id']-2].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
-					}
-				} else {
-					paneel_chartv.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_current_power_prd']*1], false, shift);
-					paneel_charte.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],0),data_p[i]['p1_volume_prd']*1], false, shift);
-				}
+			//
+			paneelFillSeries('Energie', shift, x, paneel_charte);
+			if (event.shiftKey) {
+				paneelFillSeries('Temperatuur', shift, x, paneel_chartv);
+			} else {
+				paneelFillSeries('Vermogen', shift, x, paneel_chartv);
 			}
-			paneel_chartv.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-				paneel_chartv.yAxis[0].update({ opposite: true });
-			paneel_charte.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-				paneel_charte.yAxis[0].update({ opposite: true });
-			paneel_chartv.legend.update({x:10,y:20});
-				paneel_chartv.series[aantal].update({name: "Vermogen paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-				paneel_chartv.series[aantal-1].update({showInLegend: false});
-				paneel_chartv.series[aantal-2].update({showInLegend: true, name: "Vermogen overige panelen"});
-				paneel_chartv.yAxis[0].update({ title: { text: 'Vermogen (W)'},});
-				paneel_chartv.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
-			paneel_charte.legend.update({x:10,y:20});
-				paneel_charte.series[aantal].update({name: "Energie paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
-				paneel_charte.series[aantal-1].update({showInLegend: false});
-				paneel_charte.series[aantal-2].update({showInLegend: true, name: "Energie overige panelen"});
-				paneel_charte.yAxis[0].update({ title: { text: 'Energie (Wh)' }, });
-				paneel_charte.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
-			paneel_chartv.redraw();
-			paneel_charte.redraw();
 		}
 	}
 
