@@ -31,7 +31,7 @@ In config.php the following information is defined:
    - Extra information for p1:  
     - P1 script to be used to retrieve the information.
     - Electricity supplier.
-    - Number of Days and Month to show in the graph.
+    - Number of Days and Months to show in the P1 graphs.
     - Background image to use.
     - PVGis information when you want to have that included in the graphs.
 4. Customize css/zonnepanelen.css for zonnepanelen.php  

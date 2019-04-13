@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.25
-// auteur: André Rijkeboer
-// datum:  29-03-2019
+// versie: 1.26
+// auteurs: André Rijkeboer en Jos van der Zande
+// datum:  13-04-2019
 // omschrijving: configuratie bestand
 
 // gegevens voor het openen van de database
@@ -53,12 +53,15 @@ $domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
 $domoidx = "123";                                   // device IDX voor de Electriciteits P1 meter
 $DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
 
-//** velden voor Electra info van DSMR server(verwijder // om te activeren)
+//** velden voor Electra info van DSMR server (verwijder // van de volgende regels om deze optie te activeren)
 // $dsmr_url='http://host-ip:8888';                     // URL voor DSMR inclusief
 // $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
 // $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
 
-//#### einde aanpassing
+//** velden voor Electra info van eigen database server (verwijder // van de volgende regel om deze optie te activeren)
+// $DataURL = 'live-server-data-electra-p1_meter_table.php';      // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
+
+//#### einde extra velden tbv zonnepanelen-electra.php
 
 // aangeven vermogen op het paneel
 $vermogen = 1; // 0 = nee, 1 = ja
