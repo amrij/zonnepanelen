@@ -1,65 +1,52 @@
 # Zonnepanelen
-Website which shows telemetry data from the TCP traffic of SolarEdge PV inverters
+This Website will show telemetry data from the TCP traffic of SolarEdge PV inverters with zonnepanelen.php, or both the SolarEdge and P1 meter information with zonnepanelen-electra.php.
 The website is based on se-logger (https://github.com/jbuehl/solaredge/)
-This website shows the data that is collected with the se-logger software.
 It is suitable for single-phase inverters and 3-phase inverters.
+It also contains P1 information retrieval scripts for Domoticz, DSMR and an extra added to the SolarEdge database.
 
 ## How it works
 The website is based on the database of se-logger.
 To configure the website config.php and css / zonnepanelen.css have to be modified.
 Then the website can be started with solar panels.php.
 
-## Customize config.php
-In config.php the following is fixed:
-- data for access to the database;
-- the latitude and longitude of the location of the panels;
-- name of the background image;
-- indicate power on the panels;
-- type of inverter (1 or 3 phase);
-- the name of the inverter (type number);
-- the number of panels;
-- the optimizer id and number of the panel and the direction.
-
-## Customize css/zonnepanelen.css
+## Installation steps
+1. Unpack the file img/maan/maan.zip.
+2. Customize index.htm
+Define in index.htm which of the 2 pages you want to open by default.
+```
+<script>
+	window.location.replace("zonnepanelen.php");
+	//window.location.replace("zonnepanelen-electra.php");
+</script>
+```
+3. Customize config.php  
+In config.php the following information is defined:
+  - data for access to the database;
+  - the latitude and longitude of the location of the panels;
+  - name of the background image;
+  - indicate power on the panels;
+  - type of inverter (1 or 3 phase);
+  - the name of the inverter (type number);
+  - the optimizer id, number of the panel, the direction, panel SN and panel power in pW.
+   - Extra information for p1:  
+     - P1 script to be used to retrieve the information.
+     - Electricity supplier.
+     - Number of Days and Month to show in the graph.
+     - Background image to use.
+     - PVGis information when you want to have that included in the graphs.
+4. Customize css/zonnepanelen.css for zonnepanelen.php  
 In css/zonnepanelen.css the following is fixed:
-- div.box_Zonnepanelen: place, dimensions and possible rotation;
-- div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
+  - div.box_Zonnepanelen: place, dimensions and possible rotation;
+  - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
+5. Customize css/zonnepanelen-electra.css for zonnepanelen-electra.php  
+In css/zonnepanelen-electra.css the following is arranged:
+  - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
 
-The file img/maan/maan.zip must be unpacked.
+## screenshot zonnepanelen.php:
+  ![Alt text](docs/zonnepanelen.png?raw=true "zonnepanelen.php")
 
-## ====== Additional information for this Branch ========
-This version of the Website is showing both the Solar and the P1_meter information from Domoticz or other source.
-The main webpage is zonnepanelen-electra.php which will be automatically opened by index.htm.
-This version also uses a customized CSS, zonnepanelen-electra.css, to allow it to be viewed on a PC, Laptop, Mobile in portrait and Landscape. This means you need to update it with your config for the solar panels as described above for the standard site.
-This is handled by means of the  containing the definition for each of these options.
-
-The Config.php contains extra set of variables required for the extra's needed by this version of the website. Their purpose is described at the end of the line in this section of config.php:
-```
-//#### Toegevoegd voor zonnepanelen-electra.php tbv informatie ophalen van electra
-//** Algemene velden
-$ElecLeverancier = "Essent";                        // naam electra leverancier
-$ElecDagGraph = '45';                               // aantal dagen in grafiek
-$ElecMaandGraph = '14';                             // aantal maanden in grafiek
-$zonnesysteem_electra = "zonnesysteem-electra.gif"; // achtergrond. Let op: dit is een ander formaat dan het orgineel om het ook op Mobiel te kunnen laten zien.
-
-//** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
-$PVGtxt = "PVGis";                                           // Tekst waar de schatting vandaan komt bv: "PVGis"
-$PVGis = [144,233,461,628,660,641,630,574,440,296,154,116];  // schatting opbrengst iedere maand voor de installatie
-
-//** velden voor Electra info van Domoticz server
-$domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
-$domoidx = "123";                                   // device IDX voor de Electriciteits P1 meter
-$DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
-
-//** velden voor Electra info van DSMR server(verwijder // om te activeren)
-// $dsmr_url='http://host-ip:1234';                     // URL voor DSMR inclusief
-// $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
-// $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
-
-//#### einde aanpassing
-```
-screenshots:</b>
-  ![Alt text](/docs/zonnepanelen-electra_LT_new.PNG?raw=true "Laptop")
-  ![Alt text](/docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
+## screenshots zonnepanelen-electra.php:
+  ![Alt text](docs/zonnepanelen-electra_LT_new.PNG?raw=true "Laptop")
+  ![Alt text](docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
 
 For more information see https://gathering.tweakers.net/forum/list_message/54439825#54439825

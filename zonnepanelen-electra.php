@@ -1891,7 +1891,6 @@ omschrijving: hoofdprogramma
 		});
 
 		var series;
-		//Electra Usage/Return
 		var totDecimals = 3;
 		if (datatableSolarElecNet.length > 0) {
 			series = chart.get('SolarElecNet');

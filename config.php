@@ -48,15 +48,15 @@ $zonnesysteem_electra = "zonnesysteem-electra.gif"; // achtergrond. Let op: dit 
 $PVGtxt = "PVGis";                                  // Tekst waar de schatting vandaan komt bv: "PVGis"
 $PVGis = [0,0,0,0,0,0,0,0,0,0,0,0];                 // schatting opbrengst iedere maand voor de installatie
 
-//** velden voor Electra info van Domoticz server
+//** velden voor ophalen P1 info van Domoticz server
 $domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
 $domoidx = "123";                                   // device IDX voor de Electriciteits P1 meter
-$DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
+$DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
 
 //** velden voor Electra info van DSMR server(verwijder // om te activeren)
 // $dsmr_url='http://host-ip:8888';                     // URL voor DSMR inclusief
 // $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
-// $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen electra&Converter data tbv zonnepanelen-electra.php
+// $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
 
 //#### einde aanpassing
 
@@ -68,7 +68,7 @@ $inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
 $naam = "SolarEdge SE7k"; //naam van de inverter
 // optimizer id en positie paneel, de richting van de panelen Vertikaal = 0, Horizontaal = 1
 // het serienummer en het vermogen van het paneel
-//$op_id[id optimizer][inverter.string.paneelnummer][richting][id paneel][vermogen paneel]
+// $op_id[id optimizer][inverter.string.paneelnummer][richting][id paneel][vermogen paneel]
 $op_id[1] = ['2020B2E3','1.1.1',1,'D5',300];
 $op_id[2] = ['2020B18C', '1.1.2',1,'D7',300];
 $op_id[3] = ['2020B1B2', '1.1.3',1,'A3',300];
