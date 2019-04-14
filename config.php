@@ -30,7 +30,7 @@ $user = 'gebruiker'; // gebruiker
 $passwd = 'password'; // paswoord gebruiker
 $db = 'solaredge'; // database naam
 
-// gegeven van de plaats waar de zonnepanelen staan
+// gegevens van de plaats waar de zonnepanelen staan
 $lat = 51.9515885; //Latitude North
 $long = 6.0045953; //Longitude East
 

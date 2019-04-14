@@ -20,7 +20,7 @@
 //
 versie: 1.40.1
 auteur: André Rijkeboer adapted by Jos van der Zande for zonnepanelen-electra.css
-datum: 14-03-2019
+datum: 14-04-2019
 omschrijving: basisgegevens voor de zonnepanelen
 */
 a{
@@ -160,6 +160,7 @@ div.panel_energy {
     height: 49.7%;
     position: absolute;
 }
+
 div.panel_vermogen {
     left: 71.5%;
     top: 0.1%;
@@ -167,6 +168,7 @@ div.panel_vermogen {
     height: 49.7%;
     position: absolute;
 }
+
 div.chart_energy {
     left: 43%;
     top: 0.1%;
@@ -174,6 +176,7 @@ div.chart_energy {
     height: 49.7%;
     position: absolute;
 }
+
 div.chart_vermogen {
     left: 71.5%;
     top: 0.1%;
@@ -181,6 +184,7 @@ div.chart_vermogen {
     height: 49.7%;
     position: absolute;
 }
+
 div.daygraph {
     left: .1%;
     top: 50.2%;
@@ -188,6 +192,7 @@ div.daygraph {
     height: 48.9%;
     position: absolute;
 }
+
 div.monthgraph {
     left: 71.5%;
     top: 50.2%;
@@ -196,6 +201,123 @@ div.monthgraph {
     position: absolute;
 }
 
+div.inverter_text {
+	top: 10%;
+	left: 25.5%;
+	z-index: 10;
+	width: 43%;
+	height: 15%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.datum {
+	top: 0.1%;
+	left: 4%;
+	z-index: 3;
+	width: 80%;
+	height: 5%;
+	position: absolute;
+}
+
+div.map_inverter {
+	top: 10%;
+	left: 4%;
+	width: 18%;
+	height: 22%;
+	z-index: 10;
+	position: absolute;
+}
+
+div.sola_text {
+	top: 40%;
+	left: 3%;
+	width: 30%;
+	height: 15%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.sum_text {
+	top: 40%;
+	left: 3%;
+	width: 45%;
+	height: 50%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.elec_text {
+	top: 65%;
+	left: 18%;
+	width: 30%;
+	height: 15%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.so_text {
+	top: 37.0%;
+	left: 28.0%;
+	width: 15%;
+	height: 5%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.arrow_prd_pos {
+	top: 34.65%;
+	left: 29.0%;
+	width: 0.01%;
+	height: 0.7% ;
+	z-index: 20;
+	position: absolute;
+}
+
+div.p1_text_pos {
+	top: 82.5%;
+	left: 70.0%;
+	width: 15%;
+	height: 5%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.arrow_return_pos {
+	top: 88.75%;
+	left: 75.0%;
+	width: 0.03%;
+	height: 2.1%;
+	z-index: 20;
+	position: absolute;
+}
+
+div.map_p1_meter {
+	top: 60%;
+	left: 50%;
+	width: 20%;
+	height: 25%;
+	z-index: 10;
+	position: absolute;
+}
+
+div.p1_huis_pos {
+	top: 30.0%;
+	left: 61.0%;
+	width: 15%;
+	height: 5%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.map_huis {
+	top: 3.5%;
+	left: 65%;
+	width: 27%;
+	height: 28%;
+	z-index: 10;
+	position: absolute;"
+}
 /*when the browsers width is less than 700 pixels*/
 @media screen and (max-width:700px) {
 
@@ -348,7 +470,6 @@ div.box_Zonnepaneel_3 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_4 {
@@ -365,7 +486,6 @@ div.box_Zonnepaneel_5 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_6 {
@@ -374,7 +494,6 @@ div.box_Zonnepaneel_6 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_7 {
@@ -383,7 +502,6 @@ div.box_Zonnepaneel_7 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_8 {
@@ -392,7 +510,6 @@ div.box_Zonnepaneel_8 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_9 {
@@ -401,7 +518,6 @@ div.box_Zonnepaneel_9 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_10 {
@@ -410,7 +526,6 @@ div.box_Zonnepaneel_10 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_11 {
@@ -419,7 +534,6 @@ div.box_Zonnepaneel_11 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_12 {
@@ -428,7 +542,6 @@ div.box_Zonnepaneel_12 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_13 {
@@ -437,7 +550,6 @@ div.box_Zonnepaneel_13 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_14 {
@@ -446,7 +558,6 @@ div.box_Zonnepaneel_14 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_15 {
@@ -455,7 +566,6 @@ div.box_Zonnepaneel_15 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_16 {
@@ -464,7 +574,6 @@ div.box_Zonnepaneel_16 {
     width: 33.10%;
     height: 14.00%;
     position: absolute;
-
 }
 
 div.box_Zonnepaneel_17 {

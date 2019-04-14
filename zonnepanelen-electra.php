@@ -22,7 +22,7 @@
 based on versie: 1.64 of zonnepanelen.php
 versie: 1.64.2
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  13-04-2019
+datum:  14-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -56,7 +56,7 @@ omschrijving: hoofdprogramma
 		{
 			echo "<div style=background-color:Red;color:white;>";
 			echo "<p>We found a problem connecting to the SQL database ".$host.":".$port." db:".$db."<br>";
-			echo "Error:".mysqli_connect_error()."</p>";
+			echo "Error: ".mysqli_connect_error()."</p>";
 			echo "The website can't be shown until this issue is fixed.</p>";
 			echo "</div>";
 			exit();
@@ -238,10 +238,8 @@ omschrijving: hoofdprogramma
 	<div class='mainpage'>
 		<div class='container' id='container'>
 			<div Class='box_inverter' id='box_inverter'>
-				<div class="imageOver">
-					<img src="./img/<?php echo $zonnesysteem_electra;?>" alt=""  style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -100;"/>
-				</div>
-				<div Class='datum' id='datum' style="top: 0.1; left: 5%; z-index: 3; width: 75%; height: 5%; position: absolute;">
+				<img src="./img/<?php echo $zonnesysteem_electra;?>" alt=""  style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -100;"/>
+				<div class='datum' id='datum' >
 						<TR style="text-align:center"><TD>
 						<input type="button" id="PrevDay" class="btn btn-success btn-sm" value="<" title="Vorige dag">
 						<input type="text" id="multiShowPicker" class="embed" size="8.5" style="text-align:center;">
@@ -250,24 +248,31 @@ omschrijving: hoofdprogramma
 						</TD><TR>
 				</div>
 
-				<img src="./img/dummy.gif" style="top: 10%; left: 4.00%; z-index: 10; width: 18.00%; height: 22.00%; position: absolute;" usemap="#inverter"/>
+				<div class='map_inverter' id='map_inverter'>
+					<img src="./img/dummy.gif" usemap="#inverter"/>
+				</div>
 				<map name="inverter" style="z-index: 20;">
 					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="">
 				</map>
-				<div class='inverter_text' id='inverter_text' style="top: 10%; left: 25.5%; z-index: 10; width: 43%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<div class='sola_text' id='sola_text' style="top: 40%; left: 3%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<div class='sum_text' id='sum_text' style="top: 40%; left: 3%; width: 45%; height: 50%; line-height: 120%; position: absolute;"></div>
-				<div class='elec_text' id='elec_text' style="top: 65%; left: 18%; width: 30%; height: 15%; line-height: 120%; position: absolute;"></div>
-				<div class='so_text' id='so_text' style="top: 37.0%; left: 28.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
-				<div class="" id="arrow_PRD"      style="top: 34.05%; left: 29.0%; width: 0.01%; height: 0.7% ; z-index: 20; position: absolute;"></div>
-				<div class='p1_text' id='p1_text' style="top: 82.5%; left: 70.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
-				<div class=""   id="arrow_RETURN" style="top: 87.35%; left: 75.0%; width: 0.03%; height: 2.1%; z-index: 20; position: absolute;"></div>
-				<img src="./img/dummy.gif" style="top: 60%; left: 50%; z-index: 10; width: 3,62%; height: 25%; position: absolute;" usemap="#meter"/>
+				<div class='inverter_text' id='inverter_text'></div>
+				<div class='sola_text' id='sola_text'></div>
+				<div class='sum_text' id='sum_text'></div>
+				<div class='elec_text' id='elec_text' ></div>
+				<div class='so_text'><div id='so_text'></div></div>
+				<div class="arrow_prd_pos"><div id="arrow_PRD"></div></div>
+				<div class="arrow_return_pos"><div id="arrow_RETURN" ></div></div>
+				<div class='p1_text_pos'><div id='p1_text'></div></div>
+				<div class='map_p1_meter' id='map_p1_meter'>
+					<img src="./img/dummy.gif" usemap="#meter"/>
+				</div>
 				<map name="meter" style="z-index: 20;">
 					<area id="meter_1" shape="rect" coords="0,0,67,100" title="P1_Meter">
 				</map>
-				<div class='p1_huis' id='p1_huis' style="top: 30.0%; left: 61.0%; width: 15%; height: 5%; line-height: 120%; position: absolute;"></div>
-				<img src="./img/dummy.gif" style="top: 3.5%; left: 65%; z-index: 10; width: 27%; height: 28%; position: absolute;" usemap="#huis"/>
+
+				<div class='p1_huis_pos'><div id='p1_huis'></div></div>
+				<div class='map_huis' id='map_huis'>
+					<img src="./img/dummy.gif" usemap="#huis"/>
+				</div>
 				<map name="huis" style="z-index: 20;">
 					<area id="huis_1" shape="rect" coords="0,0,150,150" title="thuis verbruik">
 				</map>
