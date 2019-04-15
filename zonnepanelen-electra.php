@@ -279,12 +279,24 @@ omschrijving: hoofdprogramma
 				</map>
 			</div>
 
-			<div Class='panel_energy' id='panel_energy'></div>
-			<div Class='panel_vermogen' id='panel_vermogen'></div>
-			<div Class='chart_energy' id='chart_energy'></div>
-			<div Class='chart_vermogen' id='chart_vermogen'></div>
-			<div Class='daygraph' id="daygraph"></div>
-			<div Class='monthgraph' id="monthgraph"></div>
+			<div Class='box_panel_energy' id='box_panel_energy'>
+				<div id="panel_energy" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_panel_vermogen' id='box_panel_vermogen'>
+				<div id="panel_vermogen" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_chart_energy' id='box_chart_energy'>
+				<div id="chart_energy" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_chart_vermogen' id='box_chart_vermogen'>
+				<div id="chart_vermogen" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_daygraph' id='box_daygraph'>
+				<div id="daygraph" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_monthgraph' id='box_monthgraph'>
+				<div id="monthgraph" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
 
 			<div Class='box_Zonnepanelen' id='box_Zonnepanelen'>
 <?php
@@ -1655,6 +1667,45 @@ omschrijving: hoofdprogramma
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
 	});
+
+	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
+		this.classList.toggle("box_Zonnepanelen-is-clicked");
+	});
+	document.getElementById("box_inverter").addEventListener("click", function() {
+		this.classList.toggle("box_inverter-is-clicked");
+	});
+	document.getElementById("box_chart_energy").addEventListener("click", function() {
+		this.classList.toggle("box_chart_energy-is-clicked");
+		document.getElementById("box_panel_energy").classList.toggle("box_panel_energy-is-clicked");
+		paneel_charte.reflow();
+		inverter_chart.reflow();
+		inverter_chart.reflow();
+	});
+	document.getElementById("box_chart_vermogen").addEventListener("click", function() {
+		this.classList.toggle("box_chart_vermogen-is-clicked");
+		document.getElementById("box_panel_vermogen").classList.toggle("box_panel_vermogen-is-clicked");
+		paneel_chartv.reflow();
+		vermogen_chart.reflow();
+		vermogen_chart.reflow();
+	});
+	document.getElementById("box_daygraph").addEventListener("click", function() {
+		this.classList.toggle("box_daygraph-is-clicked");
+		wchart.reflow();
+		wchart.reflow();
+	});
+	document.getElementById("box_monthgraph").addEventListener("click", function() {
+		this.classList.toggle("box_monthgraph-is-clicked");
+		ychart.reflow();
+		ychart.reflow();
+	});
+	window.addEventListener('resize', function(){
+		paneel_charte.reflow();
+		inverter_chart.reflow();
+		paneel_chartv.reflow();
+		vermogen_chart.reflow();
+		wchart.reflow();
+		ychart.reflow();
+	}, true);
 
 // -------------------------------
 // P1 meter scripts
