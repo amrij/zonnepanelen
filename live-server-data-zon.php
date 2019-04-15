@@ -55,7 +55,8 @@ $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
 
-// zet gegevens van de panelen op 0
+// zet gegevens van de panelen op 0 voor het geval dat
+// midnight < begin of de sql query faalt
 for ($i = 1; $i <= $aantal; $i++) {
 	$diff['O' . $i]	= 0;
 	$diff['C' . $i]	= 0;
@@ -77,7 +78,6 @@ $diff['IVMAX']	= 0;
 $diff['IE']	= 0;
 $diff['MODE']	= '';
 $diff['v_dc']	= 0;
-
 // haal gegevens van de panelen op
 If ($midnight >= $begin) {
 	// PANEL DATA
@@ -90,7 +90,8 @@ If ($midnight >= $begin) {
 			order BY HEX(op_id), timestamp",
 			$format, $today, $tomorrow);
 	$result = $mysqli->query($query);
-	if ($result) { 
+
+	if ($result) {
 		$prev_id = 0;
 		$prev_uptime = 0;
 		$prev_e_day = 0;
@@ -131,8 +132,9 @@ If ($midnight >= $begin) {
 			$diff['E' . $i]   = round($diff['VI' . $i] * $diff['S' . $i], 2);
 			$diff['VM' . $i]  = round($diff['VM' . $i]*0.125*0.00625, 2);
 			$diff['VMT' . $i] = substr($diff['VMT' . $i], 11);
+		}
 	}
-	}
+
 	// INVERTER DATA
 	// Collect min/max over the day
 	// By using two queries there is no need to go through all data of the day
@@ -143,7 +145,7 @@ If ($midnight >= $begin) {
 			  WHERE timestamp BETWEEN %s AND %s
 			  ", $cols, $table, $today, $tomorrow);
 	$result = $mysqli->query($query);
-	if ($result) { 
+	if ($result) {
 		$row = mysqli_fetch_assoc($result);
 		$diff['ITMIN']	= round($row['t_min'],1);
 		$diff['ITMAX']	= round($row['t_max'],1);
@@ -161,7 +163,7 @@ If ($midnight >= $begin) {
 			  WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC limit 1
 			  ", $format, $cols, $table, $today, $tomorrow);
 	$result = $mysqli->query($query);
-	if ($result) { 
+	if ($result) {
 		$row = mysqli_fetch_assoc($result);
 
 		$diff['IT']	= $row['datum'];
@@ -188,17 +190,6 @@ If ($midnight >= $begin) {
 			$diff['p_active2']	= round($row['p_active2'],0);
 			$diff['p_active3']	= round($row['p_active3'],0);
 		}
-	} else {
-		$diff['IT']	= $d1;
-		$diff['ITMIN']	= 0;
-		$diff['ITMAX']	= 0;
-		$diff['ITACT']	= 0;
-		$diff['IVACT']	= 0;
-		$diff['IVMAX']	= 0;
-		$diff['IE']	= 0;
-		$diff['MODE']	= '';
-		$diff['v_dc']	= 0;
-
 	}
 }
 	
