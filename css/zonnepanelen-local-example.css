@@ -1,0 +1,291 @@
+/*
+//
+// Copyright (C) 2019 André Rijkeboer
+//
+// This file is part of zonnepanelen, which shows telemetry data from
+// the TCP traffic of SolarEdge PV inverters.
+//
+// zonnepanelen is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 3 of the License, or (at
+// your option) any later version.
+//
+// zonnepanelen is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
+//
+versie: 1.64.1
+auteur: André Rijkeboer adapted by Jos van der Zande
+datum: 15-04-2019
+omschrijving: Hernoem dit bestand naar zonnepanelen-local.css en copieer de zonnepanelen gegevens uit zonnepanelen.css (OF zonnepanelen-ELECTRA.css) basisgegevens voor de zonnepanelen.
+Dit voorkomt dat updates in zonnepanelen.css of in zonnepanelen-electra.css het nodig maakt de eigen gegeven weer aan te passen.
+*/
+
+div.box_Zonnepaneel_1 {
+    left: 66.66%;
+    top: 0%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_2 {
+    left: 66.66%;
+    top: 14.29%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+
+}
+
+div.box_Zonnepaneel_3 {
+    left: 66.66%;
+    top: 28.57%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_4 {
+    left: 66.66%;
+    top: 42.86%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_5 {
+    left: 66.66%;
+    top: 57.14%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_6 {
+    left: 66.66%;
+    top: 71.44%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_7 {
+    left: 66.66%;
+    top: 85.77%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_8 {
+    left: 33.34%;
+    top: 0%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_9 {
+    left: 33.34%;
+    top: 14.29%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_10 {
+    left: 33.34%;
+    top: 28.57%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_11 {
+    left: 33.34%;
+    top: 42.86%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_12 {
+    left: 0%;
+    top: 0%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_13 {
+    left: 0%;
+    top: 14.29%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_14 {
+    left: 0%;
+    top: 28.57%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_15 {
+    left: 0%;
+    top: 42.86%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_16 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_17 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_18 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_19 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_20 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_21 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_22 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_23 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_24 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_25 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_26 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_27 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_28 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_29 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_30 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_31 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_32 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}
+
+div.box_Zonnepaneel_33 {
+    left: 0%;
+    top: 80%;
+    width: 33.10%;
+    height: 14.00%;
+    position: absolute;
+}

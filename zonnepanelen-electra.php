@@ -20,9 +20,9 @@
 #
 
 based on versie: 1.64 of zonnepanelen.php
-versie: 1.64.2
+versie: 1.64.3
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  14-04-2019
+datum:  15-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -41,6 +41,7 @@ omschrijving: hoofdprogramma
 	<link rel="stylesheet" href="css/jquery.calendars.picker.css" id="theme">
 	<link rel="stylesheet" href="css/app.css">
 	<link href='css/zonnepanelen-electra.css' rel='stylesheet' type='text/css'/>
+	<link href='css/zonnepanelen-local.css' rel='stylesheet' type='text/css'/>
 	<script src="js/jquery.plugin.js"></script>
 	<script src="js/jquery.mousewheel.js"></script>
 	<script src="js/jquery.calendars.js"></script>

@@ -19,9 +19,9 @@
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-versie: 1.64
+versie: 1.64.1
 auteur: André Rijkeboer
-datum:  30-03-2019
+datum:  15-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -40,6 +40,7 @@ omschrijving: hoofdprogramma
 	<link rel="stylesheet" href="css/jquery.calendars.picker.css" id="theme">
 	<link rel="stylesheet" href="css/app.css">
 	<link href='css/zonnepanelen.css' rel='stylesheet' type='text/css'/>
+	<link href='css/zonnepanelen-local.css' rel='stylesheet' type='text/css'/>
 	<script src="js/jquery.plugin.js"></script>
 	<script src="js/jquery.mousewheel.js"></script>
 	<script src="js/jquery.calendars.js"></script>
