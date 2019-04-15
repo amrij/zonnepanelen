@@ -50,7 +50,7 @@ $mode[9] = '';
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 if ($aantal < 0) { $aantal = 0;}
 // bepaal de eerste dag van de data in de database
-$query = sprintf("SELECT min(timestamp) FROM telemetry_optimizers");
+$query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
 $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
