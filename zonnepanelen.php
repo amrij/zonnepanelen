@@ -669,7 +669,7 @@ omschrijving: hoofdprogramma
 						}
 					}
 					if(inverter_redraw == 1) {inverter_chart.redraw();} // default is energie chart
-					if (datum1 < reportEndStamp) {
+					if (datum1 < tomorrow) {
 					   setTimeout(requestDatai, 1000*60);
 					} else {
 					   setTimeout(requestDatai, 1000*86400);
