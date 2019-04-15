@@ -66,8 +66,8 @@ foreach ($mysqli->query(
 	$diff['uur']    = gmdate("H",$row['timestamp']);
 	$diff['minuut'] = gmdate("i",$row['timestamp']);
 	$diff['sec']    = gmdate("s",$row['timestamp']);
-	$diff['temperature'] = $row['temperature'] * 2;
-	$diff['p1_volume_prd'] = round($de_day_total/1000,3);
+	$diff['temperature'] = sprintf("%.0f", $row['temperature'] * 2);
+	$diff['p1_volume_prd'] = sprintf("%.3f", $de_day_total/1000);
 	$diff['p1_current_power_prd'] = $row['p_active'];
 	//voeg het resultaat toe aan de total-array
 	array_push($total, $diff);
