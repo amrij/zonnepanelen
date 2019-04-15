@@ -1626,6 +1626,7 @@ omschrijving: hoofdprogramma
 		var year = date.getFullYear();
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
+		event.stopPropagation();
 	});
 	$('#PrevDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
@@ -1633,19 +1634,20 @@ omschrijving: hoofdprogramma
 		date.setDate(date.getDate()-1);
 		var day = date.getDate();
 		if (day < 10){
-		day = "0" + String(day);
+			day = "0" + String(day);
 		}else{
-		day = String(day);
+			day = String(day);
 		}
 		var month = date.getMonth()+1;
 		if (month < 10){
-		month = "0" + String(month);
+			month = "0" + String(month);
 		}else{
-		month = String(month);
+			month = String(month);
 		}
 		var year = date.getFullYear();
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
+		event.stopPropagation();
 	});
 	$('#NextDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
@@ -1666,6 +1668,7 @@ omschrijving: hoofdprogramma
 		var year = date.getFullYear();
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
+		event.stopPropagation();
 	});
 
 	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
