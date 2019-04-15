@@ -20,9 +20,9 @@
 #
 
 based on versie: 1.64 of zonnepanelen.php
-versie: 1.64.2
+versie: 1.64.3
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  14-04-2019
+datum:  15-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -249,7 +249,7 @@ omschrijving: hoofdprogramma
 				</div>
 
 				<div class='map_inverter' id='map_inverter'>
-					<img src="./img/dummy.gif" usemap="#inverter"/>
+					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#inverter"/>
 				</div>
 				<map name="inverter" style="z-index: 20;">
 					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="">
@@ -263,7 +263,7 @@ omschrijving: hoofdprogramma
 				<div class="arrow_return_pos"><div id="arrow_RETURN" ></div></div>
 				<div class='p1_text_pos'><div id='p1_text'></div></div>
 				<div class='map_p1_meter' id='map_p1_meter'>
-					<img src="./img/dummy.gif" usemap="#meter"/>
+					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#meter"/>
 				</div>
 				<map name="meter" style="z-index: 20;">
 					<area id="meter_1" shape="rect" coords="0,0,67,100" title="P1_Meter">
@@ -271,7 +271,7 @@ omschrijving: hoofdprogramma
 
 				<div class='p1_huis_pos'><div id='p1_huis'></div></div>
 				<div class='map_huis' id='map_huis'>
-					<img src="./img/dummy.gif" usemap="#huis"/>
+					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#huis"/>
 				</div>
 				<map name="huis" style="z-index: 20;">
 					<area id="huis_1" shape="rect" coords="0,0,150,150" title="thuis verbruik">
