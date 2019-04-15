@@ -1005,7 +1005,7 @@ omschrijving: hoofdprogramma
 				   text: null
 				},
 				subtitle: {
-					text: "Energie op <?php echo $datev;?> en 14 voorafgaande  dagen",
+					text: "Energie op <?php echo $datev;?> en 14 voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
