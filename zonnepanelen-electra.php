@@ -2057,10 +2057,11 @@ omschrijving: hoofdprogramma
 				id: 'SolarPVGis',
 				type: 'line',
 				name: PVGtxt+' schatting',
-				color: 'rgba(255,0,0,0.5)',
+				color: 'rgba(255,0,0,0.6)',
 				lineWidth: 1,
 				marker: {
-					radius: 2
+					radius: 2,
+					enabled: true
 				},
 			}, false);
 		}
