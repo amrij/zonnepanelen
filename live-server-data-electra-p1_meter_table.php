@@ -99,7 +99,7 @@ if ($period == 'c' ){
 		foreach($mysqli->query('SELECT * FROM ( ' .
 								'SELECT '.$datefilter.' as oDate, DATE(t2.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
 								'	 FROM      (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(v1) as sv1, sum(v2) as sv2, sum(r1) as sr1, sum(r2) as sr2 ' .
-								'			   FROM   P1_Meter ' .
+								'			   FROM   solaredge.P1_Meter ' .
 								'			   GROUP BY d ' .
 								'			   ) t2 ' .
 								'	 left join (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
@@ -107,7 +107,7 @@ if ($period == 'c' ){
 								'			   GROUP BY d  ' .
 								'			   ) t1 ' .
 								' ON t1.d = t2.d  ' .
-								' WHERE timestamp < ' . $tomorrow .
+								' WHERE t1.d < ' . $tomorrow .
 								' GROUP BY oDate ' .
 								' ORDER by t2.d desc ' .
 								' LIMIT '.$limit.') output' .
@@ -127,7 +127,7 @@ if ($period == 'c' ){
 		foreach($mysqli->query('SELECT * FROM ( ' .
 								'SELECT '.$datefilter.' as oDate, DATE(t2.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
 								'	 FROM      (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, sum(v1) as sv1, sum(v2) as sv2, sum(r1) as sr1, sum(r2) as sr2 ' .
-								'			   FROM   P1_Meter ' .
+								'			   FROM   solaredge.P1_Meter ' .
 								'			   GROUP BY d ' .
 								'			   ) t2 ' .
 								'	 left join (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
@@ -135,7 +135,7 @@ if ($period == 'c' ){
 								'			   GROUP BY d  ' .
 								'			   ) t1 ' .
 								' ON t1.d = t2.d  ' .
-								' WHERE timestamp < ' . $tomorrow.
+								' WHERE t1.d < ' . $tomorrow.
 								' GROUP BY oDate ' .
 								' ORDER by t2.d desc ' .
 								' LIMIT '.$limit.') output' .
