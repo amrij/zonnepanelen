@@ -139,17 +139,17 @@ div.box_Zonnepanelen-is-clicked {
 	z-index: 32;
 	font-size: .9vw;
 }
-
 div.box_sunrise {
-    left: .5%;
-    top: 66%;
-    width: 60%;
-    height: 30%;
+    left: 0.2%;
+    top: 29.0%;
+    width: 12.7%;
+    height: 20.4%;
     position: absolute;
 	background-color: white;
-	-webkit-transform:rotate(0deg);
-	transform:rotate(0deg);
+	font-family: arial;
+	font-size: .8vw;
 	color: grey;
+	z-index: 31;
 }
 
 div.box_inverter {
@@ -406,9 +406,9 @@ div.map_huis {
 
 	div.box_sunrise {
 		left: .1%;
-		top: 66%;
+		top: 80%;
 		width: 50%;
-		height: 25%;
+		height: 13%;
 		font-size: 2.0vw;
 	}
 
@@ -468,9 +468,9 @@ div.map_huis {
 	}
 	div.box_sunrise {
 		left: .1%;
-		top: 63.5%;
-		width: 60%;
-		height: 35%;
+		top: 240%;
+		width: 50%;
+		height: 40%;
 		font-size: 2.0vw;
 	}
 	div.box_panel_energy {
