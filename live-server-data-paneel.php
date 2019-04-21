@@ -65,12 +65,12 @@ while ($row = mysqli_fetch_assoc($result)) {
 			$diff['minuut'] = gmdate("i", $row['timestamp']);
 			$diff['sec']    = gmdate("s", $row['timestamp']);
 			$diff['temperature'] = $row['temperature']*2;
-			$diff['p1_current_power_prd'] = $row['vermogen'];
+			$diff['p1_current_power_prd'] = sprintf("%.3f", $row['vermogen']);
 
 			if ($paneel[$i]['uptime'] > $row['uptime']) {
 				$paneel[$i]['verschil'] = $paneel[$i]['energie'];
 			}
-			$diff['p1_volume_prd'] = round($row['energie'] + $paneel[$i]['verschil'],3);
+			$diff['p1_volume_prd'] = sprintf("%.3f", $row['energie'] + $paneel[$i]['verschil']);
 			$paneel[$i]['energie'] = $diff['p1_volume_prd'];
 			$paneel[$i]['uptime'] = $row['uptime'];
 			//voeg het resultaat toe aan de total-array

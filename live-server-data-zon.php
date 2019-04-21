@@ -50,12 +50,13 @@ $mode[9] = '';
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 if ($aantal < 0) { $aantal = 0;}
 // bepaal de eerste dag van de data in de database
-$query = sprintf("SELECT min(timestamp) FROM telemetry_optimizers");
+$query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
 $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
 
-// zet gegevens van de panelen op 0
+// zet gegevens van de panelen op 0 voor het geval dat
+// midnight < begin of de sql query faalt
 for ($i = 1; $i <= $aantal; $i++) {
 	$diff['O' . $i]	= 0;
 	$diff['C' . $i]	= 0;
@@ -77,7 +78,6 @@ $diff['IVMAX']	= 0;
 $diff['IE']	= 0;
 $diff['MODE']	= '';
 $diff['v_dc']	= 0;
-
 // haal gegevens van de panelen op
 If ($midnight >= $begin) {
 	// PANEL DATA
@@ -90,7 +90,8 @@ If ($midnight >= $begin) {
 			order BY HEX(op_id), timestamp",
 			$format, $today, $tomorrow);
 	$result = $mysqli->query($query);
-	if ($result) { 
+
+	if ($result) {
 		$prev_id = 0;
 		$prev_uptime = 0;
 		$prev_e_day = 0;
@@ -120,19 +121,19 @@ If ($midnight >= $begin) {
 			}
 		}
 		// convert to proper values
-		$max = round($max, 2);
 		for ($i = 1; $i <= $aantal; $i++) {
-			$diff['C' . $i]   = round($diff['O' . $i]/$max, 2);
-			$diff['O' . $i]   = round($diff['O' . $i] * 0.25, 2);
-			$diff['VI' . $i]  = round($diff['VI' . $i] * 0.125, 2);
-			$diff['VU' . $i]  = round($diff['VU' . $i] * 0.125, 2);
-			$diff['S' . $i]   = round($diff['S' . $i] * 0.00625, 2);
+			$diff['C' . $i]   = sprintf("%.2f", $diff['O' . $i]/$max);
+			$diff['O' . $i]   = sprintf("%.2f", $diff['O' . $i] * 0.25);
+			$diff['VI' . $i]  = sprintf("%.2f", $diff['VI' . $i] * 0.125);
+			$diff['VU' . $i]  = sprintf("%.2f", $diff['VU' . $i] * 0.125);
+			$diff['S' . $i]   = sprintf("%.2f", $diff['S' . $i] * 0.00625);
 			$diff['T' . $i]  *= 2;
-			$diff['E' . $i]   = round($diff['VI' . $i] * $diff['S' . $i], 2);
-			$diff['VM' . $i]  = round($diff['VM' . $i]*0.125*0.00625, 2);
+			$diff['E' . $i]   = sprintf("%.2f", $diff['VI' . $i] * $diff['S' . $i]);
+			$diff['VM' . $i]  = sprintf("%.2f", $diff['VM' . $i]*0.125*0.00625);
 			$diff['VMT' . $i] = substr($diff['VMT' . $i], 11);
+		}
 	}
-	}
+
 	// INVERTER DATA
 	// Collect min/max over the day
 	// By using two queries there is no need to go through all data of the day
@@ -143,12 +144,12 @@ If ($midnight >= $begin) {
 			  WHERE timestamp BETWEEN %s AND %s
 			  ", $cols, $table, $today, $tomorrow);
 	$result = $mysqli->query($query);
-	if ($result) { 
+	if ($result) {
 		$row = mysqli_fetch_assoc($result);
-		$diff['ITMIN']	= round($row['t_min'],1);
-		$diff['ITMAX']	= round($row['t_max'],1);
-		$diff['IVMAX']	= round($row['p_max'],0);
-		$diff['IE']	= round($row['e_day']/1000,3);
+		$diff['ITMIN']	= sprintf("%.1f", $row['t_min']);
+		$diff['ITMAX']	= sprintf("%.1f", $row['t_max']);
+		$diff['IVMAX']	= sprintf("%.0f", $row['p_max']);
+		$diff['IE']	= sprintf("%.3f", $row['e_day']/1000);
 	}
 
 	// Collect last/current off the day
@@ -161,44 +162,33 @@ If ($midnight >= $begin) {
 			  WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC limit 1
 			  ", $format, $cols, $table, $today, $tomorrow);
 	$result = $mysqli->query($query);
-	if ($result) { 
+	if ($result) {
 		$row = mysqli_fetch_assoc($result);
 
 		$diff['IT']	= $row['datum'];
-		$diff['ITACT']	= round($row['t_act'],1);
-		$diff['IVACT']	= round($row['p_active'],0);
+		$diff['ITACT']	= sprintf("%.1f", $row['t_act']);
+		$diff['IVACT']	= sprintf("%.0f", $row['p_active']);
 		$diff['MODE']	= $mode[$row['mode']];
-		$diff['v_dc']	= round($row['v_dc'],3);
+		$diff['v_dc']	= sprintf("%.3f", $row['v_dc']);
 		if ($inverter == 1) {
-			$diff['v_ac']		= round($row['v_ac'],1);
-			$diff['i_ac']		= round($row['i_ac'],3);
-			$diff['frequency']	= round($row['frequency'],2);
-			$diff['p_active']	= round($row['p_active'],0);
+			$diff['v_ac']		= sprintf("%.1f", $row['v_ac']);
+			$diff['i_ac']		= sprintf("%.3f", $row['i_ac']);
+			$diff['frequency']	= sprintf("%.2f", $row['frequency']);
+			$diff['p_active']	= sprintf("%.0f", $row['p_active']);
 		}else{
-			$diff['v_ac1']		= round($row['v_ac1'],1);
-			$diff['v_ac2']		= round($row['v_ac2'],1);
-			$diff['v_ac3']		= round($row['v_ac3'],1);
-			$diff['i_ac1']		= round($row['i_ac1'],3);
-			$diff['i_ac2']		= round($row['i_ac2'],3);
-			$diff['i_ac3']		= round($row['i_ac3'],3);
-			$diff['frequency1']	= round($row['frequency1'],2);
-			$diff['frequency2']	= round($row['frequency2'],2);
-			$diff['frequency3']	= round($row['frequency3'],2);
-			$diff['p_active1']	= round($row['p_active1'],0);
-			$diff['p_active2']	= round($row['p_active2'],0);
-			$diff['p_active3']	= round($row['p_active3'],0);
+			$diff['v_ac1']		= sprintf("%.1f", $row['v_ac1']);
+			$diff['v_ac2']		= sprintf("%.1f", $row['v_ac2']);
+			$diff['v_ac3']		= sprintf("%.1f", $row['v_ac3']);
+			$diff['i_ac1']		= sprintf("%.3f", $row['i_ac1']);
+			$diff['i_ac2']		= sprintf("%.3f", $row['i_ac2']);
+			$diff['i_ac3']		= sprintf("%.3f", $row['i_ac3']);
+			$diff['frequency1']	= sprintf("%.2f", $row['frequency1']);
+			$diff['frequency2']	= sprintf("%.2f", $row['frequency2']);
+			$diff['frequency3']	= sprintf("%.2f", $row['frequency3']);
+			$diff['p_active1']	= sprintf("%.0f", $row['p_active1']);
+			$diff['p_active2']	= sprintf("%.0f", $row['p_active2']);
+			$diff['p_active3']	= sprintf("%.0f", $row['p_active3']);
 		}
-	} else {
-		$diff['IT']	= $d1;
-		$diff['ITMIN']	= 0;
-		$diff['ITMAX']	= 0;
-		$diff['ITACT']	= 0;
-		$diff['IVACT']	= 0;
-		$diff['IVMAX']	= 0;
-		$diff['IE']	= 0;
-		$diff['MODE']	= '';
-		$diff['v_dc']	= 0;
-
 	}
 }
 	

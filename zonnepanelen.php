@@ -49,10 +49,9 @@ omschrijving: hoofdprogramma
 	<script src="js/jquery.calendars.validation.js"></script>
 	<?php
 		include('config.php');
-		// Added to check settings for SQL database server and report when error occures
 		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
-		if (mysqli_connect_errno())
-		{
+		if (mysqli_connect_errno()) {
+			//Bail out if database connection fails
 			echo "<div style=background-color:Red;color:white;>";
 			echo "<p>We found a problem connecting to the SQL database ".$host.":".$port." db:".$db."<br>";
 			echo "Error: ".mysqli_connect_error()."</p>";
@@ -60,23 +59,20 @@ omschrijving: hoofdprogramma
 			echo "</div>";
 			exit();
 		}
+		// end SQL database check
+		$query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
+		$result = $mysqli->query($query);
+		$row = mysqli_fetch_assoc($result);
+		$begin = gmdate("Y-m-d", $row['timestamp']);
 		$thread_id = $mysqli->thread_id;
 		$mysqli->kill($thread_id);
 		$mysqli->close();
-		// end SQL database check
+
 		if ($aantal < 0) { $aantal = 0;}
 		for ($i=1; $i<=$aantal; $i++){
 			if ($op_id[$i][2] == 1){$pro[$i] =  "6%"; $top[$i] = "65%";}
 			else                   {$pro[$i] = "20%"; $top[$i] = "78%";}
 		}
-		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
-		$query = "SELECT timestamp FROM telemetry_optimizers ORDER BY timestamp LIMIT 1";
-		$result = $mysqli->query($query);
-		$row = mysqli_fetch_assoc($result);
-		$begin = gmdate("Y-m-d",$row['timestamp']);
-		$thread_id = $mysqli->thread_id;
-		$mysqli->kill($thread_id);
-		$mysqli->close();
 		$week[1] = "Maandag ";
 		$week[2] = "Dinsdag ";
 		$week[3] = "Woensdag ";
@@ -1009,7 +1005,7 @@ omschrijving: hoofdprogramma
 				   text: null
 				},
 				subtitle: {
-					text: "Energie op <?php echo $datev;?> en 14 voorafgaande  dagen",
+					text: "Energie op <?php echo $datev;?> en 14 voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
