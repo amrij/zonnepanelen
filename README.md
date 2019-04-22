@@ -27,7 +27,8 @@ In config.php the following information is defined:
    - type of inverter (1 or 3 phase);
    - the name of the inverter (type number);
    - the optimizer id, number of the panel, the direction, panel SN and panel power in pW.
-   - Extra information for p1:  
+   - Extra information for p1:
+   - indicate to show P1 values;
     - P1 script to be used to retrieve the information.
     - Electricity supplier.
     - Number of Days and Months to show in the P1 graphs.
