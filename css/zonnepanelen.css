@@ -1,4 +1,4 @@
-/* 
+/*
 //
 // Copyright (C) 2019 André Rijkeboer
 //
@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-versie: 1.40
-auteur: André Rijkeboer
-datum: 25-02-2019
+versie: 1.40.1
+auteur: André Rijkeboer adapted by Jos van der Zande for zonnepanelen-electra.css
+datum: 14-04-2019
 omschrijving: basisgegevens voor de zonnepanelen
 */
 a{
@@ -54,18 +54,17 @@ html, body {
 	margin:0px;
 	left:0%;
 	padding:0;
-	background-color: #ccd7dd;
+	background-color:white;
 	z-index:0;
 	position:relative;
-	font-family: arial;
-	font-size: .5vw;
+	font-family: verdana, sans-serif;
+	font-size: 10px;	background-color: white;
 }
 
 div.mainpage {
-	position: absolute;
-	left: 0%;
-	top: 0%;
-	width: 100%;
+	position: relative;
+	left:0%;
+	width:100%;
 	height: 100%;
 	text-align: center;
 }
@@ -73,9 +72,9 @@ div.mainpage {
 div.container {
 	width:100%;
     height: 100%;
-	left: 0%;
-	top: 0%;
-	position:absolute;
+	left:0%;
+	position:relative;
+	margin:0 auto;
 	text-align: left;
 }
 
@@ -85,24 +84,390 @@ div.text_div {
 	text-align: center;
 }
 
+
+
 .imageOver {
 	width: 100%;
 	height: 100%;
-	left: 0%;
-	top: 0%;
-	position: absolute;
-	text-align: right;
+	left:0px;
+	position:absolute;
+	text-align: center;
+}
+
+
+/*default size*/
+
+.data-table {
+	font-size: .6vw;
+	width: 100%;
+	height: 100%;
+	border: 0;
+	table-layout:fixed;
+	word-wrap:break-word;
+	border-collapse:collapse;
+}
+
+.data-table td {
+    border: 0;
+    border-collapse: collapse;
+    padding: 0px 0px;
+    margin: 0;
 }
 
 div.box_Zonnepanelen {
-	
-    left: 1.4%; 
+    left: 4.0%; 
     top: 1.2%; 
     width: 18.8%;
     height: 38.4%;
     position: absolute;
 	-webkit-transform:rotate(0deg);
 	transform:rotate(0deg);
+	color: white;
+	font-family: arial;
+	font-weight: bold;
+	font-size: .6vw;
+	text-align: center;
+}
+
+div.box_sunrise {
+    left: -15%;
+    top: 90%;
+    width: 60%;
+    height: 35%;
+    position: absolute;
+	-webkit-transform:rotate(0deg);
+	transform:rotate(0deg);
+	color: grey;
+	font-size: .6vw
+}
+
+div.box_inverter {
+    left: 20.1%;
+    top: 0.5%;
+    width: 24%;
+    height: 52%;
+    position: absolute;
+	font-family: arial;
+	font-size: .6vw
+}
+
+div.panel_energy {
+    left: 43%;
+    top: 0.1%;
+    width: 28.4%;
+    height: 49.7%;
+    position: absolute;
+}
+
+div.panel_vermogen {
+    left: 71.5%;
+    top: 0.1%;
+    width: 28.4%;
+    height: 49.7%;
+    position: absolute;
+}
+
+div.chart_energy {
+    left: 43%;
+    top: 0.1%;
+    width: 28.4%;
+    height: 49.7%;
+    position: absolute;
+}
+
+div.chart_vermogen {
+    left: 71.5%;
+    top: 0.1%;
+    width: 28.4%;
+    height: 49.7%;
+    position: absolute;
+}
+
+div.daygraph {
+    left: .1%;
+    top: 50.2%;
+    width: 71.3%;
+    height: 48.9%;
+    position: absolute;
+}
+
+div.monthgraph {
+    left: 71.5%;
+    top: 50.2%;
+    width: 28.4%;
+    height: 48.9%;
+    position: absolute;
+}
+
+div.power_chart_body{
+	left: .1%;
+	top: 50.2%;
+	width: 99.8%;
+	height: 48.9%;
+	z-index: 3;
+	position: absolute;
+}
+
+
+div.inverter_text {
+	top: 10%;
+	left: 25.5%;
+	z-index: 10;
+	width: 43%;
+	height: 15%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.datum {
+	top: 0.1%;
+	left: 4%;
+	z-index: 3;
+	width: 80%;
+	height: 5%;
+	position: absolute;
+}
+
+div.map_inverter {
+	top: 10%;
+	left: 4%;
+	width: 18%;
+	height: 22%;
+	z-index: 10;
+	position: absolute;
+}
+
+div.sola_text {
+	top: 40%;
+	left: 3%;
+	width: 30%;
+	height: 15%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.sum_text {
+	top: 40%;
+	left: 3%;
+	width: 45%;
+	height: 50%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.elec_text {
+	top: 65%;
+	left: 18%;
+	width: 30%;
+	height: 15%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.so_text {
+	top: 37.0%;
+	left: 28.0%;
+	width: 15%;
+	height: 5%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.arrow_prd_pos {
+	top: 34.65%;
+	left: 29.0%;
+	width: 0.01%;
+	height: 0.7% ;
+	z-index: 20;
+	position: absolute;
+}
+
+div.p1_text_pos {
+	top: 82.5%;
+	left: 70.0%;
+	width: 15%;
+	height: 5%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.arrow_return_pos {
+	top: 88.75%;
+	left: 75.0%;
+	width: 0.03%;
+	height: 2.1%;
+	z-index: 20;
+	position: absolute;
+}
+
+div.map_p1_meter {
+	top: 60%;
+	left: 50%;
+	width: 20%;
+	height: 25%;
+	z-index: 10;
+	position: absolute;
+}
+
+div.p1_huis_pos {
+	top: 30.0%;
+	left: 61.0%;
+	width: 15%;
+	height: 5%;
+	line-height: 120%;
+	position: absolute;
+}
+
+div.map_huis {
+	top: 3.5%;
+	left: 65%;
+	width: 27%;
+	height: 28%;
+	z-index: 10;
+	position: absolute;"
+}
+/*when the browsers width is less than 700 pixels*/
+@media screen and (max-width:700px) {
+
+	.data-table {
+		font-size: 2.5vw;
+	}
+	div.box_inverter {
+		left: .1%;
+		top: 0.5%;
+		width: 99%;
+		height: 50%;
+		font-size: 2.0vw;
+		}
+
+	div.box_Zonnepanelen {
+		left: .1%;
+		top: 50.5%;
+		width: 99%;
+		height: 50%;
+		-webkit-transform:rotate(0deg);
+		transform:rotate(0deg);
+		color: grey;
+		font-size: 2.0vw;
+	}
+
+	div.box_sunrise {
+		left: .1%;
+		top: 83.5%;
+		width: 60%;
+		height: 35%;
+		font-size: 2.0vw;
+	}
+
+	div.panel_energy {
+		left: .1%;
+		top: 112.1%;
+		width: 99%;
+		height: 50%;
+	}
+	div.panel_vermogen {
+		left: .1%;
+		top: 162.1%;
+		width: 99%;
+		height: 50%;
+	}
+	div.chart_energy {
+		left: .1%;
+		top: 112.1%;
+		width: 99%;
+		height: 50%;
+	}
+	div.chart_vermogen {
+		left: .1%;
+		top: 162.1%;
+		width: 99%;
+		height: 50%;
+	}
+	div.daygraph {
+		left: .1%;
+		top: 212.2%;
+		width: 99.2%;
+		height: 50%;
+	}
+	div.monthgraph {
+		left: .1%;
+		top: 262.2%;
+		width: 99.2%;
+		height: 50%;
+	}
+	div.power_chart_body{
+		left: .1%;
+		top: 212.2%;
+		width: 99.2%;
+		height: 50%;
+	}
+}
+
+@media screen and (max-width:700px) and (orientation:landscape){
+
+	div.box_inverter {
+		left: .1%;
+		top: 0.5%;
+		width: 99%;
+		height: 150%;
+		font-size: 2.0vw;
+		}
+	div.box_Zonnepanelen {
+		left: .1%;
+		top: 150.5%;
+		width: 99%;
+		height: 150%;
+		font-size: 2.0vw
+	}
+	div.box_sunrise {
+		left: .1%;
+		top: 83.5%;
+		width: 60%;
+		height: 35%;
+		font-size: 2.0vw;
+	}
+	div.panel_energy {
+		left: .1%;
+		top: 340.1%;
+		width: 99%;
+		height: 150%;
+	}
+	div.panel_vermogen {
+		left: .1%;
+		top: 490.1%;
+		width: 99%;
+		height: 150%;
+	}
+	div.chart_energy {
+		left: .1%;
+		top: 340.1%;
+		width: 99%;
+		height: 150%;
+	}
+	div.chart_vermogen {
+		left: .1%;
+		top: 490.1%;
+		width: 99%;
+		height: 150%;
+	}
+	div.daygraph {
+		left: .1%;
+		top: 640.2%;
+		width: 99.2%;
+		height: 150%;
+	}
+	div.monthgraph {
+		left: .1%;
+		top: 790.2%;
+		width: 99.2%;
+		height: 150%;
+	}
+	div.power_chart_body{
+		left: .1%;
+		top: 640.2%;
+		width: 99.2%;
+		height: 150%;
+	}
 }
 
 div.box_Zonnepaneel_1 {
@@ -400,13 +765,32 @@ div.box_Zonnepaneel_33 {
     position: absolute;
  	
 }
-
-
 div.text_Zonnepaneel_n {
-	top: 82%;
-	left: 10%;
-	font-size: 11px;
-	font-weight: bold;
+	z-index: 10;
+	top: 65%;
+	width: 100%;
+	position: absolute;
+	text-align: center;
+	color: white;
+}
+div.text_paneel_W {
+	z-index: 10;
+	top: 7%;
+	width: 100%;
+	position: absolute;
+	color: white;
+}
+div.text_paneel_WX {
+	z-index: 10;
+	top: 36%;
+	width: 100%;
+	position: absolute;
+	color: white;
+}
+div.text_paneel_image {
+	z-index: 5;
+	width: 100%;
+	height: 100%;
 	position: absolute;
 }
 
@@ -440,6 +824,14 @@ div.ZonnepaneelColor_3 {
 	position: absolute;
 }
 
+.red_text {
+	color: red;
+	font-weight: bold;
+}
+.green_text {
+	color: green;
+	font-weight: bold;
+}
 .arrow_right_red {
 	position: relative;
 	background: #d50000;
@@ -631,19 +1023,19 @@ div.ZonnepaneelColor_3 {
 	margin:0px;padding:0px;
 	width:221px;
 	border:1px solid #000000;
-	
+
 	-moz-border-radius-bottomleft:5px;
 	-webkit-border-bottom-left-radius:5px;
 	border-bottom-left-radius:5px;
-	
+
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px;
 	border-bottom-right-radius:5px;
-	
+
 	-moz-border-radius-topright:5px;
 	-webkit-border-top-right-radius:5px;
 	border-top-right-radius:5px;
-	
+
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
 	border-top-left-radius:5px;
@@ -672,12 +1064,12 @@ div.ZonnepaneelColor_3 {
 	border-bottom-left-radius:5px;
 }.CSSTableGenerator tr:hover td{
 	background-color:#ffaaaa;
-		
+
 
 }
 .CSSTableGenerator td{
 	vertical-align:middle;
-	
+
 	background-color:#ffffff;
 
 	border:1px solid #000000;
@@ -729,4 +1121,3 @@ div.ZonnepaneelColor_3 {
     height: 150px;
     margin: 0px;
 }
-
