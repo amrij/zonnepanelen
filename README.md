@@ -22,17 +22,16 @@ After configuration, the website can be started by going to the root of the Webs
 In config.php the following information is defined:  
    - data for access to the database;
    - the latitude and longitude of the location of the panels;
-   - name of the background image;
+   - Background image to use;
    - indicate power on the panels;
    - type of inverter (1 or 3 phase);
    - the name of the inverter (type number);
    - the optimizer id, number of the panel, the direction, panel SN and panel power in pW.
    - Extra information for p1:
    - indicate to show P1 values;
-    - P1 script to be used to retrieve the information.
-    - Electricity supplier.
-    - Number of Days and Months to show in the P1 graphs.
-    - Background image to use.
+    - P1 script to be used to retrieve the information;
+    - Electricity supplier;
+    - Number of Days and Months to show in the P1 graphs;
     - PVGis information when you want to have that included in the graphs.
 4. Customize css/zonnepanelen.css for zonnepanelen.php  
 In css/zonnepanelen.css the following is fixed:  
