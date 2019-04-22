@@ -18,16 +18,16 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.26
+// versie: 1.27
 // auteur: André Rijkeboer
-// datum:  13-04-2019
+// datum:  22-04-2019
 // omschrijving: configuratie bestand
 
 // gegevens voor het openen van de database
 $host = '192.168.1.81'; // IP adres waar de database staat (standaard localhost of 127.0.0.1)
 $port = '3306'; // poort database (standaard 3306)
 $user = 'gebruiker'; // gebruiker
-$passwd = 'paswoord gebruiker'; // paswoord gebruiker
+$passwd = 'password'; // paswoord gebruiker
 $db = 'solaredge'; // database naam
 
 // gegeven van de plaats waar de zonnepanelen staan
@@ -45,10 +45,11 @@ $P1 = 0; // 0 = nee, 1 = ja
 $ElecLeverancier = "Engie";                            // naam electra leverancier
 $ElecDagGraph = '60';                                   // aantal dagen in grafiek
 $ElecMaandGraph = '13';                                 // aantal maanden in grafiek
+$zonnesysteem_electra = "zonnesysteem-electra.gif";
 
 //** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
-$PVGtxt = "Eigen";                                           // Tekst waar de schatting vandaan komt bv: "PVGis"
-$PVGis = [91,215,441,635,863,787,873,711,518,260,104,47];  // schatting opbrengst iedere maand voor de installatie
+$PVGtxt = "PVGis";                                  // Tekst waar de schatting vandaan komt bv: "PVGis"
+$PVGis = [0,0,0,0,0,0,0,0,0,0,0,0];                 // schatting opbrengst iedere maand voor de installatie
 
 //** velden voor ophalen P1 info van Domoticz server
 $domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
