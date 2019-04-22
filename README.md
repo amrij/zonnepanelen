@@ -41,10 +41,10 @@ In css/zonnepanelen.css the following is fixed:
 In css/zonnepanelen-electra.css the following is arranged:  
    - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
 
-## screenshot zonnepanelen.php:
+## screenshot zonnepanelen.php $P1 = 0:
   ![Alt text](docs/zonnepanelen.png?raw=true "zonnepanelen.php")
 
-## screenshots zonnepanelen-electra.php:
+## screenshots zonnepanelen.php $P1 = 1:
   ![Alt text](docs/zonnepanelen-electra_LT_new.PNG?raw=true "Laptop")
   ![Alt text](docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
 
