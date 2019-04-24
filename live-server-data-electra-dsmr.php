@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.5
+// versie: 1.6
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  12-04-2018
+// datum:  19-04-2018
 // omschrijving: ophalen van de P1meter informatie uit DSMR server en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-dsmr.php/period=c
@@ -38,9 +38,6 @@
 $limit = $_GET['aantal'];
 $period = $_GET['period'];
 $d1 = $_GET['date'];
-//~ $period='d';
-//~ $limit=3;
-//~ $d1="2019-04-03 00:00:00";
 
 $SQLdatefilter = '"%Y-%m-%d"';
 if($period == '' || $period == 'd' ) {
@@ -50,7 +47,7 @@ if($period == '' || $period == 'd' ) {
 	if($limit == ''){
 		$limit = '30';
 	}
-	$periods = $limit;
+	$periods = $limit-1;
 } elseif ($period == 'm') {
 	$SQLdatefilter = '"%Y-%m"';
 	$JSON_SUM = "Y-m";
@@ -58,7 +55,7 @@ if($period == '' || $period == 'd' ) {
 	if($limit == ''){
 		$limit = '12';
 	}
-	$periods = $limit*31;
+	$periods = $limit*31-1;
 }
 
 if($d1 == ''){
@@ -105,7 +102,6 @@ if ($period == 'c' ){
 	// Laad de data van het laatste jaar voor de P1_ElectriciteitsMeter uit DSMR server
 
 	$sdate=date("Y-m-d", strtotime("-$periods day",$date));
-//~ 	echo '$sdate:'.$sdate."\n";
 	$response = file_get_contents($dsmr_url.'/api/v2/statistics/day?day__gte='.$sdate.'&limit='.($periods+1).'', null, stream_context_create(array(
 			'http' => array(
 			'method' => 'GET',
@@ -119,9 +115,6 @@ if ($period == 'c' ){
 	$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
 	$checkdates = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
 	$checkdatee = date("Y-m-d", $date);
-//~ 	echo '$checkdate:'.$checkdate."\n";
-//~ 	echo '$checkdates:'.$checkdates."\n";
-//~ 	echo '$checkdatee:'.$checkdatee."\n";
 
 	$i=0;
 	$savedate=0;
@@ -129,8 +122,6 @@ if ($period == 'c' ){
 	foreach($dsmr_data_cy as $item) {
 		$compdate = date($JSON_SUM,strtotime($item['day']));
 		$compdate2 = date("Y-m-d",strtotime($item['day']));
-//~  		echo '$compdate:'.$compdate."\n";
-//~  		echo '$compdate2:'.$compdate2."\n";
 		if($compdate>=$checkdates && $compdate2<=$checkdatee){
 			if($savedate!=$compdate) {
 				if ($savedate!=0) {
@@ -140,7 +131,6 @@ if ($period == 'c' ){
 					$dsmrrec['r1']= $tr1;
 					$dsmrrec['r2']= $tr2;
 					array_push($dsmrdata, $dsmrrec);
-					$td = $item['day'];
 				}
 				$savedate=$compdate;
 				$td = $item['day'];
@@ -158,17 +148,41 @@ if ($period == 'c' ){
 	}
 
 
-	//Get today info for P1_ElectriciteitsMeter from DSMR server
-	$response = file_get_contents($dsmr_url.'/api/v2/consumption/today', null, stream_context_create(array(
-			'http' => array(
-			'method' => 'GET',
-			'header' => array('X-AUTHKEY:'.$dsmr_apikey))
-			)
-	));
-	$dsmr_rest = json_decode($response,true);
-	$cdate = date("d-m-Y H:i:s",strtotime($dsmr_rest['day']));
-	if ($savedate != 0){
-		if ($cdate != $savedate) {
+	$tcompdate = date("Y-m-d");
+	if($tcompdate<=$checkdatee){
+		//Get today info for P1_ElectriciteitsMeter from DSMR server
+		$response = file_get_contents($dsmr_url.'/api/v2/consumption/today', null, stream_context_create(array(
+				'http' => array(
+				'method' => 'GET',
+				'header' => array('X-AUTHKEY:'.$dsmr_apikey))
+				)
+		));
+		// get todays info from DSMR since that is not part of the previous call
+		$dsmr_rest = json_decode($response,true);
+		$compdate = date($JSON_SUM,strtotime($dsmr_rest['day']));
+		if ($savedate != 0){
+			if ($compdate != $savedate) {
+				$dsmrrec['d']= $td;
+				$dsmrrec['v1']= $tv1;
+				$dsmrrec['v2']= $tv2;
+				$dsmrrec['r1']= $tr1;
+				$dsmrrec['r2']= $tr2;
+				array_push($dsmrdata, $dsmrrec);
+				//echo "Write1a: " . $td."  v1:".$tv1."  v2:".$tv2."\n";
+				$tv1 = 0;
+				$tv2 = 0;
+				$tr1 = 0;
+				$tr2 = 0;
+			}
+		}
+		$dsmrrec['d']= $compdate;
+		$dsmrrec['v1']= $tv1 + round(floatval($dsmr_rest['electricity1']),3);
+		$dsmrrec['v2']= $tv2 + round(floatval($dsmr_rest['electricity2']),3);
+		$dsmrrec['r1']= $tr1 + round(floatval($dsmr_rest['electricity1_returned']),3);
+		$dsmrrec['r2']= $tr2 + round(floatval($dsmr_rest['electricity2_returned']),3);
+		array_push($dsmrdata, $dsmrrec);
+	} else {
+		if ($savedate != 0){
 			$dsmrrec['d']= $td;
 			$dsmrrec['v1']= $tv1;
 			$dsmrrec['v2']= $tv2;
@@ -177,12 +191,6 @@ if ($period == 'c' ){
 			array_push($dsmrdata, $dsmrrec);
 		}
 	}
-	$dsmrrec['d']= $cdate;
-	$dsmrrec['v1']= round(floatval($dsmr_rest['electricity1']),3);
-	$dsmrrec['v2']= round(floatval($dsmr_rest['electricity2']),3);
-	$dsmrrec['r1']= round(floatval($dsmr_rest['electricity1_returned']),3);
-	$dsmrrec['r2']= round(floatval($dsmr_rest['electricity2_returned']),3);
-	array_push($dsmrdata, $dsmrrec);
 	//-------------------------------------------------------------
 	//open MySQL database
 	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
@@ -231,7 +239,7 @@ if ($period == 'c' ){
 		$pnum=$limit-$i-1;
 		$datafound = 0;
 		if ($period == 'm') {
-			$checkdate = date($JSON_SUM, strtotime(date( 'Y-m-01' )." -$pnum $JSON_period",$date));
+			$checkdate = date($JSON_SUM, strtotime(date( 'Y-m' )." -$pnum $JSON_period",$date));
 		} else {
 			$checkdate = date($JSON_SUM, strtotime("-$pnum $JSON_period",$date));
 		}
