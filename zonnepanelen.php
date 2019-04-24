@@ -1602,167 +1602,169 @@ omschrijving: hoofdprogramma
 			});
 		});
 		$(document).ready(function() {
-			power_chart = new Highcharts.Chart({
-				chart: {
-					type: 'area',
-					renderTo: 'power_chart_body',
-					spacingTop: 10,
-					borderColor: 'grey',
-					borderWidth: 1,
-					borderRadius: 5,
-					alignTicks:true,
-					spacingBottom: 0,
-					zoomType: 'x',
-					events: {load: requestData1}
-				},
-				title: {
-				   text: null
-				},
-				subtitle: {
-					text: "Vermogen en energie op <?php echo $datev;?>",
-					align: 'left',
-					x: 90,
-					y: 20,
-					style: {
-						font: 'Arial',
-						fontWeight: 'bold',
-						fontSize: '.85vw'
+			if (P1 == "0"){
+				power_chart = new Highcharts.Chart({
+					chart: {
+						type: 'area',
+						renderTo: 'power_chart_body',
+						spacingTop: 10,
+						borderColor: 'grey',
+						borderWidth: 1,
+						borderRadius: 5,
+						alignTicks:true,
+						spacingBottom: 0,
+						zoomType: 'x',
+						events: {load: requestData1}
 					},
-					floating: true
-				},
-				xAxis: [{ <?php genxAxis(); ?> }],
-				yAxis: [{
 					title: {
-						text: 'Vermogen (W)'
+					   text: null
 					},
-					tickPositioner: function () {
-						var positions = [],
-						tick = Math.floor(0),
-						tickMax = Math.ceil(this.dataMax),
-						increment = Math.ceil((tickMax - tick) / 6);
-						if (this.dataMax ==  this.dataMin ) {
-							increment = .5,
-							tickMax = tick + 3
+					subtitle: {
+						text: "Vermogen en energie op <?php echo $datev;?>",
+						align: 'left',
+						x: 90,
+						y: 20,
+						style: {
+							font: 'Arial',
+							fontWeight: 'bold',
+							fontSize: '.85vw'
+						},
+						floating: true
+					},
+					xAxis: [{ <?php genxAxis(); ?> }],
+					yAxis: [{
+						title: {
+							text: 'Vermogen (W)'
+						},
+						tickPositioner: function () {
+							var positions = [],
+							tick = Math.floor(0),
+							tickMax = Math.ceil(this.dataMax),
+							increment = Math.ceil((tickMax - tick) / 6);
+							if (this.dataMax ==  this.dataMin ) {
+								increment = .5,
+								tickMax = tick + 3
+							}
+							if (this.dataMax !== null && this.dataMin !== null) {
+								for (i=0; i<=6; i += 1) {
+									positions.push(tick);
+									tick += increment;
+								}
+							}
+							return positions;
 						}
-						if (this.dataMax !== null && this.dataMin !== null) {
-							for (i=0; i<=6; i += 1) {
-								positions.push(tick);
-								tick += increment;
+					}, {
+						title: {
+							text: 'Energie (kWh)'
+						},
+						opposite: true,
+						tickPositioner: function () {
+							var positions = [],
+							tick = Math.floor(0),
+							tickMax = Math.ceil(this.dataMax),
+							increment = Math.ceil((tickMax - tick)/ 6);
+							if (this.dataMax ==  this.dataMin ) {
+								increment = .5,
+								tickMax = tick + 3
+							}
+							if (this.dataMax !== null && this.dataMin !== null) {
+								for (i=0; i<=6; i += 1) {
+									positions.push(tick);
+									tick += increment;
+								}
+							}
+							return positions;
+						}
+					}],
+					legend: {
+						itemStyle: {
+							fontWeight: 'Thin',
+							fontSize: '.7vw'
+						},
+						layout: 'vertical',
+						align: 'left',
+						x: 80,
+						verticalAlign: 'top',
+						y: 20,
+						floating: true,
+					},
+					credits: {
+						enabled: false
+					},
+					tooltip: {
+						formatter: function () {
+							var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
+							$.each(this.points, function () {
+								if (this.series.name == 'Energie') {
+									s += '<br/>' + this.series.name + ': ' +
+									this.y + ' kWh';
+								}
+								if (this.series.name == 'Vermogen') {
+									s += '<br/>' + this.series.name + ': ' +
+									this.y + ' W';
+								}
+							});
+							return s;
+						},
+						shared: true,
+						snap: 0,
+						crosshairs: [{
+							width: 1,
+							color: 'red',
+							zIndex: 3
+						}]
+					},
+					plotOptions: {
+						  spline: {
+							lineWidth: 1,
+							marker: {
+								enabled: false,
+								symbol: 'circle',
+								states: {
+									hover: {
+									enabled: true
+									}
+								}
+							}
+						  },
+						  areaspline: {
+							lineWidth: 1,
+							marker: {
+								enabled: false,
+								type: 'triangle',
+								states: {
+									hover: {
+									enabled: true,
+									}
+								}
 							}
 						}
-						return positions;
-					}
-				}, {
-					title: {
-						text: 'Energie (kWh)'
 					},
-					opposite: true,
-					tickPositioner: function () {
-						var positions = [],
-						tick = Math.floor(0),
-						tickMax = Math.ceil(this.dataMax),
-						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax ==  this.dataMin ) {
-							increment = .5,
-							tickMax = tick + 3
-						}
-						if (this.dataMax !== null && this.dataMin !== null) {
-							for (i=0; i<=6; i += 1) {
-								positions.push(tick);
-								tick += increment;
-							}
-						}
-						return positions;
-					}
-				}],
-				legend: {
-					itemStyle: {
-						fontWeight: 'Thin',
-						fontSize: '.7vw'
+					exporting: {
+						enabled: false,
+						filename: 'power_chart',
+						url: 'export.php'
 					},
-					layout: 'vertical',
-					align: 'left',
-					x: 80,
-					verticalAlign: 'top',
-					y: 20,
-					floating: true,
-				},
-				credits: {
-					enabled: false
-				},
-				tooltip: {
-					formatter: function () {
-						var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
-						$.each(this.points, function () {
-							if (this.series.name == 'Energie') {
-								s += '<br/>' + this.series.name + ': ' +
-								this.y + ' kWh';
-							}
-							if (this.series.name == 'Vermogen') {
-								s += '<br/>' + this.series.name + ': ' +
-								this.y + ' W';
-							}
-						});
-						return s;
-					},
-					shared: true,
-					snap: 0,
-					crosshairs: [{
-						width: 1,
-						color: 'red',
-						zIndex: 3
+					series: [{
+						name: 'Energie',
+						type: 'areaspline',
+						marker: {
+							symbol: 'triangle'
+						},
+						yAxis: 1,
+						lineWidth: 1,
+						color: 'rgba(204,255,153,1)',
+						pointWidth: 2,
+						data: []//this will be filled by requestData()
+					},{
+						name: 'Vermogen',
+						type: 'spline',
+						yAxis: 0,
+						color: '#009900',
+						data: []//this will be filled by requestData()
 					}]
-				},
-				plotOptions: {
-					  spline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							symbol: 'circle',
-							states: {
-								hover: {
-								enabled: true
-								}
-							}
-						}
-					  },
-					  areaspline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							type: 'triangle',
-							states: {
-								hover: {
-								enabled: true,
-								}
-							}
-						}
-					}
-				},
-				exporting: {
-					enabled: false,
-					filename: 'power_chart',
-					url: 'export.php'
-				},
-				series: [{
-					name: 'Energie',
-					type: 'areaspline',
-					marker: {
-						symbol: 'triangle'
-					},
-					yAxis: 1,
-					lineWidth: 1,
-					color: 'rgba(204,255,153,1)',
-					pointWidth: 2,
-					data: []//this will be filled by requestData()
-				},{
-					name: 'Vermogen',
-					type: 'spline',
-					yAxis: 0,
-					color: '#009900',
-					data: []//this will be filled by requestData()
-				}]
-			});
+				});
+			}
 		});
 	});
 
