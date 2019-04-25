@@ -487,7 +487,6 @@ omschrijving: hoofdprogramma
 		if ( n==0) { s=s.slice(1,s.length);}
 		p=s.indexOf('.');
 		if ( p <0 ) { s = s + ".";}
-		p=s.indexOf('.');
 		for (var i=1; i <= l; i++) {
 			if (l > i) {if (s.indexOf('.')<i+1) { s = "0"+ s;};}
 		}
