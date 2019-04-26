@@ -41,6 +41,7 @@ omschrijving: hoofdprogramma
 	<link rel="stylesheet" href="css/jquery.calendars.picker.css" id="theme">
 	<link rel="stylesheet" href="css/app.css">
 	<link href='css/zonnepanelen.css' rel='stylesheet' type='text/css'/>
+	<link href='css/zonnepanelen-local.css' rel='stylesheet' type='text/css'/>
 	<script src="js/jquery.plugin.js"></script>
 	<script src="js/jquery.mousewheel.js"></script>
 	<script src="js/jquery.calendars.js"></script>

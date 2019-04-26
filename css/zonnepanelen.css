@@ -470,6 +470,11 @@ div.map_huis {
 	}
 }
 
+/*
+use zonnepanelen-local.css to define all positions for your panels div.box_Zonnepaneel_1 {}
+Just rename zonnepanelen-local-example.css to zonnepanelen-local.css and fill in your specific information.
+*/
+
 div.box_Zonnepaneel_1 {
     left: 66%;
     top: 0%;
