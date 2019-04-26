@@ -234,12 +234,10 @@ omschrijving: hoofdprogramma
 			<div Class='box_inverter' id='box_inverter'>
 				<img src="./img/<?php echo $zonnesysteem;?>" alt=""  style="position:absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: -100;"/>
 				<div class='datum' id='datum' >
-						<TR style="text-align:center"><TD>
-						<input type="button" id="PrevDay" class="btn btn-success btn-sm" value="<" title="Vorige dag">
-						<input type="text" id="multiShowPicker" class="embed" size="8.5" style="text-align:center;">
-						<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">" title="Volgende dag">
-						<input type="button" id="Today" class="btn btn-success btn-sm" value=">|" title="Vandaag">
-						</TD><TR>
+					<input type="button" id="PrevDay" class="btn btn-success btn-sm" value="<" title="Vorige dag">
+					<input type="text" id="multiShowPicker" class="embed" size="8.5" style="text-align:center;">
+					<input type="button" id="NextDay" class="btn btn-success btn-sm"  value=">" title="Volgende dag">
+					<input type="button" id="Today" class="btn btn-success btn-sm" value=">|" title="Vandaag">
 				</div>
 
 				<div class='map_inverter' id='map_inverter'>
