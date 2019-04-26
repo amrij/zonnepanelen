@@ -23,7 +23,7 @@
 // datum:  18-03-2019
 // omschrijving: ophalen van de stroom en energie gegevens van de inverter (1 dag) eerste keer
 include('config.php');
-$d1 = $_GET['date'];
+$d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
 $midnight = date("Y-m-d 00:00:00", strtotime($d1));
 $today    = (new DateTime("today " . $midnight))->getTimestamp();

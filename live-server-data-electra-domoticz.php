@@ -37,7 +37,7 @@
 
 $limit = $_GET['aantal'];
 $period = $_GET['period'];
-$d1 = $_GET['date'];
+$d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 
 if($limit == ''){
 	$limit = '30';
