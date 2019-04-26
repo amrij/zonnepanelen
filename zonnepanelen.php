@@ -361,11 +361,11 @@ omschrijving: hoofdprogramma
 	var naam = '<?php echo $naam?>';
 	var P1 = '<?php echo $P1?>';
 	var aantal = '<?php echo $aantal?>';
-	var op_sn = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][0], "','";} ?>'];
-	var pn_sn = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][3], "','";} ?>'];
-	var op_id = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][1], "','";} ?>'];
-	var rpan  = [0,'<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][2], "','";} ?>'];
-	var vpan  = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][4], ",";} ?>];
+	var op_sn = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][0], "',";} ?>];
+	var pn_sn = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][3], "',";} ?>];
+	var op_id = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][1], "',";} ?>];
+	var rpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][2], "',";} ?>];
+	var vpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][4], ",";} ?>];
 	var PVGtxt = "<?php echo $PVGtxt; ?>";
 	var PVGis = [0<?php for ($i=0; $i<=11; $i++){ echo ",", $PVGis[$i];} ?>];
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
