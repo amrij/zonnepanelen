@@ -613,18 +613,20 @@ omschrijving: hoofdprogramma
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 				document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
 			}
-			document.getElementById("tool_paneel_"+i).title = inv1Data[0]["TM"+i]+
-				"\r\nPaneel "+op_id[i]+"\r\nOptimizer SN         "+op_sn[i]+
-				"\r\nPaneel SN              "+pn_sn[i]+
-				"\r\nEnergie		"+ inv1Data[0]["O"+i] +" Wh"+
-				"\r\nVermogen (act.)	"+ inv1Data[0]["E"+i] +" W"+
-				"\r\nVermogen (max.)	"+ inv1Data[0]["VM"+i] +" W"+
-				"\r\nVermogen (max.)	"+ inv1Data[0]["VMT"+i] +
-				"\r\nStroom in	"+ inv1Data[0]["S"+i] +" A"+
-				"\r\nSpanning in	"+ inv1Data[0]["VI"+i] +" V"+
-				"\r\nSpanning uit	"+ inv1Data[0]["VU"+i] +" V"+
-				"\r\nTemperatuur	"+ inv1Data[0]["T"+i] +" °C"+
-				"\r\nEfficiëntie	"+ waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) +" kWh/kWp";
+			document.getElementById("tool_paneel_"+i).title =
+					"Datum  " + inv1Data[0]["TM"+i] + "\r\n" +
+					"Paneel " + op_id[i] + "\r\n" +
+					"Optimizer SN           " + op_sn[i] + "\r\n" +
+					"Paneel SN              " + pn_sn[i] +  "\r\n" +
+					"Energie		" + inv1Data[0]["O"+i] + " Wh\r\n" +
+					"Vermogen (act.)	" + inv1Data[0]["E"+i] + " W\r\n" +
+					"Vermogen (max.)	" + inv1Data[0]["VM"+i] + " W\r\n" +
+					"Vermogen (max.)	" + inv1Data[0]["VMT"+i] + "\r\n" +
+					"Stroom in	        " + inv1Data[0]["S"+i] + " A\r\n" +
+					"Spanning in        	" + inv1Data[0]["VI"+i] + " V\r\n" +
+					"Spanning uit	        " + inv1Data[0]["VU"+i] + " V\r\n" +
+					"Temperatuur	        " + inv1Data[0]["T"+i] + " °C\r\n" +
+					"Efficientie	        " + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + " Wh/Wp";
 			if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000"; }
 			else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16"; }
 			else if ( inv1Data[0]["C"+i] < 0.2) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d"; }
@@ -1900,18 +1902,18 @@ omschrijving: hoofdprogramma
 							}
 						} else if(point.series.name == 'Verbruik <?php echo $ElecLeverancier?>') {
 							sVE = point.y;
-						} ;
+						}
 					});
 					if (this.points[0].series.chart.renderTo.id == "monthgraph") {
-						s += "" + Highcharts.dateFormat('%B %Y', this.x);
+						s += Highcharts.dateFormat('%B %Y', this.x);
 					} else {
-						s += Highcharts.dateFormat('%A', this.x) + ' ' + Highcharts.dateFormat('%d-%m-%Y', this.x);
+						s += Highcharts.dateFormat('%A %d-%m-%Y', this.x);
 					}
 					s += '</u></b><br/>';
 					//
 					if(sVS+sRE>0){
-						s += 'Solar verbruik&nbsp;: ' + Highcharts.numberFormat(sVS,1) + ' kWh<br/>';
-						s += '<b>Solar totaal&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat(sVS+sRE,1) + '</b> kWh<br/>';
+						s += 'Solar verbruik&nbsp;: ' + Highcharts.numberFormat(sVS,1) + ' kWh<br/>' +
+						     '<b>Solar totaal&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat(sVS+sRE,1) + '</b> kWh<br/>';
 						if (this.points[0].series.chart.renderTo.id == "monthgraph") {
 							if ( sPVG > 0) {
 								if ( sPVGm > 0) {
