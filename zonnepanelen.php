@@ -246,13 +246,13 @@ omschrijving: hoofdprogramma
 				<map name="inverter" style="z-index: 20;">
 					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="">
 				</map>
-				<div class='inverter_text' id='inverter_text'></div>
-				<div class='sola_text' id='sola_text'></div>
+				<div class="inverter_text" id="inverter_text"></div>
+				<div class="sola_text" id="sola_text"></div>
 				<div class="arrow_prd_pos"><div id="arrow_PRD"></div></div>
 				<div class="so_text"><div id="so_text"></div></div>
-				<div class="arrow_return_pos"><div id="arrow_RETURN" ></div></div>
+				<div class="arrow_return_pos"><div id="arrow_RETURN"></div></div>
 				<div class="sum_text" id="sum_text"></div>
-				<div class="elec_text" id="elec_text" ></div>
+				<div class="elec_text" id="elec_text"></div>
 				<div class="p1_text_pos"><div id="p1_text"></div></div>
 				<div class="map_p1_meter" id="map_p1_meter">
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#meter"/>
@@ -282,7 +282,7 @@ omschrijving: hoofdprogramma
 				echo '				<div Class="power_chart_body" id="power_chart_body"></div>'."\n";
 			}
 ?>
-			<div Class='box_Zonnepanelen' id='box_Zonnepanelen'>
+			<div Class="box_Zonnepanelen" id="box_Zonnepanelen">
 <?php
 	for ($i=1; $i<=$aantal; $i++){
 		echo '				<div class="box_Zonnepaneel_'.$i.'" id="box_Zonnepaneel_'.$i.'">'."\n";
