@@ -28,7 +28,7 @@ omschrijving: hoofdprogramma
 <html>
 <head>
 	<title>Zonnepanelen-p1</title>
-	<link rel="shortcut icon" href="./img/sun.ico" type="image/x-icon"  />
+	<link rel="shortcut icon" href="./img/sun.ico" type="image/x-icon"/>
 	<script type="text/javascript" src="js/loader.js"></script>
 	<script type="text/javascript" src="js/highcharts.js"></script>
 	<script type="text/javascript" src="js/highcharts-more.js"></script>
@@ -84,9 +84,7 @@ omschrijving: hoofdprogramma
 		$date = $_GET['date'];
 		$ds = $_GET['ds'];
 		setlocale(LC_ALL, 'nl_NL');
-		if($date == ''){
-			$date = date("d-m-Y H:i:s", time());
-		}
+		if ($date == '') { $date = date("d-m-Y H:i:s", time()); }
 		for ($i=0; $i<=14; $i++){
 			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)].date("d-m-Y", strtotime($date)-$i*86400);
 		}
@@ -118,15 +116,15 @@ omschrijving: hoofdprogramma
 		$daglengte = date("H:i:s",($datum+$sunset_s-$sunrise_s)*86400);
 
 		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
-				$epsilon = 0.000000000001;
-				do {
-					$st = $solar_noon_s = bereken($datum,$lat,$long,$timezone,$localtime,$i);
-					$sv = $st - $localtime/24;
-					$localtime = $st*24;
-				}
-				while ( abs($sv) > $epsilon );
-				return $st;
+			$epsilon = 0.000000000001;
+			do {
+				$st = $solar_noon_s = bereken($datum,$lat,$long,$timezone,$localtime,$i);
+				$sv = $st - $localtime/24;
+				$localtime = $st*24;
 			}
+			while ( abs($sv) > $epsilon );
+			return $st;
+		}
 
 		function bereken($datum,$lat,$long,$timezone,$localtime,$i) {
 			$julian_day = $datum + 2440587.5 + ($localtime-$timezone)/24; //Julian Day
@@ -206,7 +204,7 @@ omschrijving: hoofdprogramma
 				},";
 			}
 			print "
-				{
+					{
 					name: 'Energie Productie',
 					showInLegend: true,
 					type: 'areaspline',
@@ -377,7 +375,7 @@ omschrijving: hoofdprogramma
 	var data_i = [];
 	var chart_1 = "chart_energy";
 	var chart_2 = "chart_vermogen";
-		var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','voorafgaande dagen','$productie[0]','$productie[1]'"?>];
+	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','voorafgaande dagen','$productie[0]','$productie[1]'"?>];
 	var start_i = 0;
 	var inverter_redraw = 1;
 	var SolarProdToday = 0;
@@ -455,7 +453,6 @@ omschrijving: hoofdprogramma
 			// #### Vermogen  #####
 			var series = paneel_chartv.series[0];
 			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-			//
 			paneelFillSeries('Energie', shift, x, paneel_charte);
 			if (event.shiftKey) {
 				paneelFillSeries('Temperatuur', shift, x, paneel_chartv);
@@ -469,7 +466,7 @@ omschrijving: hoofdprogramma
 		inverter_redraw = 1;
 		document.getElementById("panel_vermogen").innerHTML ="";
 		document.getElementById("panel_energy").innerHTML ="";
-			for (var i=0; i<=aantal; i++){
+		for (var i=0; i<=aantal; i++) {
 			paneel_chartv.series[i].setData([]);
 			paneel_charte.series[i].setData([]);
 		}
@@ -642,7 +639,6 @@ omschrijving: hoofdprogramma
 			else if ( inv1Data[0]["C"+i] < 0.8) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5"; }
 			else if ( inv1Data[0]["C"+i] < 0.9) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc"; }
 			else                                { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3"; }
-
 		}
 	}
 
@@ -853,9 +849,9 @@ omschrijving: hoofdprogramma
 				PVGisj = " (" + waarde(0,0,tPVGis+(PVGis[cm]/dayssol*dsol))+" kWh)";
 			}
 			document.getElementById("inverter_1").title = curtext+
-					"\r\n\r\nVandaag:	" + waarde(0,2,SolarProdToday)+" kWh"+
+					"\r\n\r\nVandaag:     " + waarde(0,2,SolarProdToday)+" kWh"+
 					PVGisd+
-					"\r\nMaand:  	" + waarde(0,2,mse + msv)+" kWh"+
+					"\r\nMaand:    " + waarde(0,2,mse + msv)+" kWh"+
 					PVGism+
 					"\r\nJaar:   	" + waarde(0,2,yse + ysv)+" kWh"+
 					PVGisj;
@@ -931,6 +927,7 @@ omschrijving: hoofdprogramma
 		document.getElementById("fase_text").innerHTML = inv4Data[0]["phase_naam"];
 		document.getElementById("verlicht_text").innerHTML = inv4Data[0]["illumination"]+'% Verlicht';
 	}
+
 	$(function() {
 		Highcharts.setOptions({
 			global: {
@@ -1064,7 +1061,7 @@ omschrijving: hoofdprogramma
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick) / 6);
-						if (this.dataMax ==  this.dataMin ) {
+						if (this.dataMax == this.dataMin) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1078,14 +1075,14 @@ omschrijving: hoofdprogramma
 					}
 				}, {
 					title: {
-						text: 'Energie (kWh)'
+						text: 'Energie (Wh)'
 					},
 					tickPositioner: function () {
 						var positions = [],
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax ==  this.dataMin ) {
+						if (this.dataMax == this.dataMin) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1167,7 +1164,7 @@ omschrijving: hoofdprogramma
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-					<?php e_panelen($aantal) ?>
+				<?php e_panelen($aantal); ?>
 			});
 		});
 		$(document).ready(function() {
@@ -1231,7 +1228,7 @@ omschrijving: hoofdprogramma
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax ==  this.dataMin ) {
+						if (this.dataMax == this.dataMin) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1356,7 +1353,7 @@ omschrijving: hoofdprogramma
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax ==  this.dataMin ) {
+						if (this.dataMax == this.dataMin) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1385,8 +1382,7 @@ omschrijving: hoofdprogramma
 				},
 				tooltip: {
 					formatter: function () {
-						var s ="";
-						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
+						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
 						});
@@ -1473,7 +1469,7 @@ omschrijving: hoofdprogramma
 				   text: null
 				},
 				subtitle: {
-					text: "Vermogen op <?php echo $datev;?> en 14 voorafgaande  dagen",
+					text: "Vermogen op <?php echo $datev;?> en 14 voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
@@ -1494,7 +1490,7 @@ omschrijving: hoofdprogramma
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax ==  this.dataMin ) {
+						if (this.dataMax == this.dataMin) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1782,9 +1778,9 @@ omschrijving: hoofdprogramma
 		}
 		var month = date.getMonth()+1;
 		if (month < 10){
-		month = "0" + String(month);
+			month = "0" + String(month);
 		}else{
-		month = String(month);
+			month = String(month);
 		}
 		var year = date.getFullYear();
 		var datum = String(year) + "-" + month + "-" + day;
