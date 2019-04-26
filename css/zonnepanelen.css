@@ -115,10 +115,10 @@ div.text_div {
 }
 
 div.box_Zonnepanelen {
-    left: 4.0%; 
-    top: 1.2%; 
-    width: 18.8%;
-    height: 38.4%;
+    left: .5%;
+    top: .5%;
+    width: 19.9%;
+    height: 49%;
     position: absolute;
 	-webkit-transform:rotate(0deg);
 	transform:rotate(0deg);
@@ -127,76 +127,141 @@ div.box_Zonnepanelen {
 	font-weight: bold;
 	font-size: .6vw;
 	text-align: center;
+	z-index: 30;
+	border:1px
+	solid black;
+	border-radius: 1%;
+}
+div.box_Zonnepanelen-is-clicked {
+    width: 39.8%;
+    height: 98%;
+	z-index: 32;
+	font-size: .9vw;
 }
 
 div.box_sunrise {
-    left: -15%;
-    top: 90%;
-    width: 60%;
-    height: 35%;
+    left: 0.2%;
+    top: 29.0%;
+    width: 12.7%;
+    height: 20.4%;
     position: absolute;
+	background-color: white;
 	-webkit-transform:rotate(0deg);
 	transform:rotate(0deg);
 	color: grey;
 	font-size: .6vw
+	z-index: 31;
 }
 
 div.box_inverter {
     left: 20.1%;
     top: 0.5%;
     width: 24%;
-    height: 52%;
+    height: 49.4%;
     position: absolute;
 	font-family: arial;
 	font-size: .6vw
 }
+div.box_inverter-is-clicked {
+    width: 36%;
+    height: 78%;
+	z-index: 32;
+	font-size: .9vw;
+}
 
-div.panel_energy {
+div.box_panel_energy {
     left: 43%;
     top: 0.1%;
     width: 28.4%;
     height: 49.7%;
     position: absolute;
+	z-index: 30;
+}
+div.box_panel_energy-is-clicked {
+    left: 43%;
+    width: 56.8%;
+    height: 70%;
+	z-index: 32;
 }
 
-div.panel_vermogen {
+div.box_panel_vermogen {
     left: 71.5%;
     top: 0.1%;
     width: 28.4%;
     height: 49.7%;
     position: absolute;
+	z-index: 30;
 }
 
-div.chart_energy {
+div.box_panel_vermogen-is-clicked {
+    left: 43%;
+    width: 56.8%;
+    height: 70%;
+	z-index: 32;
+}
+
+div.box_chart_energy {
     left: 43%;
     top: 0.1%;
     width: 28.4%;
     height: 49.7%;
     position: absolute;
+	z-index: 30;
+}
+div.box_chart_energy-is-clicked {
+    left: 43%;
+    width: 56.8%;
+    height: 70%;
+	z-index: 32;
 }
 
-div.chart_vermogen {
+div.box_chart_vermogen {
     left: 71.5%;
     top: 0.1%;
     width: 28.4%;
     height: 49.7%;
     position: absolute;
+	z-index: 30;
+}
+div.box_chart_vermogen-is-clicked {
+    left: 43%;
+    width: 56.8%;
+    height: 70%;
+	z-index: 32;
 }
 
-div.daygraph {
+div.box_daygraph {
     left: .1%;
     top: 50.2%;
     width: 71.3%;
     height: 48.9%;
     position: absolute;
+	z-index: 30;
 }
 
-div.monthgraph {
+div.box_daygraph-is-clicked {
+    left: .1%;
+    top: 10.0%;
+    width: 99.8%;
+    height: 89.9%;
+    position: absolute;
+	z-index: 32;
+}
+
+div.box_monthgraph {
     left: 71.5%;
     top: 50.2%;
     width: 28.4%;
     height: 48.9%;
     position: absolute;
+	z-index: 30;
+}
+div.box_monthgraph-is-clicked {
+    width: 69.9%;
+    height: 89.9%;
+    left: 30.0%;
+    top: 10.0%;
+	z-index: 32;
 }
 
 div.power_chart_body{

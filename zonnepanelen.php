@@ -279,17 +279,31 @@ omschrijving: hoofdprogramma
 				</map>
 			</div>
 
-			<div Class="panel_energy" id="panel_energy"></div>
-			<div Class="panel_vermogen" id="panel_vermogen"></div>
-			<div Class="chart_energy" id="chart_energy"></div>
-			<div Class="chart_vermogen" id="chart_vermogen"></div>
+			<div Class='box_panel_energy' id='box_panel_energy'>
+				<div id="panel_energy" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_panel_vermogen' id='box_panel_vermogen'>
+				<div id="panel_vermogen" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_chart_energy' id='box_chart_energy'>
+				<div id="chart_energy" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_chart_vermogen' id='box_chart_vermogen'>
+				<div id="chart_vermogen" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
 <?php
-			if ($P1 == 1){
-				echo '				<div Class="daygraph" id="daygraph"></div>'."\n";
-				echo '				<div Class="monthgraph" id="monthgraph"></div>'."\n";
-			}else{
-				echo '				<div Class="power_chart_body" id="power_chart_body"></div>'."\n";
-			}
+if ($P1 == 1){
+echo <<<EOF
+			<div Class='box_daygraph' id='box_daygraph'>
+				<div id="daygraph" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+			<div Class='box_monthgraph' id='box_monthgraph'>
+				<div id="monthgraph" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
+EOF
+;
+}
+
 ?>
 			<div Class='box_Zonnepanelen' id='box_Zonnepanelen'>
 <?php
@@ -307,24 +321,24 @@ omschrijving: hoofdprogramma
 		echo '				</div>'."\n";
 	}
 ?>
-			<div Class='box_sunrise' id='box_sunrise'>
-				<img src="./img/zon/sunrise.gif"                  style="top: .1%;   left: 3%;  z-index: 10; width: 20%; height: 12%; position: absolute;" />
-				<div class='sunrise_text' id='sunrise_text'       style="top: .5%;   left: 30%; z-index: 10; width: 50%; height: 15%; line-height: 1.1em; position: absolute;"></div>
+		</div>
+		<div Class='box_sunrise' id='box_sunrise'>
+			<img src="./img/zon/sunrise.gif"                  style="top: .1%;   left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
+			<div class='sunrise_text' id='sunrise_text'       style="top: 10.0%;   left: 40%; z-index: 10; width: 40%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 
-				<img src="./img/zon/solar_noon.gif"               style="top: 15.1%; left: 3%;  z-index: 10; width: 20%; height: 12%; position: absolute;" />
-				<div class='solar_noon_text' id='solar_noon_text' style="top: 15.5%; left: 30%; z-index: 10; width: 50%; height: 15%; line-height: 1.1em; position: absolute;"></div>
+			<img src="./img/zon/solar_noon.gif"               style="top: 15.1%; left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
+			<div class='solar_noon_text' id='solar_noon_text' style="top: 25.0%; left: 40%; z-index: 10; width: 40%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 
-				<img src="./img/zon/sunset.gif"                   style="top: 30.1%; left: 3%;  z-index: 10; width: 20%; height: 12%; position: absolute;" />
-				<div class='sunset_text' id='sunset_text'         style="top: 30.5%; left: 30%; z-index: 10; width: 50%; height: 15%; line-height: 1.1em; position: absolute;"></div>
+			<img src="./img/zon/sunset.gif"                   style="top: 30.1%; left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
+			<div class='sunset_text' id='sunset_text'         style="top: 40.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 
-				<img src="./img/zon/daglengte.gif"                style="top: 45.1%; left: 3%;  z-index: 10; width: 20%; height: 12%; position: absolute;" />
-				<div class='daglengte_text' id='daglengte_text'   style="top: 45.5%; left: 30%; z-index: 10; width: 50%; height: 15%; line-height: 1.1em; position: absolute;"></div>
+			<img src="./img/zon/daglengte.gif"                style="top: 45.1%; left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
+			<div class='daglengte_text' id='daglengte_text'   style="top: 55.0%; left: 40%; z-index: 10; width: 40%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 
-				<img src="./img/maan/maan_th_mask1.gif"           style="top: 58.0%; left: 80%; z-index: 20; width: 20%; position: absolute;" />
-				<img class="maan_th" id="maan_th" src=""          style="top: 59.0%; left: 80%; z-index: 10; width: 20%; position: absolute;"></img>
-				<div class='fase_text' id='fase_text'             style="top: 68.0%; left: 30%; z-index: 10; width: 50%; height: 12%; line-height: 1.1em; position: absolute;"></div>
-				<div class='verlicht_text' id='verlicht_text'     style="top: 81.0%; left: 30%; z-index: 10; width: 50%; height: 12%; line-height: 1.1em; position: absolute;"></div>
-			</div>
+			<img src="./img/maan/maan_th_mask1.gif"           style="top: 60.0%; left: 7%; z-index: 20; width: 25%; position: absolute;" />
+			<img class="maan_th" id="maan_th" src=""          style="top: 60.6%; left: 7%; z-index: 10; width: 25%; position: absolute;" />
+			<div class='fase_text' id='fase_text'             style="top: 69.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
+			<div class='verlicht_text' id='verlicht_text'     style="top: 82.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 		</div>
 	</div>
 </body>
@@ -1795,6 +1809,7 @@ omschrijving: hoofdprogramma
 		var year = date.getFullYear();
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
+		event.stopPropagation();
 	});
 	$('#PrevDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
@@ -1802,19 +1817,20 @@ omschrijving: hoofdprogramma
 		date.setDate(date.getDate()-1);
 		var day = date.getDate();
 		if (day < 10){
-		day = "0" + String(day);
+			day = "0" + String(day);
 		}else{
-		day = String(day);
+			day = String(day);
 		}
 		var month = date.getMonth()+1;
 		if (month < 10){
-		month = "0" + String(month);
+			month = "0" + String(month);
 		}else{
-		month = String(month);
+			month = String(month);
 		}
 		var year = date.getFullYear();
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
+		event.stopPropagation();
 	});
 	$('#NextDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
@@ -1835,7 +1851,47 @@ omschrijving: hoofdprogramma
 		var year = date.getFullYear();
 		var datum = String(year) + "-" + month + "-" + day;
 		toonDatum(datum);
+		event.stopPropagation();
 	});
+
+	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
+		this.classList.toggle("box_Zonnepanelen-is-clicked");
+	});
+	document.getElementById("box_inverter").addEventListener("click", function() {
+		this.classList.toggle("box_inverter-is-clicked");
+	});
+	document.getElementById("box_chart_energy").addEventListener("click", function() {
+		this.classList.toggle("box_chart_energy-is-clicked");
+		document.getElementById("box_panel_energy").classList.toggle("box_panel_energy-is-clicked");
+		paneel_charte.reflow();
+		inverter_chart.reflow();
+		inverter_chart.reflow();
+	});
+	document.getElementById("box_chart_vermogen").addEventListener("click", function() {
+		this.classList.toggle("box_chart_vermogen-is-clicked");
+		document.getElementById("box_panel_vermogen").classList.toggle("box_panel_vermogen-is-clicked");
+		paneel_chartv.reflow();
+		vermogen_chart.reflow();
+		vermogen_chart.reflow();
+	});
+	document.getElementById("box_daygraph").addEventListener("click", function() {
+		this.classList.toggle("box_daygraph-is-clicked");
+		wchart.reflow();
+		wchart.reflow();
+	});
+	document.getElementById("box_monthgraph").addEventListener("click", function() {
+		this.classList.toggle("box_monthgraph-is-clicked");
+		ychart.reflow();
+		ychart.reflow();
+	});
+	window.addEventListener('resize', function(){
+		paneel_charte.reflow();
+		inverter_chart.reflow();
+		paneel_chartv.reflow();
+		vermogen_chart.reflow();
+		wchart.reflow();
+		ychart.reflow();
+	}, true);
 
 // -------------------------------
 // P1 meter scripts
@@ -2184,10 +2240,11 @@ omschrijving: hoofdprogramma
 				id: 'SolarPVGis',
 				type: 'line',
 				name: PVGtxt+' schatting',
-				color: 'rgba(255,0,0,0.5)',
+				color: 'rgba(255,0,0,0.6)',
 				lineWidth: 1,
 				marker: {
-					radius: 2
+					radius: 2,
+					enabled: true
 				},
 			}, false);
 		}

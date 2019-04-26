@@ -29,16 +29,12 @@ In config.php the following information is defined:
    - the optimizer id, number of the panel, the direction, panel SN and panel power in pW.
    - Extra information for p1:
    - indicate to show P1 values;
-    - P1 script to be used to retrieve the information;
-    - Electricity supplier;
-    - Number of Days and Months to show in the P1 graphs;
-    - PVGis information when you want to have that included in the graphs.
-4. Customize css/zonnepanelen.css for zonnepanelen.php  
-In css/zonnepanelen.css the following is fixed:  
+   - P1 script to be used to retrieve the information;
+   - Electricity supplier;
+   - Number of Days and Months to show in the P1 graphs;
+   - PVGis information when you want to have that included in the graphs.
+4. Customize css/zonnepanelen-local.css for zonnepanelen.php by copying the zonnepanelen-local-example.css to zonnepanelen-local.css.  The following is defined in this file:  
    - div.box_Zonnepanelen: place, dimensions and possible rotation;
-   - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
-5. Customize css/zonnepanelen-electra.css for zonnepanelen-electra.php  
-In css/zonnepanelen-electra.css the following is arranged:  
    - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
 
 ## screenshot zonnepanelen.php $P1 = 0:
