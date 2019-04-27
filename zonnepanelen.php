@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-
 based on versie: 1.64 of zonnepanelen.php
 versie: 1.64.3
 auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
@@ -69,7 +68,6 @@ omschrijving: hoofdprogramma
 		$thread_id = $mysqli->thread_id;
 		$mysqli->kill($thread_id);
 		$mysqli->close();
-
 		if ($aantal < 0) { $aantal = 0;}
 		for ($i=1; $i<=$aantal; $i++){
 			if ($op_id[$i][2] == 1){$pro[$i] =  "6%"; $top[$i] = "65%";}
@@ -117,7 +115,6 @@ omschrijving: hoofdprogramma
 		$solar_noon = date("H:i:s",($datum+$solar_noon_s)*86400);
 		$sunset = date("H:i:s",($datum+$sunset_s)*86400);
 		$daglengte = date("H:i:s",($datum+$sunset_s-$sunrise_s)*86400);
-
 		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
 				$epsilon = 0.000000000001;
 				do {
@@ -128,7 +125,6 @@ omschrijving: hoofdprogramma
 				while ( abs($sv) > $epsilon );
 				return $st;
 			}
-
 		function bereken($datum,$lat,$long,$timezone,$localtime,$i) {
 			$julian_day = $datum + 2440587.5 + ($localtime-$timezone)/24; //Julian Day
 			$julian_cen =($julian_day-2451545)/36525; //Julian Century
@@ -193,7 +189,6 @@ omschrijving: hoofdprogramma
 						data: []//this will be filled by requestData()
 					}],\n";
 		}
-
 		function e_panelen($aantal) {
 			print "
 					series: [\n";
@@ -298,6 +293,11 @@ echo <<<EOF
 			</div>
 EOF
 ;
+} else {
+echo <<<EOF
+			<div Class="power_chart_body" id="power_chart_body"></div>
+EOF
+;
 }
 
 ?>
@@ -357,7 +357,6 @@ EOF
 		}
 		window.location.replace(url);//do something after you receive the result
 	}
-
 	var ds = '<?php echo $ds ?>';
 	var datum = '<?php echo $date ?>';
 	var datumz = '<?php echo $datumz ?>';
@@ -407,10 +406,8 @@ EOF
 	var pvs = 0;
 	var pse = 0;
 	var psv = 0;
-
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
-
 	function drawChart() {
 		zonmaan();
 		paneel();
@@ -425,11 +422,9 @@ EOF
 				}
 				if (P1 == 1){p1_update();}
 			}, 10000);
-
 			setInterval(function() {
 				zonmaan();
 			}, 600000);
-
 			setInterval(function() {
 				paneel();
 			}, 60000);
@@ -479,7 +474,6 @@ EOF
 			}
 		}
 	}
-
 	function paneelChartcl() {
 		inverter_redraw = 1;
 		document.getElementById("panel_vermogen").innerHTML ="";
@@ -491,7 +485,6 @@ EOF
 		inverter_chart.redraw();
 		vermogen_chart.redraw();
 	}
-
 	function waarde(l,d,x){
 		s = String(x);
 		n = s.indexOf('-');
@@ -510,7 +503,6 @@ EOF
 		if (n==0) { s="-"+s;}
 		return s;
 	}
-
 	function paneel(){
 		var inv1Data = $.ajax({
 			url: "live-server-data-zon.php",
@@ -519,10 +511,8 @@ EOF
 			data: { "date" : datum },
 			async: false,
 		}).responseText;
-
 		inv1Data = eval(inv1Data)
 		SolarProdToday = inv1Data[0]["IE"];
-
 		if (p1CounterToday == 0) {
 			if (P1 == 1){
 				p1_update()
@@ -530,7 +520,6 @@ EOF
 			s_p1CounterToday = p1CounterToday;
 			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
-
 		var now = new Date();
 		var datesol = new Date(inv1Data[0]["IT"]);
 		var dsol = datesol.getDate();
@@ -594,7 +583,6 @@ EOF
 		for (i=1; i<=aantal; i++) {
 			tverm += vpan[i];
 		}
-
 		if (inverter == 1){
 			document.getElementById("inverter_1").title = "Inverter: "+naam+
 				"\r\n\r\nS AC:	"+inv1Data[0]["i_ac"]+" A"+
@@ -657,10 +645,8 @@ EOF
 			else if ( inv1Data[0]["C"+i] < 0.8) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#417bb5"; }
 			else if ( inv1Data[0]["C"+i] < 0.9) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#498acc"; }
 			else                                { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3"; }
-
 		}
 	}
-
 	function p1_update(){
 		var p1data = $.ajax({
 			url: "<?php echo $DataURL?>?period=c",
@@ -728,7 +714,6 @@ EOF
 					"<tr><td></td><td>----------</td></tr>"+
 					"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
 					"</table>";
-
 			if (pse+psv+pve+pvs > 0) {
 				// update current day info in graphs
 				var prod = SolarProdToday   ;      //Solar productie
@@ -761,7 +746,6 @@ EOF
 			}
 		}
 	}
-
 	function update_map_fields() {
 		if (wchart != "" && wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
 			//var cd = new Date();
@@ -811,7 +795,6 @@ EOF
 					yvs += ychart.series[3].data[i].y;
 				}
 			});
-
 			document.getElementById("p1_huis").className = "red_text";
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
@@ -832,7 +815,6 @@ EOF
 				document.getElementById("p1_huis").innerHTML = "No Data";
 				document.getElementById("huis_1").title = "No Data";
 			}
-
 			var cur = document.getElementById("p1_text").innerHTML;
 			if ( document.getElementById("p1_text").className == "red_text") {
 				cur = "\r\nHuidig\r\nverbruik:	" + cur;
@@ -845,11 +827,9 @@ EOF
 					"\r\n\r\nVandaag\r\nverbruik:	"+waarde(0,3,ve)+" kWh\r\nretour:  	"+waarde(0,3,se)+" kWh\r\nnetto:   	"+waarde(0,3,ve-se)+" kWh"+
 					"\r\n\r\nMaand\r\nverbruik:	"+waarde(0,2,mve)+" kWh\r\nretour:  	"+waarde(0,2,mse)+" kWh\r\nnetto:   	"+waarde(0,2,mve-mse)+" kWh" +
 					"\r\n\r\nJaar\r\nverbruik:	"+waarde(0,1,yve)+" kWh\r\nretour:  	"+waarde(0,1,yse)+" kWh\r\nnetto:   	"+waarde(0,1,yve-yse)+" kWh";
-
 			var curtext=document.getElementById("inverter_1").title;
 			var ins = curtext.indexOf("Vandaag")-4;
 			if (ins>0) {curtext = curtext.substring(0,ins);}
-
 			var datesol = new Date(date2);
 			var dsol = datesol.getDate();
 			var msol = datesol.getMonth()+1;
@@ -874,7 +854,6 @@ EOF
 					PVGism+
 					"\r\nJaar:   	" + waarde(0,2,yse + ysv)+" kWh"+
 					PVGisj;
-
 			if (datum1 >= tomorrow) {
 				var ddiff=ve-se;
 				var mdiff=mve-mse;
@@ -911,7 +890,6 @@ EOF
 			}
 		}
 	}
-
 	function zonmaan(){
 		if (date2 >= date3){
 			document.getElementById("NextDay").disabled = true;
@@ -1777,7 +1755,6 @@ EOF
 			}
 		});
 	});
-
  	$('#multiShowPicker').calendarsPicker({
 		pickerClass: 'noPrevNext', maxDate: +0, minDate: begin,
 		dateFormat: 'yyyy-mm-dd', defaultDate: date2, selectDefaultDate: true,
@@ -1848,7 +1825,6 @@ EOF
 		toonDatum(datum);
 		event.stopPropagation();
 	});
-
 	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
 		this.classList.toggle("box_Zonnepanelen-is-clicked");
 	});
@@ -1887,12 +1863,10 @@ EOF
 		wchart.reflow();
 		ychart.reflow();
 	}, true);
-
 // -------------------------------
 // P1 meter scripts
 // -------------------------------
 	function draw_p1_chart() {
-
 		// definieer standaard opties voor iedere grafiek
 		var chartoptions={
 			chart: {
@@ -2038,8 +2012,6 @@ EOF
 				enabled: false
 			},
 		};
-
-
 		// Add weeknummer format
 		Highcharts.dateFormats = {
 			W: function (timestamp) {
@@ -2049,28 +2021,22 @@ EOF
 				date.setDate(date.getUTCDate() + 4 - day);
 				dayNumber = Math.floor((date.getTime() - new Date(date.getUTCFullYear(), 0, 1, -6)) / 86400000);
 				return 1 + Math.floor(dayNumber / 7);
-
 			}
 		};
-
 		// creeer de Charts met ieder hun eigen setting
 		chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecDagGraph?> dagen.';
 		chartoptions.chart.renderTo='daygraph';
 		chartoptions.xAxis.dateTimeLabelFormats.day='%a %d-%b';
 		chartoptions.xAxis.tickInterval=24 * 3600 * 1000;
 		wchart = new Highcharts.Chart(chartoptions);
-
-
 		chartoptions.subtitle.text='<?php echo $ElecLeverancier?> overzicht laatste <?php echo $ElecMaandGraph?> maanden.';
 		chartoptions.chart.renderTo='monthgraph';
 		chartoptions.series.pointInterval=24 * 3600 * 1000*30;
 		chartoptions.xAxis.tickInterval=28*24*3600*1000;
 		ychart = new Highcharts.Chart(chartoptions);
-
 		// voeg de data series toe aan de Charts
 		AddSeriestoChart(wchart, 0);
 		AddSeriestoChart(ychart, 0);
-
 		// lees data en update grafieken alleen initieel
 		updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
@@ -2088,7 +2054,6 @@ EOF
 		   }
 		);
 	}
-
 	function AddDataToUtilityChart(data, chart, switchtype) {
 		var datatableverbruikElecNet = [];
 		var datatableverbruikSolar = [];
@@ -2111,7 +2076,6 @@ EOF
 			var se = r1 + r2;
 			var sv = vs;
 			datatableverbruikElecNet.push([cdate, ve]);
-
 			var datesol = new Date(date2);
 			var dsol = datesol.getDate();
 			var msol = datesol.getMonth()+1;
@@ -2144,7 +2108,6 @@ EOF
 				psv = sv;
 			}
 		});
-
 		var series;
 		var totDecimals = 3;
 		if (datatableSolarElecNet.length > 0) {
@@ -2179,7 +2142,6 @@ EOF
 			color: 'rgba(30,242,110,1)',
 			stack: 'sreturn',
 		}, false);
-
 		chart.addSeries({
 			id: 'SolarVerbruik',
 			type: 'area',
@@ -2188,7 +2150,6 @@ EOF
 			color: 'rgba(3,222,190,1)',
 			stack: 'sreturn',
 		}, false);
-
 		chart.addSeries({
 			id: 'verbruikElecNet',
 			name: 'Verbruik <?php echo $ElecLeverancier?>',
@@ -2222,14 +2183,12 @@ EOF
 			color: 'rgba(60,130,252,0.5)',
 			stack: 'susage',
 		}, false);
-
 		chart.addSeries({
 			id: 'verbruikSolar',
 			name: 'Verbruik Solar',
 			color: 'rgba(3,190,252,0.5)',
 			stack: 'susage',
 		}, false);
-
 		if (PVGis[1] > 0) {
 			chart.addSeries({
 				id: 'SolarPVGis',
@@ -2244,7 +2203,6 @@ EOF
 			}, false);
 		}
 	}
-
 	function GetDateFromString(s) {
 			var year = 1;
 			var month = 1;
@@ -2264,7 +2222,6 @@ EOF
 			}
 		return Date.UTC(year,month - 1,day);
 	}
-
 	function daysInMonth (month, year) { // Use 1 for January, 2 for February, etc.
 	  return new Date(year, month, 0).getDate();
 	}
