@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.27
+// versie: 1.28
 // auteur: André Rijkeboer
-// datum:  22-04-2019
+// datum:  28-04-2019
 // omschrijving: configuratie bestand
 
 // gegevens voor het openen van de database
@@ -38,14 +38,13 @@ $long = 6.0045953; //Longitude East
 $zonnesysteem = "zonnesysteem.gif";
 
 //#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
-//** P1 waarden aangeven 
+//** P1 waarden aangeven
 $P1 = 0; // 0 = nee, 1 = ja
 
 //** Algemene velden
 $ElecLeverancier = "Engie";                            // naam electra leverancier
 $ElecDagGraph = '60';                                   // aantal dagen in grafiek
 $ElecMaandGraph = '13';                                 // aantal maanden in grafiek
-$zonnesysteem_electra = "zonnesysteem-electra.gif";
 
 //** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
 $PVGtxt = "PVGis";                                  // Tekst waar de schatting vandaan komt bv: "PVGis"
