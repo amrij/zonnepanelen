@@ -850,7 +850,7 @@ EOF
 							"\r\n\r\nMaand\r\nZonne energie: " + waarde(0,2,mvs)+" kWh"+
 							"\r\n<?php echo $ElecLeverancier?> energie: " + waarde(0,2,mve)+" kWh"+
 							"\r\nTotaal verbruik: "+ waarde(0,2,mve+mvs)+" kWh" +
-							"\r\n\r\nJaar\r\nZonne energie: " + waarde(0,1,yvs)+" kWh"+
+							"\r\n\r\nJaar vanaf " + contract_datum+"-"+con_start_year + "\r\nZonne energie: " + waarde(0,1,yvs)+" kWh"+
 							"\r\n<?php echo $ElecLeverancier?> energie: " + waarde(0,1,yve)+" kWh"+
 							"\r\nTotaal verbruik: "+ waarde(0,1,yve+yvs)+" kWh";
 				}
