@@ -49,6 +49,9 @@ omschrijving: hoofdprogramma
 	<script src="js/jquery.calendars.picker.ext.js"></script>
 	<script src="js/jquery.calendars.validation.js"></script>
 	<?php
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			include('general_functions.php');
+		}
 		include('config.php');
 		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 		if (mysqli_connect_errno()) {
