@@ -143,14 +143,23 @@ div.box_sunrise {
     left: 0.2%;
     top: 36.5%;
     width: 12.7%;
-    height: 10.4%;
+    height: 13.4%;
     position: absolute;
 	background-color: white;
 	-webkit-transform:rotate(0deg);
 	transform:rotate(0deg);
 	color: grey;
-	font-size: .6vw
+	font-size: .6vw;
 	z-index: 31;
+}
+
+div.box_sunrise-is-clicked {
+    left: 0.2%;
+    top: 23.1%;
+    width: 25.4%;
+    height: 26.8%;
+	z-index: 32;
+	font-size: .9vw;
 }
 
 div.box_inverter {
@@ -264,15 +273,20 @@ div.box_monthgraph-is-clicked {
 	z-index: 32;
 }
 
-div.power_chart_body{
+div.box_power_chart_body{
 	left: .1%;
 	top: 50.2%;
 	width: 99.8%;
 	height: 48.9%;
-	z-index: 3;
+	z-index: 30;
 	position: absolute;
 }
-
+div.box_power_chart_body-is-clicked {
+	top: 25.1%;
+	width: 99.8%;
+	height: 74.0%;
+	z-index: 32;
+}
 
 div.inverter_text {
 	top: 10%;
@@ -460,7 +474,7 @@ div.map_huis {
 		width: 99.2%;
 		height: 50%;
 	}
-	div.power_chart_body{
+	div.box_power_chart_body{
 		left: .1%;
 		top: 205.2%;
 		width: 99.2%;
@@ -527,7 +541,7 @@ div.map_huis {
 		width: 99.2%;
 		height: 150%;
 	}
-	div.power_chart_body{
+	div.box_power_chart_body{
 		left: .1%;
 		top: 608.2%;
 		width: 99.2%;

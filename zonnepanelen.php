@@ -310,7 +310,9 @@ EOF
 ;
 } else {
 echo <<<EOF
-			<div Class="power_chart_body" id="power_chart_body"></div>
+			<div Class='box_power_chart_body' id='box_power_chart_body'>
+				<div id="power_chart_body" style="position: absolute; width: 100%; height: 100%;"></div>
+			</div>
 EOF
 ;
 }
@@ -346,8 +348,8 @@ EOF
 			<img src="./img/zon/daglengte.gif"                style="top: 45.1%; left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
 			<div class='daglengte_text' id='daglengte_text'   style="top: 55.0%; left: 40%; z-index: 10; width: 40%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 
-			<img src="./img/maan/maan_th_mask1.gif"           style="top: 60.0%; left: 7%; z-index: 20; width: 25%; position: absolute;" />
-			<img class="maan_th" id="maan_th" src=""          style="top: 60.6%; left: 7%; z-index: 10; width: 25%; position: absolute;" />
+			<img src="./img/maan/maan_th_mask1.gif"           style="top: 60.0%; left: 7%; z-index: 20; height: 40%; position: absolute;" />
+			<img class="maan_th" id="maan_th" src=""          style="top: 60.6%; left: 7%; z-index: 10; height: 40%; position: absolute;" />
 			<div class='fase_text' id='fase_text'             style="top: 69.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 			<div class='verlicht_text' id='verlicht_text'     style="top: 82.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
 		</div>
@@ -1869,6 +1871,9 @@ EOF
 	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
 		this.classList.toggle("box_Zonnepanelen-is-clicked");
 	});
+	document.getElementById("box_sunrise").addEventListener("click", function() {
+		this.classList.toggle("box_sunrise-is-clicked");
+	});
 	document.getElementById("box_inverter").addEventListener("click", function() {
 		this.classList.toggle("box_inverter-is-clicked");
 	});
@@ -1886,6 +1891,10 @@ EOF
 		vermogen_chart.reflow();
 		vermogen_chart.reflow();
 	});
+
+<?php
+if ($P1 == 1){
+echo <<<EOF
 	document.getElementById("box_daygraph").addEventListener("click", function() {
 		this.classList.toggle("box_daygraph-is-clicked");
 		wchart.reflow();
@@ -1904,6 +1913,26 @@ EOF
 		wchart.reflow();
 		ychart.reflow();
 	}, true);
+EOF
+;
+} else {
+echo <<<EOF
+	document.getElementById("box_power_chart_body").addEventListener("click", function() {
+		this.classList.toggle("box_power_chart_body-is-clicked");
+		power_chart.reflow();
+		power_chart.reflow();
+	});
+	window.addEventListener('resize', function(){
+		paneel_charte.reflow();
+		inverter_chart.reflow();
+		paneel_chartv.reflow();
+		vermogen_chart.reflow();
+		power_chart.reflow();
+	}, true);
+EOF
+;
+}
+?>
 // -------------------------------
 // P1 meter scripts
 // -------------------------------
