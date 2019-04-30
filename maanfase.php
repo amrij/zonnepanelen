@@ -18,21 +18,23 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.01
+// versie: 1.02
 // auteur: André Rijkeboer
-// datum:  02-03-2018
+// datum:  20-04-2018
 // omschrijving: berekenen maanstand
-
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+	include('general_functions.php');
+}
 $date = $_GET['date'];
-if($date == ''){ 
-$date = date("d-m-Y H:i:s", time());
+if($date == ''){
+	$date = date("d-m-Y H:i:s", time());
 }
 $date3 = date("Y-m-d", time());
 $datum1 = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", time()))))->getTimestamp();
 $a = strptime($date, '%d-%m-%Y %H:%M:%S');
 if ($a['tm_year']+1900 < 2000){
 	$dl = strlen($date);
-	$a = strptime(substr($date,4,$dl-35), '%b %d %Y %H:%M:%S');	
+	$a = strptime(substr($date,4,$dl-35), '%b %d %Y %H:%M:%S');
 	$d = mktime($a['tm_hour'],$a['tm_min'],$a['tm_sec'],$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
 	$date = strftime('%d-%m-%Y %H:%M:%S', $d);
 }
@@ -54,17 +56,17 @@ $diff['diameter'] = $moon->diameter();
 $diff['phase_naam'] = "Volle maan";
 $diff['illumination'] = round($moon->illumination()*100,0);
 if ($diff["illumination"] < 3){
-	$diff['phase_naam'] = "Nieuwe maan"; 
+	$diff['phase_naam'] = "Nieuwe maan";
 }elseif ($diff["illumination"] < 50 && $diff['phase'] < 0.5){
-	$diff['phase_naam'] = "Jonge maan"; 
+	$diff['phase_naam'] = "Jonge maan";
 }elseif ($diff["illumination"] < 53 && $diff['phase'] > 0.5){
-	$diff['phase_naam'] = "Asgrauwe maan"; 		
+	$diff['phase_naam'] = "Asgrauwe maan";
 }elseif ($diff["illumination"] < 53 && $diff['phase'] < 0.5){
-	$diff['phase_naam'] = "Eerste kwartier"; 		
+	$diff['phase_naam'] = "Eerste kwartier";
 }elseif ($diff["illumination"] < 50 && $diff['phase'] > 0.5){
-	$diff['phase_naam'] = "Laatste kwartier"; 		
+	$diff['phase_naam'] = "Laatste kwartier";
 }elseif ($diff["illumination"] < 100 && $diff['phase'] < 0.5){
-	$diff['phase_naam'] = "Wassende maan"; 		
+	$diff['phase_naam'] = "Wassende maan";
 }elseif ($diff["illumination"] < 97 && $diff['phase'] > 0.5){
 	$diff['phase_naam'] = "Afnemende maan";
 }
