@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.28
+// versie: 1.29
 // auteur: André Rijkeboer
-// datum:  28-04-2019
+// datum:  29-04-2019
 // omschrijving: configuratie bestand
 
 // gegevens voor het openen van de database
@@ -45,6 +45,9 @@ $P1 = 0; // 0 = nee, 1 = ja
 $ElecLeverancier = "Engie";                            // naam electra leverancier
 $ElecDagGraph = '60';                                   // aantal dagen in grafiek
 $ElecMaandGraph = '13';                                 // aantal maanden in grafiek
+// contract startdatum (dd-mm) energie leverancier tbv jaar totalen op de website.
+// 01-01 wordt gebruikt indien niet gespecificeerd om zo het huidige jaar totaal te geven
+$contract_datum = '01-01';    // dd-mm
 
 //** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
 $PVGtxt = "PVGis";                                  // Tekst waar de schatting vandaan komt bv: "PVGis"

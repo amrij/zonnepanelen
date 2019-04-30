@@ -18,10 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-based on versie: 1.64 of zonnepanelen.php
-versie: 1.64.3
-auteur: Jos van der Zande  based on the zonnepanelen.php model from André Rijkeboer
-datum:  15-04-2019
+versie: 1.64.4
+auteurs:
+	André Rijkeboer
+	Jos van der Zande
+	Marcel Mol
+datum:  30-04-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -83,8 +85,8 @@ omschrijving: hoofdprogramma
 		$week[5] = "Vrijdag ";
 		$week[6] = "Zaterdag ";
 		$week[7] = "Zondag ";
-		$date = $_GET['date'];
-		$ds = $_GET['ds'];
+		$date = array_key_exists('date', $_GET) ? $_GET['date'] : "";
+		$ds = array_key_exists('ds', $_GET) ? $_GET['ds'] : "";
 		setlocale(LC_ALL, 'nl_NL');
 		if ($date == '') { $date = date("d-m-Y H:i:s", time()); }
 		for ($i=0; $i<=14; $i++){
@@ -116,6 +118,20 @@ omschrijving: hoofdprogramma
 		$solar_noon = date("H:i:s",($datum+$solar_noon_s)*86400);
 		$sunset = date("H:i:s",($datum+$sunset_s)*86400);
 		$daglengte = date("H:i:s",($datum+$sunset_s-$sunrise_s)*86400);
+		// bereken contract Start en Eind datum tbv jaar totalen
+		$contract_datum = empty($contract_datum) ? "01-01" : $contract_datum ;
+		$con_date_fields = explode("-", $contract_datum,2);
+		$con_d =  intval($con_date_fields[0]) == 0 ? 1 : intval($con_date_fields[0]) ;
+		$con_m =  intval($con_date_fields[1]) == 0 ? 1 : intval($con_date_fields[1]) ;
+		$con_s_y = $jaar;
+		$con_e_y = $jaar + 1;
+		if($con_m > $maand || ($con_m == $maand && $con_d < $dag)) {
+			$con_s_y = $jaar -1;
+			$con_e_y = $jaar;
+		}
+		$contract_datum_start = $con_s_y . "-" . $con_m . "-" . $con_d;
+		$contract_datum_end = $con_e_y . "-" . $con_m . "-" . $con_d;
+
 		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
 			$epsilon = 0.000000000001;
 			do {
@@ -397,6 +413,9 @@ EOF
 	var p1CounterToday = 0;
 	var p1CounterDelivToday = 0;
 	var s_lasttimestamp = 0;
+	var contract_datum = '<?php echo $contract_datum?>';
+	var contract_start_date = '<?php echo $contract_datum_start?>';
+	var contract_end_date = '<?php echo $contract_datum_end?>';
 	var s_p1CounterToday = 0;
 	var s_p1CounterDelivToday = 0;
 	var wchart="";
@@ -745,13 +764,24 @@ EOF
 			}
 		}
 	}
+
+	function datediff(date1,date2) {
+		//var res = Math.abs(date1 - date2) / 1000;
+		var res = (date1 - date2) / 1000;
+		return Math.floor(res / 86400);
+	}
+
 	function update_map_fields() {
 		if (wchart != "" && wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
-			//var cd = new Date();
 			var cdate = new Date(date2);
 			var cd = cdate.getDate();
 			var cm = cdate.getMonth()+1;
 			var cy = cdate.getFullYear();
+			var con_start_date = new Date(contract_start_date);
+			var con_end_date = new Date(contract_end_date);
+			var con_day = con_start_date.getDate();
+			var con_month = con_start_date.getMonth()+1;
+			var con_start_year = con_start_date.getFullYear()+1;
 			var ve = 0;
 			var vs = 0;
 			var se = 0;
@@ -778,16 +808,28 @@ EOF
 					mvs += wchart.series[3].data[i].y;
 				}
 			});
-			var yse = mse;
-			var ysv = msv;
-			var yve = mve;
-			var yvs = mvs;
+			var yse = 0;
+			var ysv = 0;
+			var yve = 0;
+			var yvs = 0;
 			$.each(ychart.series[2].data, function(i, point) {
 				var pdate = new Date(point.x);
 				var pd = pdate.getDate();
 				var pm = pdate.getMonth()+1;
 				var py = pdate.getFullYear();
-				if(cy == py && cm != pm) {
+				<?php // Get days diff with contract start and end date ?>
+				var dd_start = datediff(pdate,con_start_date);
+				var dd_end = datediff(con_end_date,pdate);
+				if(con_start_year == py && con_month == pm) {
+					<?php // we are in the start month of the contract so calculate the pro rate monthtotal/monthdays*(monthdays-contractstartday+1) ?>
+					var monthdays = daysInMonth(pm, py);
+					var factor = (monthdays-con_day+1)/monthdays;
+					yse += ychart.series[0].data[i].y * factor;
+					ysv += ychart.series[1].data[i].y * factor;
+					yve += ychart.series[2].data[i].y * factor;
+					yvs += ychart.series[3].data[i].y * factor;
+				} else if(dd_start > 0 && dd_end > 0) {
+					<?php // we are within de contract period so add to contract year total ?>
 					yse += ychart.series[0].data[i].y;
 					ysv += ychart.series[1].data[i].y;
 					yve += ychart.series[2].data[i].y;
@@ -825,7 +867,7 @@ EOF
 					cur+
 					"\r\n\r\nVandaag\r\nverbruik:	"+waarde(0,3,ve)+" kWh\r\nretour:  	"+waarde(0,3,se)+" kWh\r\nnetto:   	"+waarde(0,3,ve-se)+" kWh"+
 					"\r\n\r\nMaand\r\nverbruik:	"+waarde(0,2,mve)+" kWh\r\nretour:  	"+waarde(0,2,mse)+" kWh\r\nnetto:   	"+waarde(0,2,mve-mse)+" kWh" +
-					"\r\n\r\nJaar\r\nverbruik:	"+waarde(0,1,yve)+" kWh\r\nretour:  	"+waarde(0,1,yse)+" kWh\r\nnetto:   	"+waarde(0,1,yve-yse)+" kWh";
+					"\r\n\r\nTotaal vanaf "+contract_datum+"-"+con_start_year+"\r\nverbruik:	"+waarde(0,1,yve)+" kWh\r\nretour:  	"+waarde(0,1,yse)+" kWh\r\nnetto:   	"+waarde(0,1,yve-yse)+" kWh";
 			var curtext=document.getElementById("inverter_1").title;
 			var ins = curtext.indexOf("Vandaag")-4;
 			if (ins>0) {curtext = curtext.substring(0,ins);}
@@ -874,7 +916,7 @@ EOF
 				}
 				document.getElementById("sum_text").innerHTML = "<table width=100% class=data-table>"+
 						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+datev+"</b></td></tr>" +
-						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>JTD</u></td></tr>" +
+						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>"+contract_datum+"</u></td></tr>" +
 						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv)+"</td></tr>"+
 						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/dayssol)+'</td><td>'+waarde(0,0,PVGis[cm]/dayssol*dsol)+ '</td><td>'+waarde(0,0,tPVGis+(PVGis[cm]/dayssol*dsol))+'</td></tr>'}` +
 						"<tr><td colspan=5><br><u>Huis verbruik</u></td></tr>" +
