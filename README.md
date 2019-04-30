@@ -1,24 +1,17 @@
 # Zonnepanelen
-This Website will show telemetry data from the TCP traffic of SolarEdge PV inverters with zonnepanelen.php, or both the SolarEdge and P1 meter information with zonnepanelen-electra.php.
+This Website will show telemetry data from the TCP traffic of SolarEdge PV inverters or both the SolarEdge and P1 meter information.
 The website is based on se-logger (https://github.com/jbuehl/solaredge/)
 It is suitable for single-phase inverters and 3-phase inverters.
 It also contains P1 information retrieval scripts for Domoticz, DSMR and an extra P1_Meter table which can to be added to the SolarEdge database.
 
 ## How it works
 The website is based on the database of se-logger.  
-To configure the website, both config.php and css/zonnepanelen(-electra).css have to be modified.
-After configuration, the website can be started by going to the root of the Website (index.htm),  zonnepanelen.php or zonnepanelen-electra.php depending for which page you have chosen.
+To configure the website, both config.php and css/zonnepanelen-local.css have to be modified.
+After configuration, the website can be started by going to the root of the Website (index.htm) or zonnepanelen.php.
 
 ## Installation steps
 1. Unpack the file img/maan/maan.zip.
-2. Customize index.htm to define which of the 2 pages you want to open by default.
-```
-<script>
-	window.location.replace("zonnepanelen.php");
-	//window.location.replace("zonnepanelen-electra.php");
-</script>
-```
-3. Customize config.php  
+2. Customize config.php  
 In config.php the following information is defined:  
    - data for access to the database;
    - the latitude and longitude of the location of the panels;
@@ -34,7 +27,7 @@ In config.php the following information is defined:
    - Electricity contract start date, which will be used to show the totals for the contract period in stead of the current year.
    - Number of Days and Months to show in the P1 graphs;
    - PVGis information when you want to have that included in the graphs.
-4. Customize css/zonnepanelen-local.css for zonnepanelen.php by copying the zonnepanelen-local-example.css to zonnepanelen-local.css.  The following is defined in this file:  
+3. Customize css/zonnepanelen-local.css for zonnepanelen.php by copying the zonnepanelen-local-example.css to zonnepanelen-local.css.  The following is defined in this file:  
    - div.box_Zonnepanelen: place, dimensions and possible rotation;
    - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
 
