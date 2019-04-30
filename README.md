@@ -31,6 +31,7 @@ In config.php the following information is defined:
    - indicate to show P1 values;
    - P1 script to be used to retrieve the information;
    - Electricity supplier;
+   - Electricity contract start date, which will be used to show the totals for the contract period in stead of the current year.
    - Number of Days and Months to show in the P1 graphs;
    - PVGis information when you want to have that included in the graphs.
 4. Customize css/zonnepanelen-local.css for zonnepanelen.php by copying the zonnepanelen-local-example.css to zonnepanelen-local.css.  The following is defined in this file:  
