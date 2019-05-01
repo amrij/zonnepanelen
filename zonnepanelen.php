@@ -454,7 +454,7 @@ EOF
 			'Energie':      { 'metric': 'p1_volume_prd',        'tekst': 'Energie',     'unit': 'Wh' },
 			'Temperatuur':  { 'metric': 'temperature',          'tekst': 'Temperatuur', 'unit': '°C' },
 			'V_in':         { 'metric': 'vin',                  'tekst': 'Spanning In', 'unit': 'V' },
-			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning In', 'unit': 'V' },
+			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning Uit','unit': 'V' },
 			'I_in':         { 'metric': 'iin',                  'tekst': 'Stroom In',   'unit': 'A' }
 		};
 	function paneelFillSeries(metric, shift, x, ichart) {
