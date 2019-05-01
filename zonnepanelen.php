@@ -324,7 +324,7 @@ EOF
 		echo '				<div class="box_Zonnepaneel_'.$i.'" id="box_Zonnepaneel_'.$i.'">'."\n";
 		echo '					<div class="text_paneel_W" id="text_paneel_W_'.$i.'"></div>'."\n";
 		echo '					<div class="text_paneel_WX" id="text_paneel_W_'.$i.'a"></div>'."\n";
-		echo '					<img  id="image_'.$i.'" src="./img/dummy.gif" alt="" width="100%" height="100%" style="witdh: 0%; height: 100%; position:relative; z-index: 5;"/></div>'."\n";
+		echo '					<img  id="image_'.$i.'" src="./img/dummy.gif" alt="" width="100%" height="100%" style="width: 100%; height: 100%; position:relative; z-index: 5;"/></div>'."\n";
 		echo '					<div class="box_Zonnepaneel_'.$i.'">'."\n";
 		echo '						<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
 		echo '						<map name="'.$i.'">'."\n";
