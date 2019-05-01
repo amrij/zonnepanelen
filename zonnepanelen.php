@@ -550,18 +550,10 @@ EOF
 		var mdiff = (tnow - tlast)/60000;
 		if (datum1 < tomorrow) {
 			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || mdiff > 10) {
-				if(inv1Data[0]["IVACT"] != 0){
-					document.getElementById("arrow_PRD").className = "arrow_right_green";
-				}else{
-					document.getElementById("arrow_PRD").className = "";
-				}
 				s_p1CounterDelivToday = p1CounterDelivToday;
 				s_p1CounterToday = p1CounterToday;
-				if (inv1Data[0]["MODE"] == "MPPT") {
-					s_lasttimestamp = inv1Data[0]["IT"];
-				} else {
-					s_lasttimestamp = "";
-				}
+				s_lasttimestamp = (inv1Data[0]["MODE"] == "MPPT") ? inv1Data[0]["IT"] : "";
+				document.getElementById("arrow_PRD").className = (inv1Data[0]["IVACT"] != 0) ? "arrow_right_green" : "";
 				document.getElementById("so_text").className = "green_text";
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				if (P1 == 1){
@@ -624,18 +616,11 @@ EOF
 		update_map_fields();
 		for (var i=1; i<=aantal; i++){
 			document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
-			if (rpan[i] == 0){
-				document.getElementById("image_"+i).src = "./img/Zonnepaneel-ver.gif";
-			}else{
-				document.getElementById("image_"+i).src = "./img/Zonnepaneel-hor.gif";
-			}
+			document.getElementById("image_"+i).src = (rpan[i] == 0) ? "./img/Zonnepaneel-ver.gif" : "./img/Zonnepaneel-hor.gif";
 			if (vermogen == 1){
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
-				if(inv1Data[0]["IVACT"] != 0){
-					document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["E"+i])+ " W";
-				} else {
-					document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["VM"+i])+ " W";
-				}
+				var t = (inv1Data[0]["IVACT"] != 0) ? "E" : "VM";
+				document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0][t+i]) + " W";
 			} else {
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 				document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
@@ -677,31 +662,15 @@ EOF
 		}).responseText;
 		p1data = JSON.parse(p1data);
 		p1servertime = p1data[0]["ServerTime"];
+		if (typeof p1servertime === 'undefined') {p1servertime = "";}
 		p1CounterToday = p1data[0]["CounterToday"];
 		p1CounterDelivToday = p1data[0]["CounterDelivToday"];
 		p1Usage = p1data[0]["Usage"];
 		p1UsageDeliv = p1data[0]["UsageDeliv"];
-		if (typeof p1servertime === 'undefined') {p1servertime = "";}
-		if (typeof p1CounterToday === 'undefined') {
-			p1CounterToday = 0;
-		} else {
-			p1CounterToday = parseFloat(p1CounterToday);
-		}
-		if (typeof p1CounterDelivToday === 'undefined') {
-			p1CounterDelivToday = 0;
-		} else {
-			p1CounterDelivToday = parseFloat(p1CounterDelivToday);
-		}
-		if (typeof p1Usage === 'undefined') {
-			p1Usage = 0;
-		} else {
-			p1Usage = parseFloat(p1Usage);
-		}
-		if (typeof p1UsageDeliv === 'undefined') {
-			p1UsageDeliv = 0;
-		} else {
-			p1UsageDeliv = parseFloat(p1UsageDeliv);
-		}
+		p1CounterToday = (typeof p1CounterToday === 'undefined') ? 0 : parseFloat(p1CounterToday);
+		p1CounterDelivToday = (typeof p1CounterDelivToday === 'undefined') ? 0 : parseFloat(p1CounterDelivToday);
+		p1Usage = (typeof p1Usage === 'undefined') ? 0 : parseFloat(p1Usage);
+		p1UsageDeliv = (typeof p1UsageDeliv === 'undefined') ? 0 : parseFloat(p1UsageDeliv);
 		if (datum1 < tomorrow) {
 			if( p1CounterToday == 0){
 				document.getElementById("arrow_RETURN").className = "";
@@ -995,14 +964,10 @@ EOF
 					}
 					power_chart.redraw();
 					urlname = 'live-server-data-c.php';
-					if (datum1 < tomorrow) {
-					   setTimeout(requestData1, 1000*60);
-					} else {
-					   setTimeout(requestData1, 1000*86400);
-					}
+					setTimeout(requestData1, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					   setTimeout(requestData1, 1000*10);
+					setTimeout(requestData1, 1000*10);
 				},
 				cache: false
 			});
@@ -1014,14 +979,10 @@ EOF
 				data: { "date" : datum }, //optional
 				success: function(data) {
 					data_p = eval(data);
-					if (datum1 < tomorrow) {
-					   setTimeout(requestData2, 1000*60);
-					} else {
-					   setTimeout(requestData2, 1000*86400);
-					}
+					setTimeout(requestData2, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					   setTimeout(requestData2, 1000*10);
+					setTimeout(requestData2, 1000*10);
 				},
 				cache: false
 			});
@@ -1049,14 +1010,10 @@ EOF
 						inverter_chart.redraw();
 						vermogen_chart.redraw();
 					}
-					if (datum1 < tomorrow) {
-					   setTimeout(requestDatai, 1000*60);
-					} else {
-					   setTimeout(requestDatai, 1000*86400);
-					}
+					setTimeout(requestDatai, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					   setTimeout(requestDatai, 1000*10);
+					setTimeout(requestDatai, 1000*10);
 				},
 				cache: false
 			});
@@ -2010,11 +1967,8 @@ EOF
 							sVE = point.y;
 						}
 					});
-					if (this.points[0].series.chart.renderTo.id == "monthgraph") {
-						s += Highcharts.dateFormat('%B %Y', this.x);
-					} else {
-						s += Highcharts.dateFormat('%A %d-%m-%Y', this.x);
-					}
+					var dfmt = (this.points[0].series.chart.renderTo.id == "monthgraph") ? '%B %Y' : '%A %d-%m-%Y';
+					s += Highcharts.dateFormat(dfmt, this.x);
 					s += '</u></b><br/>';
 					//
 					if(sVS+sRE>0){
