@@ -92,14 +92,14 @@ omschrijving: hoofdprogramma
 		for ($i=0; $i<=14; $i++){
 			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)].date("d-m-Y", strtotime($date)-$i*86400);
 		}
-		$today = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp();
+		$today = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
 		$winter = date("I",$today)-1;
 		$jaar = date("Y",$today);
 		$maand = date("m",$today)-1;
 		$dag = date("d",$today)-1;
-		$datum1 = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", time()))))->getTimestamp();
+		$datum1 = (new DateTime("today " . date("Y-m-d 00:00:00", time())))->getTimestamp();
 		$datumz = date("d-m-Y H:i:s",$today);
-		$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp();
+		$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
 		$date3 = date("Y-m-d", time());
 		$datev = date("d-m-Y", strtotime($date));
 		$a = strptime($date, '%d-%m-%Y %H:%M:%S');
