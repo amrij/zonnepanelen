@@ -545,14 +545,18 @@ EOF
 	}
 	function paneelChartcl() {
 		inverter_redraw = 1;
-		document.getElementById("panel_vermogen").innerHTML ="";
-		document.getElementById("panel_energy").innerHTML ="";
 		for (var i=0; i<=aantal; i++) {
-			paneel_chartv.series[i].setData([]);
-			paneel_charte.series[i].setData([]);
+			paneel_chartv.series[i].setData([], false);
+			paneel_charte.series[i].setData([], false);
 		}
-		inverter_chart.redraw();
-		vermogen_chart.redraw();
+		setTimeout(function () {
+			if (inverter_redraw == 1) {
+				document.getElementById("panel_vermogen").innerHTML ="";
+				document.getElementById("panel_energy").innerHTML ="";
+				inverter_chart.redraw();
+				vermogen_chart.redraw();
+			}
+		}, 1000);
 	}
 	function waarde(l,d,x){
 		s = String(x);
