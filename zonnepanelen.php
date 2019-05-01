@@ -51,20 +51,71 @@ omschrijving: hoofdprogramma
 	<script src="js/jquery.calendars.picker.ext.js"></script>
 	<script src="js/jquery.calendars.validation.js"></script>
 	<?php
+		// start error handling
+		set_error_handler("errorHandler");
+		register_shutdown_function("shutdownHandler");
+
+		function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context)
+		{
+			$error = "lvl: " . $error_level . " | msg:" . $error_message . " | file:" . $error_file . " | ln:" . $error_line;
+			switch ($error_level) {
+				case E_ERROR:
+				case E_CORE_ERROR:
+				case E_COMPILE_ERROR:
+				case E_PARSE:
+					mylog($error, "fatal");
+					break;
+				case E_USER_ERROR:
+				case E_RECOVERABLE_ERROR:
+					mylog($error, "error");
+					break;
+				case E_WARNING:
+				case E_CORE_WARNING:
+				case E_COMPILE_WARNING:
+				case E_USER_WARNING:
+					mylog($error, "warn");
+					break;
+				case E_NOTICE:
+				case E_USER_NOTICE:
+					mylog($error, "info");
+					break;
+				case E_STRICT:
+					mylog($error, "debug");
+					break;
+				default:
+					mylog($error, "warn");
+			}
+		}
+		function shutdownHandler() //will be called when php script ends.
+		{
+			$lasterror = error_get_last();
+			switch ($lasterror['type'])
+			{
+				case E_ERROR:
+				case E_CORE_ERROR:
+				case E_COMPILE_ERROR:
+				case E_USER_ERROR:
+				case E_RECOVERABLE_ERROR:
+				case E_CORE_WARNING:
+				case E_COMPILE_WARNING:
+				case E_PARSE:
+					$error = "[SHUTDOWN] lvl:" . $lasterror['type'] . " | msg:" . $lasterror['message'] . " | file:" . $lasterror['file'] . " | ln:" . $lasterror['line'];
+					mylog($error, "fatal");
+			}
+		}
+		function mylog($error, $errlvl)
+		{
+			echo "<div style=background-color:Red;color:white;>";
+			echo "<p>We found a problem in the PHP code: $errlvl  => $error<br>";
+			echo "The website can't be shown until this issue is fixed.</p>";
+			echo "</div>";
+		}
+		// end error handling
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 			include('general_functions.php');
 		}
 		include('config.php');
 		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
-		if (mysqli_connect_errno()) {
-			//Bail out if database connection fails
-			echo "<div style=background-color:Red;color:white;>";
-			echo "<p>We found a problem connecting to the SQL database ".$host.":".$port." db:".$db."<br>";
-			echo "Error: ".mysqli_connect_error()."</p>";
-			echo "The website can't be shown until this issue is fixed.</p>";
-			echo "</div>";
-			exit();
-		}
 		// end SQL database check
 		$query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
 		$result = $mysqli->query($query);
