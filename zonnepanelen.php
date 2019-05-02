@@ -713,82 +713,109 @@ EOF
 			dataType: "json",
 			type: 'GET',
 			data: { "date" : datumz },
+			success: function(data) {
+				p1data = eval(data);
+				if (p1data[0]["ServerTime"].length > 6){
+					p1servertime = p1data[0]["ServerTime"];
+					p1CounterToday = p1data[0]["CounterToday"];
+					p1CounterDelivToday = p1data[0]["CounterDelivToday"];
+					p1Usage = p1data[0]["Usage"];
+					p1UsageDeliv = p1data[0]["UsageDeliv"];
+					if (typeof p1servertime === 'undefined') {p1servertime = "";}
+					if (typeof p1CounterToday === 'undefined') {
+						p1CounterToday = 0;
+					} else {
+						p1CounterToday = parseFloat(p1CounterToday);
+					}
+					if (typeof p1CounterDelivToday === 'undefined') {
+						p1CounterDelivToday = 0;
+					} else {
+						p1CounterDelivToday = parseFloat(p1CounterDelivToday);
+					}
+					if (typeof p1Usage === 'undefined') {
+						p1Usage = 0;
+					} else {
+						p1Usage = parseFloat(p1Usage);
+					}
+					if (typeof p1UsageDeliv === 'undefined') {
+						p1UsageDeliv = 0;
+					} else {
+						p1UsageDeliv = parseFloat(p1UsageDeliv);
+					}
+					if (datum1 < tomorrow) {
+						if( p1CounterToday == 0){
+							document.getElementById("arrow_RETURN").className = "";
+							document.getElementById("p1_text").className = "red_text";
+							document.getElementById("p1_text").innerHTML = "No data";
+						}else if( parseFloat(p1Usage) == 0){
+							document.getElementById("arrow_RETURN").className = "arrow_right_green";
+							document.getElementById("p1_text").className = "green_text";
+							document.getElementById("p1_text").innerHTML = p1UsageDeliv +" Watt";
+						}else{
+							document.getElementById("arrow_RETURN").className = "arrow_left_red";
+							document.getElementById("p1_text").className = "red_text";
+							document.getElementById("p1_text").innerHTML = p1Usage +" Watt";
+						}
+					}
+					var wdate = new Date(date2);
+					var cdate = new Date();
+					if (datum1 < tomorrow) {
+						var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
+						var cdiff  = "red_text";
+						if (diff < 0) {
+							cdiff  = "green_text";
+							diff = diff * -1;
+						}
+						document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
+								"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
+								"<tr><td colspan=2><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td></tr>" +
+								"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
+								"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
+								"<tr><td></td><td>----------</td></tr>"+
+								"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
+								"</table>";
+						if (pse+psv+pve+pvs > 0) {
+							// update current day info in graphs
+							var prod = SolarProdToday   ;      //Solar productie
+							var ve = p1CounterToday;
+							var vs = prod - p1CounterDelivToday;
+							var se = p1CounterDelivToday;
+							var sv = vs;
+							wchart.series[0].data[wchart.series[0].data.length-1].update(se);
+							wchart.series[1].data[wchart.series[1].data.length-1].update(sv);
+							wchart.series[2].data[wchart.series[2].data.length-1].update(ve);
+							wchart.series[3].data[wchart.series[3].data.length-1].update(vs);
+							//
+							// update huidige maand
+							var mse = ychart.series[0].data[ychart.series[0].data.length-1].y - pse + se;
+							var msv = ychart.series[1].data[ychart.series[1].data.length-1].y - psv + sv;
+							var mve = ychart.series[2].data[ychart.series[2].data.length-1].y - pve + ve;
+							var mvs = ychart.series[3].data[ychart.series[3].data.length-1].y - pvs + vs;
+							ychart.series[0].data[ychart.series[0].data.length-1].update(mse);
+							ychart.series[1].data[ychart.series[1].data.length-1].update(msv);
+							ychart.series[2].data[ychart.series[2].data.length-1].update(mve);
+							ychart.series[3].data[ychart.series[3].data.length-1].update(mvs);
+							pve = ve;
+							pvs = vs;
+							pse = se;
+							psv = sv;
+							//
+							wchart.redraw();
+							ychart.redraw();
+							update_map_fields();
+						}
+					}
+				}else{
+					   document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
+				}
+				
+			},
+			error : function(xhr, textStatus, errorThrown ) {
+				   document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
+				},
+			cache: false,
 			async: false,
-		}).responseText;
-		p1data = JSON.parse(p1data);
-		p1servertime = p1data[0]["ServerTime"];
-		if (typeof p1servertime === 'undefined') {p1servertime = "";}
-		p1CounterToday = p1data[0]["CounterToday"];
-		p1CounterDelivToday = p1data[0]["CounterDelivToday"];
-		p1Usage = p1data[0]["Usage"];
-		p1UsageDeliv = p1data[0]["UsageDeliv"];
-		p1CounterToday = (typeof p1CounterToday === 'undefined') ? 0 : parseFloat(p1CounterToday);
-		p1CounterDelivToday = (typeof p1CounterDelivToday === 'undefined') ? 0 : parseFloat(p1CounterDelivToday);
-		p1Usage = (typeof p1Usage === 'undefined') ? 0 : parseFloat(p1Usage);
-		p1UsageDeliv = (typeof p1UsageDeliv === 'undefined') ? 0 : parseFloat(p1UsageDeliv);
-		if (datum1 < tomorrow) {
-			if( p1CounterToday == 0){
-				document.getElementById("arrow_RETURN").className = "";
-				document.getElementById("p1_text").className = "red_text";
-				document.getElementById("p1_text").innerHTML = "No data";
-			}else if( parseFloat(p1Usage) == 0){
-				document.getElementById("arrow_RETURN").className = "arrow_right_green";
-				document.getElementById("p1_text").className = "green_text";
-				document.getElementById("p1_text").innerHTML = p1UsageDeliv +" Watt";
-			}else{
-				document.getElementById("arrow_RETURN").className = "arrow_left_red";
-				document.getElementById("p1_text").className = "red_text";
-				document.getElementById("p1_text").innerHTML = p1Usage +" Watt";
-			}
-		}
-		var wdate = new Date(date2);
-		var cdate = new Date();
-		if (datum1 < tomorrow) {
-			var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
-			var cdiff  = "red_text";
-			if (diff < 0) {
-				cdiff  = "green_text";
-				diff = diff * -1;
-			}
-			document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-					"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
-					"<tr><td colspan=2><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td></tr>" +
-					"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
-					"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
-					"<tr><td></td><td>----------</td></tr>"+
-					"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
-					"</table>";
-			if (pse+psv+pve+pvs > 0) {
-				// update current day info in graphs
-				var prod = SolarProdToday   ;      //Solar productie
-				var ve = p1CounterToday;
-				var vs = prod - p1CounterDelivToday;
-				var se = p1CounterDelivToday;
-				var sv = vs;
-				wchart.series[0].data[wchart.series[0].data.length-1].update(se);
-				wchart.series[1].data[wchart.series[1].data.length-1].update(sv);
-				wchart.series[2].data[wchart.series[2].data.length-1].update(ve);
-				wchart.series[3].data[wchart.series[3].data.length-1].update(vs);
-				//
-				// update huidige maand
-				var mse = ychart.series[0].data[ychart.series[0].data.length-1].y - pse + se;
-				var msv = ychart.series[1].data[ychart.series[1].data.length-1].y - psv + sv;
-				var mve = ychart.series[2].data[ychart.series[2].data.length-1].y - pve + ve;
-				var mvs = ychart.series[3].data[ychart.series[3].data.length-1].y - pvs + vs;
-				ychart.series[0].data[ychart.series[0].data.length-1].update(mse);
-				ychart.series[1].data[ychart.series[1].data.length-1].update(msv);
-				ychart.series[2].data[ychart.series[2].data.length-1].update(mve);
-				ychart.series[3].data[ychart.series[3].data.length-1].update(mvs);
-				pve = ve;
-				pvs = vs;
-				pse = se;
-				psv = sv;
-				//
-				wchart.redraw();
-				ychart.redraw();
-				update_map_fields();
-			}
-		}
+		});
 	}
 
 	function datediff(date1,date2) {
