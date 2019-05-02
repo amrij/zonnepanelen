@@ -727,31 +727,15 @@ EOF
 				p1data = eval(data);
 				if (p1data[0]["ServerTime"].length > 6){
 					p1servertime = p1data[0]["ServerTime"];
+					if (typeof p1servertime === 'undefined') {p1servertime = "";}
 					p1CounterToday = p1data[0]["CounterToday"];
 					p1CounterDelivToday = p1data[0]["CounterDelivToday"];
 					p1Usage = p1data[0]["Usage"];
 					p1UsageDeliv = p1data[0]["UsageDeliv"];
-					if (typeof p1servertime === 'undefined') {p1servertime = "";}
-					if (typeof p1CounterToday === 'undefined') {
-						p1CounterToday = 0;
-					} else {
-						p1CounterToday = parseFloat(p1CounterToday);
-					}
-					if (typeof p1CounterDelivToday === 'undefined') {
-						p1CounterDelivToday = 0;
-					} else {
-						p1CounterDelivToday = parseFloat(p1CounterDelivToday);
-					}
-					if (typeof p1Usage === 'undefined') {
-						p1Usage = 0;
-					} else {
-						p1Usage = parseFloat(p1Usage);
-					}
-					if (typeof p1UsageDeliv === 'undefined') {
-						p1UsageDeliv = 0;
-					} else {
-						p1UsageDeliv = parseFloat(p1UsageDeliv);
-					}
+					p1CounterToday = (typeof p1CounterToday === 'undefined') ? 0 : parseFloat(p1CounterToday);
+					p1CounterDelivToday = (typeof p1CounterDelivToday === 'undefined') ? 0 : parseFloat(p1CounterDelivToday);
+					p1Usage = (typeof p1Usage === 'undefined') ? 0 : parseFloat(p1Usage);
+					p1UsageDeliv = (typeof p1UsageDeliv === 'undefined') ? 0 : parseFloat(p1UsageDeliv);
 					if (datum1 < tomorrow) {
 						if( p1CounterToday == 0){
 							document.getElementById("arrow_RETURN").className = "";
