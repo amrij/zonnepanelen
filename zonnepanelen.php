@@ -800,12 +800,11 @@ EOF
 						}
 					}
 				}else{
-					   document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
+					document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
 				}
-				
 			},
 			error : function(xhr, textStatus, errorThrown ) {
-				   document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
+					document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
 				},
 			cache: false,
 			async: false,
@@ -1287,7 +1286,7 @@ EOF
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick) / 6);
-						if (this.dataMax ==  this.dataMin ) {
+						if (this.dataMax == this.dataMin ) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1413,7 +1412,7 @@ EOF
 				   text: null
 				},
 				subtitle: {
-					text: "Energie op <?php echo $datev;?> en 14 voorafgaande  dagen",
+					text: "Energie op <?php echo $datev;?> en 14 voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
@@ -1711,7 +1710,7 @@ EOF
 							tick = Math.floor(0),
 							tickMax = Math.ceil(this.dataMax),
 							increment = Math.ceil((tickMax - tick) / 6);
-							if (this.dataMax ==  this.dataMin ) {
+							if (this.dataMax == this.dataMin ) {
 								increment = .5,
 								tickMax = tick + 3
 							}
@@ -1733,7 +1732,7 @@ EOF
 							tick = Math.floor(0),
 							tickMax = Math.ceil(this.dataMax),
 							increment = Math.ceil((tickMax - tick)/ 6);
-							if (this.dataMax ==  this.dataMin ) {
+							if (this.dataMax == this.dataMin ) {
 								increment = .5,
 								tickMax = tick + 3
 							}
