@@ -86,6 +86,7 @@ omschrijving: hoofdprogramma
 					mylog($error, "warn");
 			}
 		}
+
 		function shutdownHandler() //will be called when php script ends.
 		{
 			$lasterror = error_get_last();
@@ -103,6 +104,7 @@ omschrijving: hoofdprogramma
 					mylog($error, "fatal");
 			}
 		}
+
 		function mylog($error, $errlvl)
 		{
 			echo "<div style=background-color:Red;color:white;>";
@@ -111,6 +113,7 @@ omschrijving: hoofdprogramma
 			echo "</div>";
 		}
 		// end error handling
+
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 			include('general_functions.php');
 		}
@@ -124,24 +127,25 @@ omschrijving: hoofdprogramma
 		$thread_id = $mysqli->thread_id;
 		$mysqli->kill($thread_id);
 		$mysqli->close();
+
 		if ($aantal < 0) { $aantal = 0;}
 		for ($i=1; $i<=$aantal; $i++){
 			if ($op_id[$i][2] == 1){$pro[$i] =  "6%"; $top[$i] = "65%";}
 			else                   {$pro[$i] = "20%"; $top[$i] = "78%";}
 		}
-		$week[1] = "Maandag ";
-		$week[2] = "Dinsdag ";
-		$week[3] = "Woensdag ";
-		$week[4] = "Donderdag ";
-		$week[5] = "Vrijdag ";
-		$week[6] = "Zaterdag ";
-		$week[7] = "Zondag ";
+		$week[1] = "Maandag";
+		$week[2] = "Dinsdag";
+		$week[3] = "Woensdag";
+		$week[4] = "Donderdag";
+		$week[5] = "Vrijdag";
+		$week[6] = "Zaterdag";
+		$week[7] = "Zondag";
 		$date = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 		$ds = array_key_exists('ds', $_GET) ? $_GET['ds'] : "";
 		setlocale(LC_ALL, 'nl_NL');
 		if ($date == '') { $date = date("d-m-Y H:i:s", time()); }
 		for ($i=0; $i<=14; $i++){
-			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)].date("d-m-Y", strtotime($date)-$i*86400);
+			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)] . date(" d-m-Y", strtotime($date)-$i*86400);
 		}
 		$today = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
 		$winter = date("I",$today)-1;
@@ -193,6 +197,7 @@ omschrijving: hoofdprogramma
 			while ( abs($sv) > $epsilon );
 			return $st;
 		}
+
 		function bereken($datum,$lat,$long,$timezone,$localtime,$i) {
 			$julian_day = $datum + 2440587.5 + ($localtime-$timezone)/24; //Julian Day
 			$julian_cen =($julian_day-2451545)/36525; //Julian Century
@@ -214,6 +219,7 @@ omschrijving: hoofdprogramma
 			else              {$s = $solar_noon_a;}
 			return $s;
 		}
+
 		function genxAxis() {
 			print "
 					type: 'datetime',
@@ -234,6 +240,7 @@ omschrijving: hoofdprogramma
 			}
 			print "],\n";
 		}
+
 		function productieSeries() {
 			print "
 					series: [\n";
@@ -257,6 +264,7 @@ omschrijving: hoofdprogramma
 						data: []//this will be filled by requestData()
 					}],\n";
 		}
+
 		function e_panelen($aantal) {
 			print "
 					series: [\n";
@@ -425,6 +433,7 @@ EOF
 		}
 		window.location.replace(url);//do something after you receive the result
 	}
+
 	var ds = '<?php echo $ds ?>';
 	var datum = '<?php echo $date ?>';
 	var datumz = '<?php echo $datumz ?>';
@@ -479,6 +488,7 @@ EOF
 	var psv = 0;
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
+
 	function drawChart() {
 		zonmaan();
 		paneel();
@@ -500,6 +510,7 @@ EOF
 			}, 60000);
 		}
 	}
+
 	var paneelGraph = {
 			'Vermogen':     { 'metric': 'p1_current_power_prd', 'tekst': 'Vermogen',    'unit': 'W' },
 			'Energie':      { 'metric': 'p1_volume_prd',        'tekst': 'Energie',     'unit': 'Wh' },
@@ -508,6 +519,7 @@ EOF
 			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning Uit','unit': 'V' },
 			'I_in':         { 'metric': 'iin',                  'tekst': 'Stroom In',   'unit': 'A' }
 		};
+
 	function paneelFillSeries(metric, shift, x, ichart) {
 		for (var i = 0; i < data_p.length; i++){
 			if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
@@ -527,6 +539,7 @@ EOF
 		ichart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
 		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
 	}
+
 	function paneelChart(event,x) {
 		if (x <= aantal){
 			inverter_redraw = 0;
@@ -543,6 +556,7 @@ EOF
 			}
 		}
 	}
+
 	function paneelChartcl() {
 		inverter_redraw = 1;
 		for (var i=0; i<=aantal; i++) {
@@ -558,6 +572,7 @@ EOF
 			}
 		}, 1000);
 	}
+
 	function waarde(l,d,x){
 		s = String(x);
 		n = s.indexOf('-');
@@ -576,6 +591,7 @@ EOF
 		if (n==0) { s="-"+s;}
 		return s;
 	}
+
 	function paneel(){
 		var inv1Data = $.ajax({
 			url: "live-server-data-zon.php",
@@ -707,6 +723,7 @@ EOF
 			else                                { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#529ae3"; }
 		}
 	}
+
 	function p1_update(){
 		var p1data = $.ajax({
 			url: "<?php echo $DataURL?>?period=c",
@@ -984,6 +1001,7 @@ EOF
 			}
 		}
 	}
+
 	function zonmaan(){
 		if (date2 >= date3){
 			document.getElementById("NextDay").disabled = true;
@@ -1031,6 +1049,7 @@ EOF
 		var urlname = 'live-server-data-s.php'
 		var urlname1 = 'live-server-data-paneel.php'
 		var urlname2 = 'live-server-data-inverter.php'
+
 		function requestData1() {
 			$.ajax({
 				url: urlname,//url of data source
@@ -1054,6 +1073,7 @@ EOF
 				cache: false
 			});
 		}
+
 		function requestData2() {
 			$.ajax({
 				url: urlname1,//url of data source
@@ -1069,6 +1089,7 @@ EOF
 				cache: false
 			});
 		}
+
 		function requestDatai() {
 			$.ajax({
 				url: urlname2,//url of data source
@@ -1100,8 +1121,10 @@ EOF
 				cache: false
 			});
 		}
+
 		function requestDatav() {
 		}
+
 		$(document).ready(function() {
 			paneel_chartv = new Highcharts.Chart({
 				chart: {
@@ -1246,6 +1269,7 @@ EOF
 				<?php e_panelen($aantal); ?>
 			});
 		});
+
 		$(document).ready(function() {
 			paneel_charte = new Highcharts.Chart({
 				chart: {
@@ -1392,6 +1416,7 @@ EOF
 				<?php e_panelen($aantal); ?>
 			});
 		});
+
 		$(document).ready(function() {
 			inverter_chart = new Highcharts.Chart({
 				chart: {
@@ -1530,6 +1555,7 @@ EOF
 				<?php productieSeries() ?>
 			});
 		});
+
 		$(document).ready(function() {
 			vermogen_chart = new Highcharts.Chart({
 				chart: {
@@ -1667,6 +1693,7 @@ EOF
 				<?php productieSeries() ?>
 			});
 		});
+
 		$(document).ready(function() {
 			if (P1 == "0"){
 				power_chart = new Highcharts.Chart({
@@ -1833,6 +1860,7 @@ EOF
 			}
 		});
 	});
+
  	$('#multiShowPicker').calendarsPicker({
 		pickerClass: 'noPrevNext', maxDate: +0, minDate: begin,
 		dateFormat: 'yyyy-mm-dd', defaultDate: date2, selectDefaultDate: true,
@@ -1842,6 +1870,7 @@ EOF
 		$.calendarsPicker.selectWeek, $.calendarsPicker.showStatus),
 		onClose: function(dates) { toonDatum(dates); },
 	});
+
 	$('#Today').click(function() {
 		var date = new Date();
 		var day = date.getDate();
@@ -1861,6 +1890,7 @@ EOF
 		toonDatum(datum);
 		event.stopPropagation();
 	});
+
 	$('#PrevDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
 		var date = new Date(dates[0]);
@@ -1882,6 +1912,7 @@ EOF
 		toonDatum(datum);
 		event.stopPropagation();
 	});
+
 	$('#NextDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
 		var date = new Date(dates[0]);
@@ -1903,6 +1934,7 @@ EOF
 		toonDatum(datum);
 		event.stopPropagation();
 	});
+
 	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
 		this.classList.toggle("box_Zonnepanelen-is-clicked");
 	});
@@ -2138,6 +2170,7 @@ EOF
 		updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
 	}
+
 	function updateP1graphs(ichart,gtype, periods) {
 		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods+"&date="+datumz;
 		$.getJSON(url,
@@ -2151,6 +2184,7 @@ EOF
 		   }
 		);
 	}
+
 	function AddDataToUtilityChart(data, chart, switchtype) {
 		var datatableverbruikElecNet = [];
 		var datatableverbruikSolar = [];
@@ -2229,7 +2263,7 @@ EOF
 			series.setData(datatableSolarPVGis, false);
 		}
 	}
-	//
+
 	function AddSeriestoChart(chart, switchtype) {
 		totDecimals = 0;
 		chart.addSeries({
@@ -2300,6 +2334,7 @@ EOF
 			}, false);
 		}
 	}
+
 	function GetDateFromString(s) {
 			var year = 1;
 			var month = 1;
@@ -2319,6 +2354,7 @@ EOF
 			}
 		return Date.UTC(year,month - 1,day);
 	}
+
 	function daysInMonth (month, year) { // Use 1 for January, 2 for February, etc.
 	  return new Date(year, month, 0).getDate();
 	}
