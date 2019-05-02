@@ -143,14 +143,14 @@ omschrijving: hoofdprogramma
 		for ($i=0; $i<=14; $i++){
 			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)].date("d-m-Y", strtotime($date)-$i*86400);
 		}
-		$today = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp();
+		$today = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
 		$winter = date("I",$today)-1;
 		$jaar = date("Y",$today);
 		$maand = date("m",$today)-1;
 		$dag = date("d",$today)-1;
-		$datum1 = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", time()))))->getTimestamp();
+		$datum1 = (new DateTime("today " . date("Y-m-d 00:00:00", time())))->getTimestamp();
 		$datumz = date("d-m-Y H:i:s",$today);
-		$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($date)))))->getTimestamp();
+		$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
 		$date3 = date("Y-m-d", time());
 		$datev = date("d-m-Y", strtotime($date));
 		$a = strptime($date, '%d-%m-%Y %H:%M:%S');
@@ -505,7 +505,7 @@ EOF
 			'Energie':      { 'metric': 'p1_volume_prd',        'tekst': 'Energie',     'unit': 'Wh' },
 			'Temperatuur':  { 'metric': 'temperature',          'tekst': 'Temperatuur', 'unit': '°C' },
 			'V_in':         { 'metric': 'vin',                  'tekst': 'Spanning In', 'unit': 'V' },
-			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning In', 'unit': 'V' },
+			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning Uit','unit': 'V' },
 			'I_in':         { 'metric': 'iin',                  'tekst': 'Stroom In',   'unit': 'A' }
 		};
 	function paneelFillSeries(metric, shift, x, ichart) {
@@ -605,18 +605,10 @@ EOF
 		var mdiff = (tnow - tlast)/60000;
 		if (datum1 < tomorrow) {
 			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || mdiff > 10) {
-				if(inv1Data[0]["IVACT"] != 0){
-					document.getElementById("arrow_PRD").className = "arrow_right_green";
-				}else{
-					document.getElementById("arrow_PRD").className = "";
-				}
 				s_p1CounterDelivToday = p1CounterDelivToday;
 				s_p1CounterToday = p1CounterToday;
-				if (inv1Data[0]["MODE"] == "MPPT") {
-					s_lasttimestamp = inv1Data[0]["IT"];
-				} else {
-					s_lasttimestamp = "";
-				}
+				s_lasttimestamp = (inv1Data[0]["MODE"] == "MPPT") ? inv1Data[0]["IT"] : "";
+				document.getElementById("arrow_PRD").className = (inv1Data[0]["IVACT"] != 0) ? "arrow_right_green" : "";
 				document.getElementById("so_text").className = "green_text";
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				if (P1 == 1){
@@ -679,18 +671,11 @@ EOF
 		update_map_fields();
 		for (var i=1; i<=aantal; i++){
 			document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
-			if (rpan[i] == 0){
-				document.getElementById("image_"+i).src = "./img/Zonnepaneel-ver.gif";
-			}else{
-				document.getElementById("image_"+i).src = "./img/Zonnepaneel-hor.gif";
-			}
+			document.getElementById("image_"+i).src = (rpan[i] == 0) ? "./img/Zonnepaneel-ver.gif" : "./img/Zonnepaneel-hor.gif";
 			if (vermogen == 1){
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
-				if(inv1Data[0]["IVACT"] != 0){
-					document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["E"+i])+ " W";
-				} else {
-					document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0]["VM"+i])+ " W";
-				}
+				var t = (inv1Data[0]["IVACT"] != 0) ? "E" : "VM";
+				document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0][t+i]) + " W";
 			} else {
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 				document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
@@ -732,31 +717,15 @@ EOF
 		}).responseText;
 		p1data = JSON.parse(p1data);
 		p1servertime = p1data[0]["ServerTime"];
+		if (typeof p1servertime === 'undefined') {p1servertime = "";}
 		p1CounterToday = p1data[0]["CounterToday"];
 		p1CounterDelivToday = p1data[0]["CounterDelivToday"];
 		p1Usage = p1data[0]["Usage"];
 		p1UsageDeliv = p1data[0]["UsageDeliv"];
-		if (typeof p1servertime === 'undefined') {p1servertime = "";}
-		if (typeof p1CounterToday === 'undefined') {
-			p1CounterToday = 0;
-		} else {
-			p1CounterToday = parseFloat(p1CounterToday);
-		}
-		if (typeof p1CounterDelivToday === 'undefined') {
-			p1CounterDelivToday = 0;
-		} else {
-			p1CounterDelivToday = parseFloat(p1CounterDelivToday);
-		}
-		if (typeof p1Usage === 'undefined') {
-			p1Usage = 0;
-		} else {
-			p1Usage = parseFloat(p1Usage);
-		}
-		if (typeof p1UsageDeliv === 'undefined') {
-			p1UsageDeliv = 0;
-		} else {
-			p1UsageDeliv = parseFloat(p1UsageDeliv);
-		}
+		p1CounterToday = (typeof p1CounterToday === 'undefined') ? 0 : parseFloat(p1CounterToday);
+		p1CounterDelivToday = (typeof p1CounterDelivToday === 'undefined') ? 0 : parseFloat(p1CounterDelivToday);
+		p1Usage = (typeof p1Usage === 'undefined') ? 0 : parseFloat(p1Usage);
+		p1UsageDeliv = (typeof p1UsageDeliv === 'undefined') ? 0 : parseFloat(p1UsageDeliv);
 		if (datum1 < tomorrow) {
 			if( p1CounterToday == 0){
 				document.getElementById("arrow_RETURN").className = "";
@@ -1050,14 +1019,10 @@ EOF
 					}
 					power_chart.redraw();
 					urlname = 'live-server-data-c.php';
-					if (datum1 < tomorrow) {
-					   setTimeout(requestData1, 1000*60);
-					} else {
-					   setTimeout(requestData1, 1000*86400);
-					}
+					setTimeout(requestData1, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					   setTimeout(requestData1, 1000*10);
+					setTimeout(requestData1, 1000*10);
 				},
 				cache: false
 			});
@@ -1069,14 +1034,10 @@ EOF
 				data: { "date" : datum }, //optional
 				success: function(data) {
 					data_p = eval(data);
-					if (datum1 < tomorrow) {
-					   setTimeout(requestData2, 1000*60);
-					} else {
-					   setTimeout(requestData2, 1000*86400);
-					}
+					setTimeout(requestData2, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					   setTimeout(requestData2, 1000*10);
+					setTimeout(requestData2, 1000*10);
 				},
 				cache: false
 			});
@@ -1104,14 +1065,10 @@ EOF
 						inverter_chart.redraw();
 						vermogen_chart.redraw();
 					}
-					if (datum1 < tomorrow) {
-					   setTimeout(requestDatai, 1000*60);
-					} else {
-					   setTimeout(requestDatai, 1000*86400);
-					}
+					setTimeout(requestDatai, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					   setTimeout(requestDatai, 1000*10);
+					setTimeout(requestDatai, 1000*10);
 				},
 				cache: false
 			});
@@ -1485,16 +1442,17 @@ EOF
 							for (i=0; i<=14; i++){
 								if (this.series.name == productie[i]) {
 									this.point.series.options.marker.states.hover.enabled = false;
-									if (s != ""){ s += '<br>'}
+									s += '<br>';
 									if (this.series.state == "hover") {
 										s += '<b>*</b>';
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-									if (i == 14){
-										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh</b>';
-									} else if (i != 13){
+
+									if (i != 13){
+										if (i == 14) {s += "<b>";}
 										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
+										if (i == 14) {s += "</b>";}
 									} else {
 										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
 									}
@@ -1614,29 +1572,24 @@ EOF
 				},
 				tooltip: {
 					formatter: function () {
-						var s = "";
-						s += '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u><br>';
-						//if (this.points[this.points.length-1].series.name != 'voorafgaande dagen') {
-						//	s += "<b>" + this.points[this.points.length-1].series.name.substr(this.points[this.points.length-1].series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.points[this.points.length-1].y,2) + ' W</b>';
-						//}
+						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
 						var sortedPoints = this.points.sort(function(a, b){
 							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
 						});
 						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){
-								if (this.series.y == this.y) {};
 								if (this.series.name == productie[i]) {
 									this.point.series.options.marker.states.hover.enabled = false;
-									if (s != ""){ s += '<br>'}
+									s += '<br>';
 									if (this.series.state == "hover") {
 										s += '<b>*</b>';
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-									if (i == 14){
-										s += "<b>" + this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W</b>';
-									} else if (i != 13){
+									if (i != 13){
+										if (i == 14) {s += "<b>";}
 										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+										if (i == 14) {s += "</b>";}
 									} else {
 										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
 									}
@@ -2065,11 +2018,8 @@ EOF
 							sVE = point.y;
 						}
 					});
-					if (this.points[0].series.chart.renderTo.id == "monthgraph") {
-						s += Highcharts.dateFormat('%B %Y', this.x);
-					} else {
-						s += Highcharts.dateFormat('%A %d-%m-%Y', this.x);
-					}
+					var dfmt = (this.points[0].series.chart.renderTo.id == "monthgraph") ? '%B %Y' : '%A %d-%m-%Y';
+					s += Highcharts.dateFormat(dfmt, this.x);
 					s += '</u></b><br/>';
 					//
 					if(sVS+sRE>0){
