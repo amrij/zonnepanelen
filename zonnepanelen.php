@@ -466,8 +466,6 @@ EOF
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
 	var data_p = [];
 	var data_i = [];
-	var chart_1 = "chart_energy";
-	var chart_2 = "chart_vermogen";
 	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','voorafgaande dagen','$productie[0]','$productie[1]'"?>];
 	var start_i = 0;
 	var inverter_redraw = 1;
@@ -610,11 +608,6 @@ EOF
 			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
 		var now = new Date();
-		var datesol = new Date(inv1Data[0]["IT"]);
-		var dsol = datesol.getDate();
-		var msol = datesol.getMonth()+1;
-		var ysol = datesol.getFullYear();
-		var dayssol = daysInMonth(msol, ysol);
 		var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
 		if ( inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = datumz;}
 		var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
