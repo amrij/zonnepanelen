@@ -180,8 +180,8 @@ omschrijving: hoofdprogramma
 			$con_s_y = $jaar -1;
 			$con_e_y = $jaar;
 		}
-		$contract_datum_start = $con_s_y . "-" . $con_m . "-" . $con_d;
-		$contract_datum_end = $con_e_y . "-" . $con_m . "-" . $con_d;
+		$contract_datum_start = sprintf("%04d-%02d-%02d", $con_s_y, $con_m, $con_d);
+		$contract_datum_end = sprintf("%04d-%02d-%02d", $con_e_y, $con_m, $con_d);
 
 		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
 			$epsilon = 0.000000000001;
