@@ -822,6 +822,7 @@ EOF
 			var cd = cdate.getDate();
 			var cm = cdate.getMonth()+1;
 			var cy = cdate.getFullYear();
+			var cdays = daysInMonth(con_month, cy);
 			var con_start_date = new Date(contract_start_date);
 			var con_end_date = new Date(contract_end_date);
 			var con_day = con_start_date.getDate();
@@ -866,9 +867,8 @@ EOF
 				var dd_start = datediff(pdate,con_start_date);
 				var dd_end = datediff(con_end_date,pdate);
 				if(con_start_year == py && con_month == pm) {
-					<?php // we are in the start month of the contract so calculate the pro rate monthtotal/monthdays*(monthdays-contractstartday+1) ?>
-					var monthdays = daysInMonth(pm, py);
-					var factor = (monthdays-con_day+1)/monthdays;
+					<?php // we are in the start month of the contract so calculate the pro rate monthtotal/cdays*(cdays-contractstartday+1) ?>
+					var factor = (cdays-con_day+1)/cdays;
 					yse += ychart.series[0].data[i].y * factor;
 					ysv += ychart.series[1].data[i].y * factor;
 					yve += ychart.series[2].data[i].y * factor;
@@ -927,29 +927,42 @@ EOF
 			var curtext=document.getElementById("inverter_1").title;
 			var ins = curtext.indexOf("Vandaag")-4;
 			if (ins>0) {curtext = curtext.substring(0,ins);}
-
-			var datesol = new Date(date2);
-			var dsol = datesol.getDate();
-			var msol = datesol.getMonth()+1;
-			var ysol = datesol.getFullYear();
-			var dayssol = daysInMonth(msol, ysol);
 			var PVGisd = "";
 			var PVGism = "";
 			var PVGisj = "";
 			if (PVGis[cm] > 0) {
-				PVGisd = " (" + waarde(0,0,PVGis[cm]/dayssol) + " kWh)" ;
-				PVGism = " (" + waarde(0,0,PVGis[cm]/dayssol*dsol) + " kWh)" ;
+				PVGisd = " (" + waarde(0,0,PVGis[cm]/cdays) + " kWh)" ;
+				PVGism = " (" + waarde(0,0,PVGis[cm]/cdays*cd) + " kWh)" ;
 				var tPVGis=0;
-				for (i=1; i<msol; i++) {
-					tPVGis += PVGis[i];
+				for (i=1; i<PVGis.length; i++) {
+
+					if (i == con_month) { <?php // add part contract month start ?>
+						var factor = (cdays-con_day + 1)/cdays;
+						tPVGis += PVGis[i]*factor;
+					}
+					if (i == cm) { <?php // add part current month?>
+						var cdays = daysInMonth(cm, cy);
+						var factor = cd/cdays;
+						tPVGis += PVGis[i]*factor;
+					}
+					if (i != con_month && i != cm ) {
+						if (i > con_month && cm > con_month) {<?php // add months after start contract when contract date is passd this year ?>
+							tPVGis += PVGis[i];
+						}
+
+						if (i < con_month && cm < con_month) {<?php // add months before start contract when contract date is later this year ?>
+							tPVGis += PVGis[i];
+						}
+					}
 				}
-				PVGisj = " (" + waarde(0,0,tPVGis+(PVGis[cm]/dayssol*dsol)) + " kWh)";
+
+				PVGisj = " (" + waarde(0,0,tPVGis) + " kWh)";
 			}
 			document.getElementById("inverter_1").title =
 					curtext + "\r\n\r\n" +
 					"Vandaag:\t" + waarde(0,2,SolarProdToday) + " kWh" + PVGisd + "\r\n" +
 					"Maand:\t"   + waarde(0,2,mse + msv) + " kWh" + PVGism +  "\r\n" +
-					"Jaar:\t"    + waarde(0,2,yse + ysv) + " kWh" + PVGisj;
+					contract_datum+":\t"    + waarde(0,2,yse + ysv) + " kWh" + PVGisj;
 
 			if (datum1 >= tomorrow) {
 				var ddiff=ve-se;
@@ -974,7 +987,7 @@ EOF
 						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+datev+"</b></td></tr>" +
 						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>"+contract_datum+"</u></td></tr>" +
 						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv)+"</td></tr>"+
-						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/dayssol)+'</td><td>'+waarde(0,0,PVGis[cm]/dayssol*dsol)+ '</td><td>'+waarde(0,0,tPVGis+(PVGis[cm]/dayssol*dsol))+'</td></tr>'}` +
+						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/cdays)+'</td><td>'+waarde(0,0,PVGis[cm]/cdays*cd)+ '</td><td>'+waarde(0,0,tPVGis)+'</td></tr>'}` +
 						"<tr><td colspan=5><br><u>Huis verbruik</u></td></tr>" +
 						"<tr><td colspan=2>solar:</td><td>"+waarde(0,0,sv)+"</td><td>"+waarde(0,0,msv)+"</td><td>"+waarde(0,0,ysv)+"</td></tr>"+
 						"<tr><td colspan=2>net:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve)+"</td></tr>"+
