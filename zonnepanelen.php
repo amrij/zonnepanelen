@@ -1935,11 +1935,13 @@ EOF
 		document.getElementById("box_panel_energy").classList.toggle("box_panel_energy-is-clicked");
 		paneel_charte.reflow();
 		inverter_chart.reflow();
+		inverter_chart.reflow();
 	});
 	document.getElementById("box_chart_vermogen").addEventListener("click", function() {
 		this.classList.toggle("box_chart_vermogen-is-clicked");
 		document.getElementById("box_panel_vermogen").classList.toggle("box_panel_vermogen-is-clicked");
 		paneel_chartv.reflow();
+		vermogen_chart.reflow();
 		vermogen_chart.reflow();
 	});
 
@@ -1949,9 +1951,11 @@ echo <<<EOF
 	document.getElementById("box_daygraph").addEventListener("click", function() {
 		this.classList.toggle("box_daygraph-is-clicked");
 		wchart.reflow();
+		wchart.reflow();
 	});
 	document.getElementById("box_monthgraph").addEventListener("click", function() {
 		this.classList.toggle("box_monthgraph-is-clicked");
+		ychart.reflow();
 		ychart.reflow();
 	});
 	window.addEventListener('resize', function(){
@@ -1968,6 +1972,7 @@ EOF
 echo <<<EOF
 	document.getElementById("box_power_chart_body").addEventListener("click", function() {
 		this.classList.toggle("box_power_chart_body-is-clicked");
+		power_chart.reflow();
 		power_chart.reflow();
 	});
 	window.addEventListener('resize', function(){
