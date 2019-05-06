@@ -398,10 +398,10 @@ div.p1_huis_pos {
 }
 
 div.map_huis {
-	top: 3.5%;
+	top: 1.5%;
 	left: 65%;
 	width: 27%;
-	height: 28%;
+	height: 30%;
 	z-index: 10;
 	position: absolute;"
 }
@@ -424,9 +424,6 @@ div.map_huis {
 		top: 50.5%;
 		width: 99%;
 		height: 50%;
-		-webkit-transform:rotate(0deg);
-		transform:rotate(0deg);
-		color: grey;
 		font-size: 2.0vw;
 	}
 

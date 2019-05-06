@@ -318,7 +318,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#inverter"/>
 				</div>
 				<map name="inverter" style="z-index: 20;">
-					<area id="inverter_1" shape="rect" coords="0,0,100%,100%" title="">
+					<area id="inverter_1" shape="rect" coords="0,0,252,252" title="">
 				</map>
 				<div class="inverter_text" id="inverter_text"></div>
 				<div class="sola_text" id="sola_text"></div>
@@ -332,7 +332,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#meter"/>
 				</div>
 				<map name="meter" style="z-index: 20;">
-					<area id="meter_1" shape="rect" coords="0,0,67,100" title="P1_Meter">
+					<area id="meter_1" shape="rect" coords="0,0,252,252" title="P1_Meter">
 				</map>
 
 				<div class="p1_huis_pos"><div id="p1_huis"></div></div>
@@ -340,7 +340,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#huis"/>
 				</div>
 				<map name="huis" style="z-index: 20;">
-					<area id="huis_1" shape="rect" coords="0,0,150,150" title="thuis verbruik">
+					<area id="huis_1" shape="rect" coords="0,0,252,252" title="thuis verbruik">
 				</map>
 			</div>
 
@@ -389,7 +389,7 @@ EOF
 		echo '				<div class="box_Zonnepaneel_'.$i.'">'."\n";
 		echo '					<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style="width: 100%; height: 100%;  position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
 		echo '					<map name="'.$i.'">'."\n";
-		echo '						<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
+		echo '						<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,252,252" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
 		echo '					</map>'."\n";
 		echo '				</div>'."\n";
 	}
