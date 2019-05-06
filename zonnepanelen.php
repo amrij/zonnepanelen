@@ -242,8 +242,7 @@ omschrijving: hoofdprogramma
 			}
 			print "],\n";
 		}
-
-		function productieSeries() {
+		function productieSeries0() {
 			print "
 					series: [\n";
 			for ($i=0; $i<=13; $i++) {  print "			{
@@ -266,7 +265,39 @@ omschrijving: hoofdprogramma
 						data: []//this will be filled by requestData()
 					}],\n";
 		}
-
+		function productieSeries1() {
+			print "
+					series: [\n";
+				for ($i=0; $i<=12; $i++) {  print "			{
+							name: productie[" . $i . "],
+							showInLegend: false,
+							type: 'spline',
+							yAxis: 0,
+							color: '#d4d0d0',
+							data: []//this will be filled by requestData()
+						},";
+				}
+				print "
+					{
+						name: productie[13],
+						showInLegend: true,
+						type: 'areaspline',
+						yAxis: 0,
+						lineWidth: 1.5,
+						color: '#009900',
+						fillOpacity: 0.3,
+						data: []//this will be filled by requestData()
+					},{
+						name: productie[14],
+						showInLegend: true,
+						type: 'areaspline',
+						yAxis: 0,
+						lineWidth: 1.5,
+						color: '#4169E1',
+						fillOpacity: 0.3,
+						data: []//this will be filled by requestData()
+					}],\n";
+		}
 		function e_panelen($aantal) {
 			print "
 					series: [\n";
@@ -544,7 +575,8 @@ EOF
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
 	var data_p = [];
 	var data_i = [];
-	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','voorafgaande dagen','$productie[0]','$productie[1]'"?>];
+
+	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','$productie[1]','$productie[0]','$productie[1]'"?>];
 	var start_i = 0;
 	var inverter_redraw = 1;
 	var SolarProdToday = 0;
@@ -1610,7 +1642,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries() ?>
+				<?php if ($ingr == 0){productieSeries0();}else{productieSeries1();} ?>
 			});
 		});
 
@@ -1748,7 +1780,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries() ?>
+				<?php if ($ingr == 0){productieSeries0();}else{productieSeries1();} ?>
 			});
 		});
 

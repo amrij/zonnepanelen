@@ -37,6 +37,9 @@ $long = 6.0045953; //Longitude East
 // Achtergrond image (in de img directory)
 $zonnesysteem = "zonnesysteem.gif";
 
+// inverter grafieken layout
+$ingr = 1; // 0 = alleen lijn, 1 = gevuld
+
 //#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
 //** P1 waarden aangeven
 $P1 = 0; // 0 = nee, 1 = ja
