@@ -50,6 +50,8 @@ omschrijving: hoofdprogramma
 	<script src="js/jquery.calendars.picker.js"></script>
 	<script src="js/jquery.calendars.picker.ext.js"></script>
 	<script src="js/jquery.calendars.validation.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/jquery.qtip.css" />
+	<script type="text/javascript" src="js/jquery.qtip.js"></script>
 	<?php
 		// start error handling
 		set_error_handler("errorHandler");
@@ -318,7 +320,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#inverter"/>
 				</div>
 				<map name="inverter" style="z-index: 20;">
-					<area id="inverter_1" shape="rect" coords="0,0,252,252" title="">
+					<area id="inverter_1" data-ttitle="Inverter 1 fase" shape="rect" coords="0,0,252,252" title="">
 				</map>
 				<div class="inverter_text" id="inverter_text"></div>
 				<div class="sola_text" id="sola_text"></div>
@@ -332,7 +334,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#meter"/>
 				</div>
 				<map name="meter" style="z-index: 20;">
-					<area id="meter_1" shape="rect" coords="0,0,252,252" title="P1_Meter">
+					<area id="meter_1" data-ttitle="P1 Meter" shape="rect" coords="0,0,252,252" title="">
 				</map>
 
 				<div class="p1_huis_pos"><div id="p1_huis"></div></div>
@@ -340,7 +342,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#huis"/>
 				</div>
 				<map name="huis" style="z-index: 20;">
-					<area id="huis_1" shape="rect" coords="0,0,252,252" title="thuis verbruik">
+					<area id="huis_1" data-ttitle="Thuis verbruik" shape="rect" coords="0,0,252,252" title="">
 				</map>
 			</div>
 
@@ -389,7 +391,8 @@ EOF
 		echo '				<div class="box_Zonnepaneel_'.$i.'">'."\n";
 		echo '					<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style="width: 100%; height: 100%;  position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
 		echo '					<map name="'.$i.'">'."\n";
-		echo '						<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,252,252" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
+		// echo '						<area id="tool_paneel_'.$i.'" data-ttitle="Paneel '.$op_id[$i][1].'" shape="rect" coords="0,0,252,252" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
+		echo '						<area id="tool_paneel_'.$i.'" data-ttitle="Paneel '.$op_id[$i][1].'" shape="rect" coords="0,0,252,252" title="">'."\n";
 		echo '					</map>'."\n";
 		echo '				</div>'."\n";
 	}
@@ -416,6 +419,80 @@ EOF
 	</div>
 </body>
 <script language="javascript" type="text/javascript">
+
+	$(document).on('mouseover', 'area', function(event) {
+		$(this).qtip({
+			overwrite: false, // Make sure the tooltip won't be overridden once created
+			position: {
+				target: 'mouse',
+				adjust: {
+					x: 20,
+					y: 10
+				}
+			},
+			content: {
+				title: function(event, api) {
+					// Retrieve content from ALT attribute of the $('.selector') element
+					return $(this).attr('data-ttitle');
+				},
+				text: function(event, api) {
+					// Retrieve content from ALT attribute of the $('.selector') element
+					return $(this).attr('data-tcontent');
+				},
+			},
+			style: {
+				classes: 'qtip-light qtipformat',
+			},
+			show: {
+				event: event.type, // Use the same show event as the one that triggered the event handler
+				ready: true // Show the tooltip as soon as it's bound, vital so it shows up the first time you hover!
+			}
+		}, event); // Pass through our original event to qTip
+	})
+
+	$(document).on('mouseout', 'area', function(event) {
+
+		// check for tool_paneel_xx
+		var panelid = this.id;
+		if (panelid.substring(0, 11) == "tool_paneel") {
+			for (var i=0; i<=aantal; i++) {
+				paneel_chartv.series[i].setData([], false);
+				paneel_charte.series[i].setData([], false);
+			}
+			inverter_redraw = 1;
+			setTimeout(function () {
+				if (inverter_redraw == 1) {
+					document.getElementById("panel_vermogen").innerHTML ="";
+					document.getElementById("panel_energy").innerHTML ="";
+					inverter_chart.redraw();
+					vermogen_chart.redraw();
+				}
+			}, 500);
+		}
+	})
+
+	$(document).on('mouseover', 'area', function(event) {
+		// check for tool_paneel_xx
+		var panelid = this.id;
+		if (panelid.substring(0, 11) == "tool_paneel") {
+			var id = parseInt(panelid.substring(12),10);
+			if (id <= aantal){
+				inverter_redraw = 0;
+				document.getElementById("chart_vermogen").innerHTML ="";
+				document.getElementById("chart_energy").innerHTML ="";
+				// #### Vermogen  #####
+				var series = paneel_chartv.series[0];
+				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+				paneelFillSeries('Energie', shift, id, paneel_charte);
+				if (event.shiftKey) {
+					paneelFillSeries('Temperatuur', shift, id, paneel_chartv);
+				} else {
+					paneelFillSeries('Vermogen', shift, id, paneel_chartv);
+				}
+			}
+		}
+	})
+
 	function toonDatum(datum) {
 		var now = new Date();
 		var yy = now.getFullYear();
@@ -539,39 +616,6 @@ EOF
 		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
 	}
 
-	function paneelChart(event,x) {
-		if (x <= aantal){
-			inverter_redraw = 0;
-			document.getElementById("chart_vermogen").innerHTML ="";
-			document.getElementById("chart_energy").innerHTML ="";
-			// #### Vermogen  #####
-			var series = paneel_chartv.series[0];
-			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-			paneelFillSeries('Energie', shift, x, paneel_charte);
-			if (event.shiftKey) {
-				paneelFillSeries('Temperatuur', shift, x, paneel_chartv);
-			} else {
-				paneelFillSeries('Vermogen', shift, x, paneel_chartv);
-			}
-		}
-	}
-
-	function paneelChartcl() {
-		inverter_redraw = 1;
-		for (var i=0; i<=aantal; i++) {
-			paneel_chartv.series[i].setData([], false);
-			paneel_charte.series[i].setData([], false);
-		}
-		setTimeout(function () {
-			if (inverter_redraw == 1) {
-				document.getElementById("panel_vermogen").innerHTML ="";
-				document.getElementById("panel_energy").innerHTML ="";
-				inverter_chart.redraw();
-				vermogen_chart.redraw();
-			}
-		}, 1000);
-	}
-
 	function waarde(l,d,x){
 		s = String(x);
 		n = s.indexOf('-');
@@ -657,27 +701,31 @@ EOF
 		}
 
 		if (inverter == 1) {
-			document.getElementById("inverter_1").title =
-					"Inverter: " + naam + "\r\n\r\n" +
-					"S AC:	" + inv1Data[0]["i_ac"]+ " A\r\n" +
-					"V AC:	" + inv1Data[0]["v_ac"] + " V\r\n" +
-					"Freq:	" + inv1Data[0]["frequency"]+ " Hz\r\n" +
-					"Pactive:	" + inv1Data[0]["p_active"] + " W\r\n";
+			document.getElementById("inverter_1").setAttribute("data-tcontent",
+					"<table class=qtiptable>" +
+					"<tr><td colspan=2>Inverter:" + naam + "</td></tr>" +
+					"<tr><td>S AC:</td><td>" + inv1Data[0]["i_ac"]+ " A</td></tr>" +
+					"<tr><td>V AC:</td><td>" + inv1Data[0]["v_ac"] + " V</td></tr>" +
+					"<tr><td>Freq:</td><td>" + inv1Data[0]["frequency"]+ " Hz</td></tr>" +
+					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active"] + " W</td></tr>" +
+					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + " V</td></tr>" +
+					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + " W</td></tr>" +
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + " Wh/Wp</td></tr></table>");
 		} else {
-			document.getElementById("inverter_1").title =
-					"Inverter: " + naam + "\r\n\r\n" +
-					"	L1	L2	L3\r\n" +
-					"S AC:	" + inv1Data[0]["i_ac1"] + "	" + inv1Data[0]["i_ac2"] + "	" + inv1Data[0]["i_ac3"] + " A\r\n" +
-					"V AC:	" + inv1Data[0]["v_ac1"] + "	" + inv1Data[0]["v_ac2"] + "	" + inv1Data[0]["v_ac3"] + " V\r\n" +
-					"Freq:	" + inv1Data[0]["frequency1"]+"	" + inv1Data[0]["frequency2"] + "	" + inv1Data[0]["frequency3"] + " Hz\r\n" +
-					"Pactive:	" + inv1Data[0]["p_active1"] + "	" + inv1Data[0]["p_active2"] + "	"+inv1Data[0]["p_active3"] + " W\r\n";
+			document.getElementById("inverter_1").setAttribute("data-tcontent",
+					"<table class=qtiptable>" +
+					"<tr><td colspan=4>Inverter: " + naam + "</td></tr>" +
+					"<tr><td>L1<tr><td>L2<tr><td>L3</td></tr>" +
+					"<tr><td>S AC:<tr><td>" + inv1Data[0]["i_ac1"] + "<tr><td>" + inv1Data[0]["i_ac2"] + "<tr><td>" + inv1Data[0]["i_ac3"] + " A</td></tr>" +
+					"<tr><td>V AC:<tr><td>" + inv1Data[0]["v_ac1"] + "<tr><td>" + inv1Data[0]["v_ac2"] + "<tr><td>" + inv1Data[0]["v_ac3"] + " V</td></tr>" +
+					"<tr><td>Freq:<tr><td>" + inv1Data[0]["frequency1"]+"<tr><td>" + inv1Data[0]["frequency2"] + "<tr><td>" + inv1Data[0]["frequency3"] + " Hz</td></tr>" +
+					"<tr><td>Pactive:<tr><td>" + inv1Data[0]["p_active1"] + "<tr><td>" + inv1Data[0]["p_active2"] + "<tr><td>"+inv1Data[0]["p_active3"] + " W</td></tr>" +
+					"<tr><td>V DC:<tr><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + " V</td></tr>" +
+					"<tr><td>P(act):<tr><td>" + inv1Data[0]["IVACT"] + " W</td></tr>" +
+					"<tr><td>Efficiëntie:<tr><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + " Wh/Wp</td></tr></table>");
 		}
-		document.getElementById("inverter_1").title +=
-					"V DC:	"         + waarde(0,1,inv1Data[0]["v_dc"]) + " V\r\n" +
-					"P(act):	" + inv1Data[0]["IVACT"] + " W\r\n" +
-					"Efficiëntie: "   + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + " Wh/Wp";
-
 		update_map_fields();
+
 		for (var i=1; i<=aantal; i++){
 			if (vermogen == 1){
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
@@ -687,20 +735,21 @@ EOF
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
 				document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
 			}
-			document.getElementById("tool_paneel_"+i).title =
-					"Datum  " + inv1Data[0]["TM"+i] + "\r\n" +
-					"Paneel " + op_id[i] + "\r\n" +
-					"Optimizer SN           " + op_sn[i] + "\r\n" +
-					"Paneel SN              " + pn_sn[i] +  "\r\n" +
-					"Energie		" + inv1Data[0]["O"+i] + " Wh\r\n" +
-					"Vermogen (act.)	" + inv1Data[0]["E"+i] + " W\r\n" +
-					"Vermogen (max.)	" + inv1Data[0]["VM"+i] + " W\r\n" +
-					"Vermogen (max.)	" + inv1Data[0]["VMT"+i] + "\r\n" +
-					"Stroom in	        " + inv1Data[0]["S"+i] + " A\r\n" +
-					"Spanning in        	" + inv1Data[0]["VI"+i] + " V\r\n" +
-					"Spanning uit	        " + inv1Data[0]["VU"+i] + " V\r\n" +
-					"Temperatuur	        " + inv1Data[0]["T"+i] + " °C\r\n" +
-					"Efficientie	        " + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + " Wh/Wp";
+			document.getElementById("tool_paneel_"+i).setAttribute("data-tcontent",
+					"<table class=qtiptable>" +
+					"<tr><td>Datum</td><td>" + inv1Data[0]["TM"+i] + "</td></tr>" +
+					"<tr><td>Paneel</td><td>" + op_id[i] + "</td></tr>" +
+					"<tr><td>Optimizer SN</td><td>" + op_sn[i] + "</td></tr>" +
+					"<tr><td>Paneel SN</td><td>" + pn_sn[i] +  "</td></tr>" +
+					"<tr><td>Energie</td><td>" + inv1Data[0]["O"+i] + " Wh</td></tr>" +
+					"<tr><td>Vermogen (act.)</td><td>" + inv1Data[0]["E"+i] + " W</td></tr>" +
+					"<tr><td>Vermogen (max.)</td><td>" + inv1Data[0]["VM"+i] + " W</td></tr>" +
+					"<tr><td>tijd</td><td>" + inv1Data[0]["VMT"+i] + "</td></tr>" +
+					"<tr><td>Stroom in</td><td>" + inv1Data[0]["S"+i] + " A</td></tr>" +
+					"<tr><td>Spanning in</td><td>" + inv1Data[0]["VI"+i] + " V</td></tr>" +
+					"<tr><td>Spanning uit</td><td>" + inv1Data[0]["VU"+i] + " V</td></tr>" +
+					"<tr><td>Temperatuur</td><td>" + inv1Data[0]["T"+i] + " °C</td></tr>" +
+					"<tr><td>Efficiëntie</td><td>" + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + " Wh/Wp</td></tr></table>");
 			if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000"; }
 			else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16"; }
 			else if ( inv1Data[0]["C"+i] < 0.2) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d"; }
@@ -888,44 +937,57 @@ EOF
 					if (datum1 < tomorrow) {
 						document.getElementById("p1_huis").innerHTML = waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday)+" kWh";
 					}
-					document.getElementById("huis_1").title =
-							"Thuis verbruik: " + s_lasttimestamp + "\r\n" +
-							"Vandaag\r\n" +
-							"Zonne energie:\t" + waarde(0,3,SolarProdToday - s_p1CounterDelivToday) + " kWh\r\n" +
-							"<?php echo $ElecLeverancier?> retour:\t" + waarde(0,3,s_p1CounterDelivToday) + " kWh\r\n" +
-							"<?php echo $ElecLeverancier?> energie:\t" + waarde(0,3,s_p1CounterToday) + " kWh\r\n" +
-							"Totaal verbruik:\t" + waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) + " kWh\r\n\r\n" +
-							"Maand\r\n" +
-							"Zonne energie:\t" + waarde(0,2,mvs) + " kWh\r\n" +
-							"<?php echo $ElecLeverancier?> energie:\t" + waarde(0,2,mve) + " kWh\r\n" +
-							"Totaal verbruik:\t" + waarde(0,2,mve+mvs) + " kWh\r\n\r\n" +
-							"Jaar\r\nZonne energie:\t" + waarde(0,1,yvs) + " kWh\r\n" +
-							"Jaar vanaf\t" + contract_datum + "-" + con_start_year + "\r\n" +
-							"Zonne energie:\t" + waarde(0,1,yvs) + " kWh" +  "\r\n" +
-							"<?php echo $ElecLeverancier?> energie:\t" + waarde(0,1,yve) + " kWh\r\n" +
-							"Totaal verbruik:\t" + waarde(0,1,yve+yvs) + " kWh";
+					document.getElementById("huis_1").setAttribute("data-tcontent",
+							"<table class=qtiptable>" +
+							"<tr><td colspan=2>" + s_lasttimestamp + "</td></tr>" +
+							"<tr><td colspan=2><br>Vandaag</td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,3,SolarProdToday - s_p1CounterDelivToday) + " kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> retour:</td><td>" + waarde(0,3,s_p1CounterDelivToday) + " kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,3,s_p1CounterToday) + " kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) + " kWh\r\n</td></tr>" +
+							"<tr><td colspan=2><br>Maand</td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,2,mvs) + " kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,2,mve) + " kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,2,mve+mvs) + " kWh\r\n</td></tr>" +
+							"<tr></tr>" +
+							"<tr><td>Jaar\r\nZonne energie:</td><td>" + waarde(0,1,yvs) + " kWh</td></tr>" +
+							"<tr><td colspan=2><br>Jaar vanaf " + contract_datum + "-" + con_start_year + "</td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,1,yvs) + " kWh" +  "</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,1,yve) + " kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,1,yve+yvs) + " kWh</td></tr></table>");
 				}
 			} else {
 				document.getElementById("p1_huis").innerHTML = "No Data";
-				document.getElementById("huis_1").title = "No Data";
+				document.getElementById("huis_1").setAttribute("data-tcontent","No Data");
 			}
 
-			var cur = ((document.getElementById("p1_text").className == "red_text") ? "verbruik:     " : "retour:    ") + document.getElementById("p1_text").innerHTML;
-			document.getElementById("meter_1").title =
-					"<?php echo $ElecLeverancier?> P1 meter\r\n\r\n" +
-					"Huidig\r\n" + cur + "\n\r\n" +
-					"Vandaag\r\n" +
-					"verbruik:\t" + waarde(0,3,ve) + " kWh\r\n"  + "retour:\t" + waarde(0,3,se)  + " kWh\r\n" + "netto:\t" + waarde(0,3,ve-se)   + " kWh\r\n\r\n" +
-					"Maand\r\n" +
-					"verbruik:\t" + waarde(0,2,mve) + " kWh\r\n" + "retour:\t" + waarde(0,2,mse) + " kWh\r\n" + "netto:\t" + waarde(0,2,mve-mse) + " kWh\r\n\r\n" +
-					"Jaar\r\n" +
-					"verbruik:\t" + waarde(0,1,yve) + " kWh\r\n" + "retour:\t" + waarde(0,1,yse) + " kWh\r\n" + "netto:\t" + waarde(0,1,yve-yse) + " kWh\r\n\r\n" +
-					"Totaal vanaf " + contract_datum + "-" + con_start_year + "\r\n" +
-					"verbruik:\t" + waarde(0,1,yve) + " kWh\r\n" + "retour:\t" + waarde(0,1,yse) + " kWh\r\n" + "netto:\t" + waarde(0,1,yve-yse) + " kWh";
+			var cur = ((document.getElementById("p1_text").className == "red_text") ? "verbruik:     " : "retour:") + "</td><td>" + document.getElementById("p1_text").innerHTML;
+			document.getElementById("meter_1").setAttribute("data-tcontent",
+					"<table class=qtiptable>" +
+					"<tr><td colspan=2><?php echo $ElecLeverancier?> P1 meter</td></tr>" +
+					"<tr><td colspan=2><br>Huidig</td></tr>" +
+					"<tr><td>" + cur + "</td></tr>" +
+					"<tr><td colspan=2><br>Vandaag</td></tr>" +
+					"<tr><td>verbruik:</td><td>" + waarde(0,3,ve) + " kWh</td></tr>" +
+					"<tr><td>retour:</td><td>" + waarde(0,3,se)  + " kWh</td></tr>" +
+					"<tr><td>netto:</td><td>" + waarde(0,3,ve-se)   + " kWh</td></tr>" +
+					"<tr><td colspan=2><br>Maand</td></tr>" +
+					"<tr><td>verbruik:</td><td>" + waarde(0,2,mve) + " kWh</td></tr>" +
+					"<tr><td>retour:</td><td>" + waarde(0,2,mse)  + " kWh</td></tr>" +
+					"<tr><td>netto:</td><td>" + waarde(0,2,mve-mse)   + " kWh</td></tr>" +
+					"<tr><td colspan=2><br>Totaal vanaf " + contract_datum + "-" + con_start_year + "</td></tr>" +
+					"<tr><td>verbruik:</td><td>" + waarde(0,2,yve) + " kWh</td></tr>" +
+					"<tr><td>retour:</td><td>" + waarde(0,2,yse)  + " kWh</td></tr>" +
+					"<tr><td>netto:</td><td>" + waarde(0,2,yve-yse)   + " kWh</td></tr>");
 
-			var curtext=document.getElementById("inverter_1").title;
-			var ins = curtext.indexOf("Vandaag")-4;
-			if (ins>0) {curtext = curtext.substring(0,ins);}
+			var curtext=document.getElementById("inverter_1").getAttribute("data-tcontent");
+			var ins = curtext.indexOf("<tr><td>Vandaag:")-9;
+			var ins2 = curtext.indexOf("</table>")-1;
+			if (ins>0) {
+				curtext = curtext.substring(0,ins);
+			} else if (ins2>0) {
+				curtext = curtext.substring(0,ins2);
+			}
 			var PVGisd = "";
 			var PVGism = "";
 			var PVGisj = "";
@@ -957,11 +1019,12 @@ EOF
 
 				PVGisj = " (" + waarde(0,0,tPVGis) + " kWh)";
 			}
-			document.getElementById("inverter_1").title =
-					curtext + "\r\n\r\n" +
-					"Vandaag:\t" + waarde(0,2,SolarProdToday) + " kWh" + PVGisd + "\r\n" +
-					"Maand:\t"   + waarde(0,2,mse + msv) + " kWh" + PVGism +  "\r\n" +
-					contract_datum+":\t"    + waarde(0,2,yse + ysv) + " kWh" + PVGisj;
+			document.getElementById("inverter_1").setAttribute("data-tcontent",
+					curtext +
+					"<tr></tr>" +
+					"<tr><td>Vandaag:</td><td>" + waarde(0,2,SolarProdToday) + " kWh" + PVGisd + "</td></tr>" +
+					"<tr><td>Maand:</td><td>" + waarde(0,2,mse + msv) + " kWh" + PVGism +  "</td></tr>" +
+					"<tr><td>" + contract_datum+":</td><td>" + waarde(0,2,yse + ysv) + " kWh" + PVGisj + "</td></tr></table>");
 
 			if (datum1 >= tomorrow) {
 				var ddiff=ve-se;

@@ -96,6 +96,20 @@ div.text_div {
 
 
 /*default size*/
+.qtipformat .qtip-titlebar {
+	font-size: 1.2em;
+	position: relative;
+	padding: 5px 35px 5px 10px;
+	overflow: hidden;
+	border-width: 0 0 1px;
+	font-weight: bold;
+}
+
+.qtiptable {
+	font-size: 1.2em;
+	border: 2;
+	border-collapse:collapse;
+}
 
 .data-table {
 	font-size: 1em;
