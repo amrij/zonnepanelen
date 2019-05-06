@@ -383,13 +383,14 @@ EOF
 		echo '				<div class="box_Zonnepaneel_'.$i.'" id="box_Zonnepaneel_'.$i.'">'."\n";
 		echo '					<div class="text_paneel_W" id="text_paneel_W_'.$i.'"></div>'."\n";
 		echo '					<div class="text_paneel_WX" id="text_paneel_W_'.$i.'a"></div>'."\n";
-		echo '					<img  id="image_'.$i.'" src="./img/dummy.gif" alt="" width="100%" height="100%" style="width: 100%; height: 100%; position:relative; z-index: 5;"/></div>'."\n";
-		echo '					<div class="box_Zonnepaneel_'.$i.'">'."\n";
-		echo '						<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style=" position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
-		echo '						<map name="'.$i.'">'."\n";
-		echo '							<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
-		echo '						</map>'."\n";
-		echo '					<div class="text_Zonnepaneel_n" id="text_Zonnepaneel_'.$i.'"></div>'."\n";
+		echo '					<div class="text_Zonnepaneel_n" id="text_Zonnepaneel_'.$i.'">'.$op_id[$i][1].'</div>'."\n";
+		echo '					<img  id="image_'.$i.'" src="./img/Zonnepaneel-'.($op_id[$i][2] == 0 ? 'ver.gif':'hor.gif').'" alt="" width="100%" height="100%" style="width: 100%; height: 100%; position:relative; z-index: 5;"/>'."\n";
+		echo '				</div>'."\n";
+		echo '				<div class="box_Zonnepaneel_'.$i.'">'."\n";
+		echo '					<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style="width: 100%; height: 100%;  position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
+		echo '					<map name="'.$i.'">'."\n";
+		echo '						<area id="tool_paneel_'.$i.'" shape="rect" coords="0,0,100%,100%" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
+		echo '					</map>'."\n";
 		echo '				</div>'."\n";
 	}
 ?>
@@ -678,8 +679,6 @@ EOF
 
 		update_map_fields();
 		for (var i=1; i<=aantal; i++){
-			document.getElementById("text_Zonnepaneel_"+i).innerHTML = op_id[i];
-			document.getElementById("image_"+i).src = (rpan[i] == 0) ? "./img/Zonnepaneel-ver.gif" : "./img/Zonnepaneel-hor.gif";
 			if (vermogen == 1){
 				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
 				var t = (inv1Data[0]["IVACT"] != 0) ? "E" : "VM";
