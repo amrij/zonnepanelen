@@ -320,7 +320,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#inverter"/>
 				</div>
 				<map name="inverter" style="z-index: 20;">
-					<area id="inverter_1" data-ttitle="Inverter 1 fase" shape="rect" coords="0,0,252,252" title="">
+					<area id="inverter_1" data-ttitle="Inverter <?php echo $naam?>" shape="rect" coords="0,0,252,252" title="">
 				</map>
 				<div class="inverter_text" id="inverter_text"></div>
 				<div class="sola_text" id="sola_text"></div>
@@ -703,7 +703,6 @@ EOF
 		if (inverter == 1) {
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
-					"<tr><td colspan=2>Inverter:" + naam + "</td></tr>" +
 					"<tr><td>S AC:</td><td>" + inv1Data[0]["i_ac"]+ " A</td></tr>" +
 					"<tr><td>V AC:</td><td>" + inv1Data[0]["v_ac"] + " V</td></tr>" +
 					"<tr><td>Freq:</td><td>" + inv1Data[0]["frequency"]+ " Hz</td></tr>" +
@@ -714,7 +713,6 @@ EOF
 		} else {
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
-					"<tr><td colspan=4>Inverter: " + naam + "</td></tr>" +
 					"<tr><td>L1<tr><td>L2<tr><td>L3</td></tr>" +
 					"<tr><td>S AC:<tr><td>" + inv1Data[0]["i_ac1"] + "<tr><td>" + inv1Data[0]["i_ac2"] + "<tr><td>" + inv1Data[0]["i_ac3"] + " A</td></tr>" +
 					"<tr><td>V AC:<tr><td>" + inv1Data[0]["v_ac1"] + "<tr><td>" + inv1Data[0]["v_ac2"] + "<tr><td>" + inv1Data[0]["v_ac3"] + " V</td></tr>" +
@@ -737,19 +735,18 @@ EOF
 			}
 			document.getElementById("tool_paneel_"+i).setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
-					"<tr><td>Datum</td><td>" + inv1Data[0]["TM"+i] + "</td></tr>" +
-					"<tr><td>Paneel</td><td>" + op_id[i] + "</td></tr>" +
-					"<tr><td>Optimizer SN</td><td>" + op_sn[i] + "</td></tr>" +
-					"<tr><td>Paneel SN</td><td>" + pn_sn[i] +  "</td></tr>" +
-					"<tr><td>Energie</td><td>" + inv1Data[0]["O"+i] + " Wh</td></tr>" +
-					"<tr><td>Vermogen (act.)</td><td>" + inv1Data[0]["E"+i] + " W</td></tr>" +
-					"<tr><td>Vermogen (max.)</td><td>" + inv1Data[0]["VM"+i] + " W</td></tr>" +
-					"<tr><td>tijd</td><td>" + inv1Data[0]["VMT"+i] + "</td></tr>" +
-					"<tr><td>Stroom in</td><td>" + inv1Data[0]["S"+i] + " A</td></tr>" +
-					"<tr><td>Spanning in</td><td>" + inv1Data[0]["VI"+i] + " V</td></tr>" +
-					"<tr><td>Spanning uit</td><td>" + inv1Data[0]["VU"+i] + " V</td></tr>" +
-					"<tr><td>Temperatuur</td><td>" + inv1Data[0]["T"+i] + " °C</td></tr>" +
-					"<tr><td>Efficiëntie</td><td>" + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + " Wh/Wp</td></tr></table>");
+					"<tr><td colspan=2>" + inv1Data[0]["TM"+i] + "</td></tr>" +
+					"<tr><td>Optimizer SN:</td><td>" + op_sn[i] + "</td></tr>" +
+					"<tr><td>Paneel SN:</td><td>" + pn_sn[i] +  "</td></tr>" +
+					"<tr><td>Energie:</td><td>" + inv1Data[0]["O"+i] + " Wh</td></tr>" +
+					"<tr><td>Vermogen (act.):</td><td>" + inv1Data[0]["E"+i] + " W</td></tr>" +
+					"<tr><td>Vermogen (max.):</td><td>" + inv1Data[0]["VM"+i] + " W</td></tr>" +
+					"<tr><td>Vermogen (max.):</td><td>" + inv1Data[0]["VMT"+i] + " Tijd</td></tr>" +
+					"<tr><td>Stroom in:</td><td>" + inv1Data[0]["S"+i] + " A</td></tr>" +
+					"<tr><td>Spanning in:</td><td>" + inv1Data[0]["VI"+i] + " V</td></tr>" +
+					"<tr><td>Spanning uit:</td><td>" + inv1Data[0]["VU"+i] + " V</td></tr>" +
+					"<tr><td>Temperatuur:</td><td>" + inv1Data[0]["T"+i] + " °C</td></tr>" +
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + " Wh/Wp</td></tr></table>");
 			if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000"; }
 			else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16"; }
 			else if ( inv1Data[0]["C"+i] < 0.2) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d"; }
