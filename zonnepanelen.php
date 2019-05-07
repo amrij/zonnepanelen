@@ -809,7 +809,7 @@ EOF
 						var cdiff  = "red_text";
 						if (diff < 0) {
 							cdiff  = "green_text";
-							diff = diff * -1;
+							diff = -diff;
 						}
 						document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
 								"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
