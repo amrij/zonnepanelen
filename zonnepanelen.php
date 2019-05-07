@@ -455,6 +455,7 @@ EOF
 		$(this).qtip({
 			overwrite: false, // Make sure the tooltip won't be overridden once created
 			position: {
+				viewport: $(window),
 				target: 'mouse',
 				adjust: {
 					x: 20,
