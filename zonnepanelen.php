@@ -1913,6 +1913,17 @@ EOF
 		});
 	});
 
+	function calcdate(date) {
+		var day = date.getDate();
+		day = (day < 10 ? "0" : "") + String(day);
+		var month = date.getMonth()+1;
+		month = (month < 10 ? "0" : "") + String(month);
+		var year = date.getFullYear();
+		var datum = String(year) + "-" + month + "-" + day;
+		toonDatum(datum);
+		event.stopPropagation();
+	}
+
  	$('#multiShowPicker').calendarsPicker({
 		pickerClass: 'noPrevNext', maxDate: +0, minDate: begin,
 		dateFormat: 'yyyy-mm-dd', defaultDate: date2, selectDefaultDate: true,
@@ -1925,66 +1936,21 @@ EOF
 
 	$('#Today').click(function() {
 		var date = new Date();
-		var day = date.getDate();
-		if (day < 10){
-			day = "0" + String(day);
-		}else{
-			day = String(day);
-		}
-		var month = date.getMonth()+1;
-		if (month < 10){
-			month = "0" + String(month);
-		}else{
-			month = String(month);
-		}
-		var year = date.getFullYear();
-		var datum = String(year) + "-" + month + "-" + day;
-		toonDatum(datum);
-		event.stopPropagation();
+		calcdate(date);
 	});
 
 	$('#PrevDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
 		var date = new Date(dates[0]);
 		date.setDate(date.getDate()-1);
-		var day = date.getDate();
-		if (day < 10){
-			day = "0" + String(day);
-		}else{
-			day = String(day);
-		}
-		var month = date.getMonth()+1;
-		if (month < 10){
-			month = "0" + String(month);
-		}else{
-			month = String(month);
-		}
-		var year = date.getFullYear();
-		var datum = String(year) + "-" + month + "-" + day;
-		toonDatum(datum);
-		event.stopPropagation();
+		calcdate(date);
 	});
 
 	$('#NextDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
 		var date = new Date(dates[0]);
 		date.setDate(date.getDate()+1);
-		var day = date.getDate();
-		if (day < 10){
-			day = "0" + String(day);
-		}else{
-			day = String(day);
-		}
-		var month = date.getMonth()+1;
-		if (month < 10){
-			month = "0" + String(month);
-		}else{
-			month = String(month);
-		}
-		var year = date.getFullYear();
-		var datum = String(year) + "-" + month + "-" + day;
-		toonDatum(datum);
-		event.stopPropagation();
+		calcdate(date);
 	});
 
 	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
@@ -1992,6 +1958,9 @@ EOF
 	});
 	document.getElementById("box_sunrise").addEventListener("click", function() {
 		this.classList.toggle("box_sunrise-is-clicked");
+	});
+	document.getElementById("box_moonphase").addEventListener("click", function() {
+		this.classList.toggle("box_moonphase-is-clicked");
 	});
 	document.getElementById("box_inverter").addEventListener("click", function() {
 		this.classList.toggle("box_inverter-is-clicked");
