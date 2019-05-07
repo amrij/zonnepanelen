@@ -242,12 +242,13 @@ omschrijving: hoofdprogramma
 			}
 			print "],\n";
 		}
-		function productieSeries0() {
+
+		function productieSeries($ingr) {
 			print "
 					series: [\n";
 			for ($i=0; $i<=13; $i++) {  print "			{
 						name: productie[" . $i . "],
-						showInLegend: false,
+						showInLegend: " . ($i > 12 ? "true" : "false") . ",
 						type: 'spline',
 						yAxis: 0,
 						color: '#d4d0d0',
@@ -258,46 +259,16 @@ omschrijving: hoofdprogramma
 					{
 						name: productie[14],
 						showInLegend: true,
-						type: 'spline',
+						type: " . ($ingr ? "'areaspline'" : "'spline'") . ",
 						yAxis: 0,
 						lineWidth: 2,
-						color: '#009900',
+						color: '#009900'," .
+						($ingr ? "					fillOpacity: 0.3,\n" : "") . "
 						data: []//this will be filled by requestData()
 					}],\n";
+
 		}
-		function productieSeries1() {
-			print "
-					series: [\n";
-				for ($i=0; $i<=12; $i++) {  print "			{
-							name: productie[" . $i . "],
-							showInLegend: false,
-							type: 'spline',
-							yAxis: 0,
-							color: '#d4d0d0',
-							data: []//this will be filled by requestData()
-						},";
-				}
-				print "
-					{
-						name: productie[13],
-						showInLegend: true,
-						type: 'areaspline',
-						yAxis: 0,
-						lineWidth: 1.5,
-						color: '#009900',
-						fillOpacity: 0.3,
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[14],
-						showInLegend: true,
-						type: 'areaspline',
-						yAxis: 0,
-						lineWidth: 1.5,
-						color: '#4169E1',
-						fillOpacity: 0.3,
-						data: []//this will be filled by requestData()
-					}],\n";
-		}
+
 		function e_panelen($aantal) {
 			print "
 					series: [\n";
@@ -580,7 +551,7 @@ EOF
 	var data_p = [];
 	var data_i = [];
 
-	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','$productie[1]','$productie[0]','$productie[1]'"?>];
+	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','$productie[1]','$productie[0]'"?>];
 	var start_i = 0;
 	var inverter_redraw = 1;
 	var SolarProdToday = 0;
@@ -1590,14 +1561,9 @@ EOF
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-
-									if (i != 13){
-										if (i == 14) {s += "<b>";}
-										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
-										if (i == 14) {s += "</b>";}
-									} else {
-										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
-									}
+									if (i == 14) {s += "<b>";}
+									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
+									if (i == 14) {s += "</b>";}
 								}
 							}
 						});
@@ -1642,7 +1608,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php if ($ingr == 0){productieSeries0();}else{productieSeries1();} ?>
+				<?php productieSeries($ingr) ?>
 			});
 		});
 
@@ -1729,13 +1695,9 @@ EOF
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-									if (i != 13){
-										if (i == 14) {s += "<b>";}
-										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
-										if (i == 14) {s += "</b>";}
-									} else {
-										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
-									}
+									if (i == 14) {s += "<b>";}
+									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+									if (i == 14) {s += "</b>";}
 								}
 							}
 						});
@@ -1780,7 +1742,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php if ($ingr == 0){productieSeries0();}else{productieSeries1();} ?>
+				<?php productieSeries($ingr) ?>
 			});
 		});
 
