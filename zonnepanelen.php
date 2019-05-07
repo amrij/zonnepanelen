@@ -461,19 +461,7 @@ EOF
 		// check for tool_paneel_xx
 		var panelid = this.id;
 		if (panelid.substring(0, 11) == "tool_paneel") {
-			for (var i=0; i<=aantal; i++) {
-				paneel_chartv.series[i].setData([], false);
-				paneel_charte.series[i].setData([], false);
-			}
-			inverter_redraw = 1;
-			setTimeout(function () {
-				if (inverter_redraw == 1) {
-					document.getElementById("panel_vermogen").innerHTML ="";
-					document.getElementById("panel_energy").innerHTML ="";
-					inverter_chart.redraw();
-					vermogen_chart.redraw();
-				}
-			}, 500);
+			paneelChartcl();
 		}
 	})
 
@@ -482,20 +470,7 @@ EOF
 		var panelid = this.id;
 		if (panelid.substring(0, 11) == "tool_paneel") {
 			var id = parseInt(panelid.substring(12),10);
-			if (id <= aantal){
-				inverter_redraw = 0;
-				document.getElementById("chart_vermogen").innerHTML ="";
-				document.getElementById("chart_energy").innerHTML ="";
-				// #### Vermogen  #####
-				var series = paneel_chartv.series[0];
-				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-				paneelFillSeries('Energie', shift, id, paneel_charte);
-				if (event.shiftKey) {
-					paneelFillSeries('Temperatuur', shift, id, paneel_chartv);
-				} else {
-					paneelFillSeries('Vermogen', shift, id, paneel_chartv);
-				}
-			}
+			paneelChart(event, id);
 		}
 	})
 
@@ -621,6 +596,39 @@ EOF
 		ichart.yAxis[0].update({ opposite: true });
 		ichart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
 		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+	}
+
+	function paneelChart(event, id) {
+		if (id <= aantal) {
+			inverter_redraw = 0;
+			document.getElementById("chart_vermogen").innerHTML = "";
+			document.getElementById("chart_energy").innerHTML = "";
+			// #### Vermogen  #####
+			var series = paneel_chartv.series[0];
+			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+			paneelFillSeries('Energie', shift, id, paneel_charte);
+			if (event.shiftKey) {
+				paneelFillSeries('Temperatuur', shift, id, paneel_chartv);
+			} else {
+				paneelFillSeries('Vermogen', shift, id, paneel_chartv);
+			}
+		}
+	}
+
+	function paneelChartcl() {
+		for (var i=0; i<=aantal; i++) {
+			paneel_chartv.series[i].setData([], false);
+			paneel_charte.series[i].setData([], false);
+		}
+		inverter_redraw = 1;
+		setTimeout(function () {
+			if (inverter_redraw == 1) {
+				document.getElementById("panel_vermogen").innerHTML ="";
+				document.getElementById("panel_energy").innerHTML ="";
+				inverter_chart.redraw();
+				vermogen_chart.redraw();
+			}
+		}, 500);
 	}
 
 	function waarde(l,d,x){
