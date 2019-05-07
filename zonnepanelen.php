@@ -365,7 +365,7 @@ omschrijving: hoofdprogramma
 					<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#meter"/>
 				</div>
 				<map name="meter" style="z-index: 20;">
-					<area id="meter_1" data-ttitle="P1 Meter" shape="rect" coords="0,0,252,252" title="">
+					<area id="meter_1" data-ttitle="<?php echo $ElecLeverancier?> P1 Meter" shape="rect" coords="0,0,252,252" title="">
 				</map>
 
 				<div class="p1_huis_pos"><div id="p1_huis"></div></div>
@@ -476,7 +476,10 @@ EOF
 			},
 			show: {
 				event: event.type, // Use the same show event as the one that triggered the event handler
-				ready: true // Show the tooltip as soon as it's bound, vital so it shows up the first time you hover!
+				ready: true        // Show the tooltip as soon as it's bound, vital so it shows up the first time you hover!
+			},
+			hide: {
+				delay: 100
 			}
 		}, event); // Pass through our original event to qTip
 	})
@@ -968,19 +971,19 @@ EOF
 					}
 					document.getElementById("huis_1").setAttribute("data-tcontent",
 							"<table class=qtiptable>" +
-							"<tr><td colspan=2>" + s_lasttimestamp + "</td></tr>" +
-							"<tr><td colspan=2><br>Vandaag</td></tr>" +
+							"<tr><td colspan=2 style=\"text-align:center\"><b>" + s_lasttimestamp + "</b></td></tr>" +
+							"<tr><td colspan=2 style=\"text-align:center\"><br><b>Vandaag</b></td></tr>" +
 							"<tr><td>Zonne energie:</td><td>" + waarde(0,3,SolarProdToday - s_p1CounterDelivToday) + " kWh</td></tr>" +
 							"<tr><td><?php echo $ElecLeverancier?> retour:</td><td>" + waarde(0,3,s_p1CounterDelivToday) + " kWh</td></tr>" +
 							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,3,s_p1CounterToday) + " kWh</td></tr>" +
 							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) + " kWh\r\n</td></tr>" +
-							"<tr><td colspan=2><br>Maand</td></tr>" +
+							"<tr><td colspan=2 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
 							"<tr><td>Zonne energie:</td><td>" + waarde(0,2,mvs) + " kWh</td></tr>" +
 							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,2,mve) + " kWh</td></tr>" +
 							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,2,mve+mvs) + " kWh\r\n</td></tr>" +
 							"<tr></tr>" +
 							"<tr><td>Jaar\r\nZonne energie:</td><td>" + waarde(0,1,yvs) + " kWh</td></tr>" +
-							"<tr><td colspan=2><br>Jaar vanaf " + contract_datum + "-" + con_start_year + "</td></tr>" +
+							"<tr><td colspan=2 style=\"text-align:center\"><br><b>Jaar vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
 							"<tr><td>Zonne energie:</td><td>" + waarde(0,1,yvs) + " kWh" +  "</td></tr>" +
 							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,1,yve) + " kWh</td></tr>" +
 							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,1,yve+yvs) + " kWh</td></tr></table>");
@@ -990,24 +993,23 @@ EOF
 				document.getElementById("huis_1").setAttribute("data-tcontent","No Data");
 			}
 
-			var cur = ((document.getElementById("p1_text").className == "red_text") ? "verbruik:     " : "retour:") + "</td><td>" + document.getElementById("p1_text").innerHTML;
+			var cur = ((document.getElementById("p1_text").className == "red_text") ? "verbruik:<td class=\"red_text\">" : "retour:</td><td class=\"green_text\">")+ document.getElementById("p1_text").innerHTML;
 			document.getElementById("meter_1").setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
-					"<tr><td colspan=2><?php echo $ElecLeverancier?> P1 meter</td></tr>" +
-					"<tr><td colspan=2><br>Huidig</td></tr>" +
+					"<tr><td colspan=2 style=\"text-align:center\"><b>Huidig</b></td></tr>" +
 					"<tr><td>" + cur + "</td></tr>" +
-					"<tr><td colspan=2><br>Vandaag</td></tr>" +
+					"<tr><td colspan=2 style=\"text-align:center\"><br><b>Vandaag</b></td></tr>" +
 					"<tr><td>verbruik:</td><td>" + waarde(0,3,ve) + " kWh</td></tr>" +
 					"<tr><td>retour:</td><td>" + waarde(0,3,se)  + " kWh</td></tr>" +
-					"<tr><td>netto:</td><td>" + waarde(0,3,ve-se)   + " kWh</td></tr>" +
-					"<tr><td colspan=2><br>Maand</td></tr>" +
+					"<tr><td>netto:</td><td class="+(ve-se<0 ? "green_text" : "red_text")+">" + waarde(0,3,ve-se)   + " kWh</td></tr>" +
+					"<tr><td colspan=2 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
 					"<tr><td>verbruik:</td><td>" + waarde(0,2,mve) + " kWh</td></tr>" +
 					"<tr><td>retour:</td><td>" + waarde(0,2,mse)  + " kWh</td></tr>" +
-					"<tr><td>netto:</td><td>" + waarde(0,2,mve-mse)   + " kWh</td></tr>" +
-					"<tr><td colspan=2><br>Totaal vanaf " + contract_datum + "-" + con_start_year + "</td></tr>" +
+					"<tr><td>netto:</td><td class="+(mve-mse<0 ? "green_text" : "red_text")+">" + waarde(0,2,mve-mse)   + " kWh</td></tr>" +
+					"<tr><td colspan=2 style=\"text-align:center\"><br><b>Totaal vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
 					"<tr><td>verbruik:</td><td>" + waarde(0,2,yve) + " kWh</td></tr>" +
 					"<tr><td>retour:</td><td>" + waarde(0,2,yse)  + " kWh</td></tr>" +
-					"<tr><td>netto:</td><td>" + waarde(0,2,yve-yse)   + " kWh</td></tr>");
+					"<tr><td>netto:</td><td class="+(yve-yse<0 ? "green_text" : "red_text")+">" + waarde(0,2,yve-yse)   + " kWh</td></tr></table>");
 
 			var curtext=document.getElementById("inverter_1").getAttribute("data-tcontent");
 			var ins = curtext.indexOf("<tr><td>Vandaag:")-9;

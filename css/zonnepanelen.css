@@ -109,6 +109,7 @@ div.text_div {
 	font-size: 1.2em;
 	border: 2;
 	border-collapse:collapse;
+	text-align: right;
 }
 
 .data-table {
