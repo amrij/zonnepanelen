@@ -156,7 +156,7 @@ If ($midnight >= $begin) {
 	$cols = $inverter == 1 ? "v_ac, i_ac, frequency, p_active"
 				: "v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3, p_active1, p_active2, p_active3, p_active1+p_active2+p_active3 p_active";
 
-	$query = sprintf("SELECT FROM_UNIXTIME(timestamp, '%s') datum, temperature t_act, mode, FORMAT(v_dc,3),
+	$query = sprintf("SELECT FROM_UNIXTIME(timestamp, '%s') datum, temperature t_act, mode, FORMAT(v_dc,3) as v_dc,
 				 %s
 			  FROM %s
 			  WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC limit 1
