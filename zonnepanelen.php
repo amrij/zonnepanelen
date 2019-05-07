@@ -805,10 +805,10 @@ EOF
 					var wdate = new Date(date2);
 					var cdate = new Date();
 					if (datum1 < tomorrow) {
-						var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
-						var cdiff  = "red_text";
+						var diff = p1CounterToday - p1CounterDelivToday;
+						var cdiff = "red_text";
 						if (diff < 0) {
-							cdiff  = "green_text";
+							cdiff = "green_text";
 							diff = -diff;
 						}
 						document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
