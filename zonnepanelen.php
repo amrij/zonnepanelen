@@ -242,12 +242,13 @@ omschrijving: hoofdprogramma
 			}
 			print "],\n";
 		}
-		function productieSeries0() {
+
+		function productieSeries($ingr) {
 			print "
 					series: [\n";
 			for ($i=0; $i<=13; $i++) {  print "			{
 						name: productie[" . $i . "],
-						showInLegend: false,
+						showInLegend: " . ($i > 12 ? "true" : "false") . ",
 						type: 'spline',
 						yAxis: 0,
 						color: '#d4d0d0',
@@ -258,46 +259,16 @@ omschrijving: hoofdprogramma
 					{
 						name: productie[14],
 						showInLegend: true,
-						type: 'spline',
+						type: " . ($ingr ? "'areaspline'" : "'spline'") . ",
 						yAxis: 0,
 						lineWidth: 2,
-						color: '#009900',
+						color: '#009900'," .
+						($ingr ? "					fillOpacity: 0.3,\n" : "") . "
 						data: []//this will be filled by requestData()
 					}],\n";
+
 		}
-		function productieSeries1() {
-			print "
-					series: [\n";
-				for ($i=0; $i<=12; $i++) {  print "			{
-							name: productie[" . $i . "],
-							showInLegend: false,
-							type: 'spline',
-							yAxis: 0,
-							color: '#d4d0d0',
-							data: []//this will be filled by requestData()
-						},";
-				}
-				print "
-					{
-						name: productie[13],
-						showInLegend: true,
-						type: 'areaspline',
-						yAxis: 0,
-						lineWidth: 1.5,
-						color: '#009900',
-						fillOpacity: 0.3,
-						data: []//this will be filled by requestData()
-					},{
-						name: productie[14],
-						showInLegend: true,
-						type: 'areaspline',
-						yAxis: 0,
-						lineWidth: 1.5,
-						color: '#4169E1',
-						fillOpacity: 0.3,
-						data: []//this will be filled by requestData()
-					}],\n";
-		}
+
 		function e_panelen($aantal) {
 			print "
 					series: [\n";
@@ -490,19 +461,7 @@ EOF
 		// check for tool_paneel_xx
 		var panelid = this.id;
 		if (panelid.substring(0, 11) == "tool_paneel") {
-			for (var i=0; i<=aantal; i++) {
-				paneel_chartv.series[i].setData([], false);
-				paneel_charte.series[i].setData([], false);
-			}
-			inverter_redraw = 1;
-			setTimeout(function () {
-				if (inverter_redraw == 1) {
-					document.getElementById("panel_vermogen").innerHTML ="";
-					document.getElementById("panel_energy").innerHTML ="";
-					inverter_chart.redraw();
-					vermogen_chart.redraw();
-				}
-			}, 500);
+			paneelChartcl();
 		}
 	})
 
@@ -511,20 +470,7 @@ EOF
 		var panelid = this.id;
 		if (panelid.substring(0, 11) == "tool_paneel") {
 			var id = parseInt(panelid.substring(12),10);
-			if (id <= aantal){
-				inverter_redraw = 0;
-				document.getElementById("chart_vermogen").innerHTML ="";
-				document.getElementById("chart_energy").innerHTML ="";
-				// #### Vermogen  #####
-				var series = paneel_chartv.series[0];
-				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-				paneelFillSeries('Energie', shift, id, paneel_charte);
-				if (event.shiftKey) {
-					paneelFillSeries('Temperatuur', shift, id, paneel_chartv);
-				} else {
-					paneelFillSeries('Vermogen', shift, id, paneel_chartv);
-				}
-			}
+			paneelChart(event, id);
 		}
 	})
 
@@ -580,7 +526,7 @@ EOF
 	var data_p = [];
 	var data_i = [];
 
-	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','$productie[1]','$productie[0]','$productie[1]'"?>];
+	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','$productie[1]','$productie[0]'"?>];
 	var start_i = 0;
 	var inverter_redraw = 1;
 	var SolarProdToday = 0;
@@ -650,6 +596,39 @@ EOF
 		ichart.yAxis[0].update({ opposite: true });
 		ichart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
 		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+	}
+
+	function paneelChart(event, id) {
+		if (id <= aantal) {
+			inverter_redraw = 0;
+			document.getElementById("chart_vermogen").innerHTML = "";
+			document.getElementById("chart_energy").innerHTML = "";
+			// #### Vermogen  #####
+			var series = paneel_chartv.series[0];
+			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+			paneelFillSeries('Energie', shift, id, paneel_charte);
+			if (event.shiftKey) {
+				paneelFillSeries('Temperatuur', shift, id, paneel_chartv);
+			} else {
+				paneelFillSeries('Vermogen', shift, id, paneel_chartv);
+			}
+		}
+	}
+
+	function paneelChartcl() {
+		for (var i=0; i<=aantal; i++) {
+			paneel_chartv.series[i].setData([], false);
+			paneel_charte.series[i].setData([], false);
+		}
+		inverter_redraw = 1;
+		setTimeout(function () {
+			if (inverter_redraw == 1) {
+				document.getElementById("panel_vermogen").innerHTML ="";
+				document.getElementById("panel_energy").innerHTML ="";
+				inverter_chart.redraw();
+				vermogen_chart.redraw();
+			}
+		}, 500);
 	}
 
 	function waarde(l,d,x){
@@ -773,7 +752,7 @@ EOF
 					"<table class=qtiptable>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><b>" + inv1Data[0]["TM"+i] + "</b><br></td></tr>" +
 					"<tr><td>Optimizer SN:</td><td colspan=2>" + op_sn[i] + "</td></tr>" +
-					"<tr><td>Paneel SN:</td><tdcolspan=2>" + pn_sn[i] +  "</td></tr>" +
+					"<tr><td>Paneel SN:</td><td colspan=2>" + pn_sn[i] +  "</td></tr>" +
 					"<tr><td>Energie:</td><td>" + inv1Data[0]["O"+i] + "</td><td>Wh</td></tr>" +
 					"<tr><td>Vermogen (act.):</td><td>" + inv1Data[0]["E"+i] + "</td><td>W</td></tr>" +
 					"<tr><td>Vermogen (max.):</td><td>" + inv1Data[0]["VM"+i] + "</td><td>W</td></tr>" +
@@ -834,11 +813,11 @@ EOF
 					var wdate = new Date(date2);
 					var cdate = new Date();
 					if (datum1 < tomorrow) {
-						var diff=parseFloat(p1CounterToday)-parseFloat(p1CounterDelivToday);
-						var cdiff  = "red_text";
+						var diff = p1CounterToday - p1CounterDelivToday;
+						var cdiff = "red_text";
 						if (diff < 0) {
-							cdiff  = "green_text";
-							diff = diff * -1;
+							cdiff = "green_text";
+							diff = -diff;
 						}
 						document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
 								"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
@@ -1590,14 +1569,9 @@ EOF
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-
-									if (i != 13){
-										if (i == 14) {s += "<b>";}
-										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
-										if (i == 14) {s += "</b>";}
-									} else {
-										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
-									}
+									if (i == 14) {s += "<b>";}
+									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
+									if (i == 14) {s += "</b>";}
 								}
 							}
 						});
@@ -1642,7 +1616,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php if ($ingr == 0){productieSeries0();}else{productieSeries1();} ?>
+				<?php productieSeries($ingr) ?>
 			});
 		});
 
@@ -1729,13 +1703,9 @@ EOF
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-									if (i != 13){
-										if (i == 14) {s += "<b>";}
-										s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
-										if (i == 14) {s += "</b>";}
-									} else {
-										s += productie[15].substr(productie[15].length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
-									}
+									if (i == 14) {s += "<b>";}
+									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+									if (i == 14) {s += "</b>";}
 								}
 							}
 						});
@@ -1780,7 +1750,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php if ($ingr == 0){productieSeries0();}else{productieSeries1();} ?>
+				<?php productieSeries($ingr) ?>
 			});
 		});
 
@@ -1951,6 +1921,17 @@ EOF
 		});
 	});
 
+	function calcdate(date) {
+		var day = date.getDate();
+		day = (day < 10 ? "0" : "") + String(day);
+		var month = date.getMonth()+1;
+		month = (month < 10 ? "0" : "") + String(month);
+		var year = date.getFullYear();
+		var datum = String(year) + "-" + month + "-" + day;
+		toonDatum(datum);
+		event.stopPropagation();
+	}
+
  	$('#multiShowPicker').calendarsPicker({
 		pickerClass: 'noPrevNext', maxDate: +0, minDate: begin,
 		dateFormat: 'yyyy-mm-dd', defaultDate: date2, selectDefaultDate: true,
@@ -1963,66 +1944,21 @@ EOF
 
 	$('#Today').click(function() {
 		var date = new Date();
-		var day = date.getDate();
-		if (day < 10){
-			day = "0" + String(day);
-		}else{
-			day = String(day);
-		}
-		var month = date.getMonth()+1;
-		if (month < 10){
-			month = "0" + String(month);
-		}else{
-			month = String(month);
-		}
-		var year = date.getFullYear();
-		var datum = String(year) + "-" + month + "-" + day;
-		toonDatum(datum);
-		event.stopPropagation();
+		calcdate(date);
 	});
 
 	$('#PrevDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
 		var date = new Date(dates[0]);
 		date.setDate(date.getDate()-1);
-		var day = date.getDate();
-		if (day < 10){
-			day = "0" + String(day);
-		}else{
-			day = String(day);
-		}
-		var month = date.getMonth()+1;
-		if (month < 10){
-			month = "0" + String(month);
-		}else{
-			month = String(month);
-		}
-		var year = date.getFullYear();
-		var datum = String(year) + "-" + month + "-" + day;
-		toonDatum(datum);
-		event.stopPropagation();
+		calcdate(date);
 	});
 
 	$('#NextDay').click(function() {
 		var dates = $('#multiShowPicker').calendarsPicker('getDate');
 		var date = new Date(dates[0]);
 		date.setDate(date.getDate()+1);
-		var day = date.getDate();
-		if (day < 10){
-			day = "0" + String(day);
-		}else{
-			day = String(day);
-		}
-		var month = date.getMonth()+1;
-		if (month < 10){
-			month = "0" + String(month);
-		}else{
-			month = String(month);
-		}
-		var year = date.getFullYear();
-		var datum = String(year) + "-" + month + "-" + day;
-		toonDatum(datum);
-		event.stopPropagation();
+		calcdate(date);
 	});
 
 	document.getElementById("box_Zonnepanelen").addEventListener("click", function() {
@@ -2030,6 +1966,9 @@ EOF
 	});
 	document.getElementById("box_sunrise").addEventListener("click", function() {
 		this.classList.toggle("box_sunrise-is-clicked");
+	});
+	document.getElementById("box_moonphase").addEventListener("click", function() {
+		this.classList.toggle("box_moonphase-is-clicked");
 	});
 	document.getElementById("box_inverter").addEventListener("click", function() {
 		this.classList.toggle("box_inverter-is-clicked");
