@@ -744,7 +744,7 @@ EOF
 					"<table class=qtiptable>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><b>" + inv1Data[0]["TM"+i] + "</b><br></td></tr>" +
 					"<tr><td>Optimizer SN:</td><td colspan=2>" + op_sn[i] + "</td></tr>" +
-					"<tr><td>Paneel SN:</td><tdcolspan=2>" + pn_sn[i] +  "</td></tr>" +
+					"<tr><td>Paneel SN:</td><td colspan=2>" + pn_sn[i] +  "</td></tr>" +
 					"<tr><td>Energie:</td><td>" + inv1Data[0]["O"+i] + "</td><td>Wh</td></tr>" +
 					"<tr><td>Vermogen (act.):</td><td>" + inv1Data[0]["E"+i] + "</td><td>W</td></tr>" +
 					"<tr><td>Vermogen (max.):</td><td>" + inv1Data[0]["VM"+i] + "</td><td>W</td></tr>" +
