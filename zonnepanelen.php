@@ -262,7 +262,7 @@ omschrijving: hoofdprogramma
 						type: " . ($ingr ? "'areaspline'" : "'spline'") . ",
 						yAxis: 0,
 						lineWidth: 2,
-						color: '#009900'," .
+						color: '#4169E1'," .
 						($ingr ? "					fillOpacity: 0.3,\n" : "") . "
 						data: []//this will be filled by requestData()
 					}],\n";
@@ -300,7 +300,7 @@ omschrijving: hoofdprogramma
 					showInLegend: true,
 					type: 'spline',
 					yAxis: 0,
-					color: '#009900',
+					color: '#4169E1',
 					data: []//this will be filled by requestData()
 				}],\n";
 		}
@@ -1914,7 +1914,7 @@ EOF
 						name: 'Vermogen',
 						type: 'spline',
 						yAxis: 0,
-						color: '#009900',
+						color: '#4169E1',
 						data: []//this will be filled by requestData()
 					}]
 				});
