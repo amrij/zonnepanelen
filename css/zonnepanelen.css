@@ -112,6 +112,9 @@ div.text_div {
 	border-collapse:collapse;
 	text-align: right;
 }
+.qtiptable  td {
+    padding-left: 4px;
+}
 
 .data-table {
 	font-size: 1em;

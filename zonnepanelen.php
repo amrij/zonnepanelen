@@ -728,14 +728,14 @@ EOF
 		} else {
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
-					"<tr><td>L1<tr><td>L2<tr><td>L3</td></tr>" +
-					"<tr><td>S AC:<tr><td>" + inv1Data[0]["i_ac1"] + "<tr><td>" + inv1Data[0]["i_ac2"] + "<tr><td>" + inv1Data[0]["i_ac3"] + "</td><td>A</td></tr>" +
-					"<tr><td>V AC:<tr><td>" + inv1Data[0]["v_ac1"] + "<tr><td>" + inv1Data[0]["v_ac2"] + "<tr><td>" + inv1Data[0]["v_ac3"] + "</td><td>V</td></tr>" +
-					"<tr><td>Freq:<tr><td>" + inv1Data[0]["frequency1"]+"<tr><td>" + inv1Data[0]["frequency2"] + "<tr><td>" + inv1Data[0]["frequency3"] + "</td><td>Hz</td></tr>" +
-					"<tr><td>Pactive:<tr><td>" + inv1Data[0]["p_active1"] + "<tr><td>" + inv1Data[0]["p_active2"] + "<tr><td>"+inv1Data[0]["p_active3"] + "</td><td>W</td></tr>" +
-					"<tr><td>V DC:<tr><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
-					"<tr><td>P(act):<tr><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
-					"<tr><td>Efficiëntie:<tr><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><tdstyle=\"font-size:smaller\">Wh/Wp</td></tr></table>");
+					"<tr><td></td><td>L1</td><td>L2</td><td>L3</td></tr>" +
+					"<tr><td>S AC:</td><td>" + inv1Data[0]["i_ac1"] + "</td><td>" + inv1Data[0]["i_ac2"] + "</td><td>" + inv1Data[0]["i_ac3"] + "</td><td>A</td></tr>" +
+					"<tr><td>V AC:</td><td>" + inv1Data[0]["v_ac1"] + "</td><td>" + inv1Data[0]["v_ac2"] + "</td><td>" + inv1Data[0]["v_ac3"] + "</td><td>V</td></tr>" +
+					"<tr><td>Freq:</td><td>" + inv1Data[0]["frequency1"]+"</td><td>" + inv1Data[0]["frequency2"] + "</td><td>" + inv1Data[0]["frequency3"] + "</td><td>Hz</td></tr>" +
+					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active1"] + "</td><td>" + inv1Data[0]["p_active2"] + "</td><td>"+inv1Data[0]["p_active3"] + "</td><td>W</td></tr>" +
+					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
+					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><td><tdstyle=\"font-size:smaller\">Wh/Wp</td></tr></table>");
 		}
 		update_map_fields();
 
