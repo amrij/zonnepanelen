@@ -886,7 +886,7 @@ EOF
 			var con_end_date = new Date(contract_end_date);
 			var con_day = con_start_date.getDate();
 			var con_month = con_start_date.getMonth()+1;
-			var con_start_year = con_start_date.getFullYear()+1;
+			var con_start_year = con_start_date.getFullYear();
 			var cdays = daysInMonth(con_month, cy);
 			var ve = 0;
 			var vs = 0;
