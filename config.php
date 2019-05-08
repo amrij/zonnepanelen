@@ -74,6 +74,11 @@ $DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen p1&Conve
 // aangeven vermogen op het paneel
 $vermogen = 1; // 0 = nee, 1 = ja
 
+// Sunrise and Moon box management
+// 0: moon and sunrise boxes are resize separately.
+// 1: clicking moon or sunrise will enlarge both of them
+$groupMoonSun = 1;
+
 // gegevens van het zonnepanelensysteem
 $inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
 $naam = "SolarEdge SE7k"; //naam van de inverter
