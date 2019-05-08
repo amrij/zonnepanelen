@@ -269,7 +269,7 @@ omschrijving: hoofdprogramma
 
 		}
 
-		function e_panelen($aantal) {
+		function panelenSeries($aantal) {
 			print "
 					series: [\n";
 			for ($i=$aantal; $i>=2; $i--) {  print "			{
@@ -1337,7 +1337,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php e_panelen($aantal); ?>
+				<?php panelenSeries($aantal); ?>
 			});
 		});
 
@@ -1484,7 +1484,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php e_panelen($aantal); ?>
+				<?php panelenSeries($aantal); ?>
 			});
 		});
 
