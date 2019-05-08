@@ -248,7 +248,7 @@ omschrijving: hoofdprogramma
 					series: [\n";
 			for ($i=0; $i<=13; $i++) {  print "			{
 						name: productie[" . $i . "],
-						showInLegend: " . ($i > 12 ? "true" : "false") . ",
+						showInLegend: false,
 						type: 'spline',
 						yAxis: 0,
 						color: '#d4d0d0',
