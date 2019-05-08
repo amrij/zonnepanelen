@@ -162,7 +162,7 @@ div.box_sunrise {
     left: 0.2%;
     top: 37%;
     width: 10.6%;
-    height: 12.3%;
+    height: 7.4%;
     position: absolute;
 	background-color: white;
 	-webkit-transform:rotate(0deg);
@@ -174,12 +174,36 @@ div.box_sunrise {
 
 div.box_sunrise-is-clicked {
     left: 0.2%;
-    top: 23.1%;
-    width: 25.4%;
-    height: 26.8%;
+    top: 25.7%;
+    width: 26.5%;
+    height: 18.7%;
 	z-index: 32;
 	font-size: .9vw;
 }
+
+div.box_moonphase {
+    left: 0.2%;
+    top: 44.4%;
+    width: 10.6%;
+    height: 5%;
+    position: absolute;
+	background-color: white;
+	-webkit-transform:rotate(0deg);
+	transform:rotate(0deg);
+	color: grey;
+	font-size: .6vw;
+	z-index: 31;
+}
+
+div.box_moonphase-is-clicked {
+    left: 0.2%;
+    top: 44.4%;
+    width: 26.5%;
+    height: 12.5%;
+	z-index: 32;
+	font-size: .9vw;
+}
+
 div.box_inverter {
     left: 20.1%;
     top: 0.5%;

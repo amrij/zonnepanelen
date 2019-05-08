@@ -269,7 +269,7 @@ omschrijving: hoofdprogramma
 
 		}
 
-		function e_panelen($aantal) {
+		function panelenSeries($aantal) {
 			print "
 					series: [\n";
 			for ($i=$aantal; $i>=2; $i--) {  print "			{
@@ -401,22 +401,23 @@ EOF
 ?>
 		</div>
 		<div Class='box_sunrise' id='box_sunrise'>
-			<img src="./img/zon/sunrise.gif"                  style="top: .1%;   left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
-			<div class='sunrise_text' id='sunrise_text'       style="top: 10.0%;   left: 40%; z-index: 10; width: 40%; height: 15%; line-height: 1.0em; position: absolute;"></div>
+			<img src="./img/zon/sunrise.gif"                  style="top: .1%;   left: 3%;  z-index: 10; width: 32%; height: 25%; position: absolute;" />
+			<div class='sunrise_text' id='sunrise_text'       style="top: 10.1%;   left: 40%; z-index: 10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 
-			<img src="./img/zon/solar_noon.gif"               style="top: 15.1%; left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
-			<div class='solar_noon_text' id='solar_noon_text' style="top: 25.0%; left: 40%; z-index: 10; width: 40%; height: 15%; line-height: 1.0em; position: absolute;"></div>
+			<img src="./img/zon/solar_noon.gif"               style="top: 25.1%; left: 3%;  z-index: 10; width: 32%; height: 25%; position: absolute;" />
+			<div class='solar_noon_text' id='solar_noon_text' style="top: 35.1%; left: 40%; z-index: 10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 
-			<img src="./img/zon/sunset.gif"                   style="top: 30.1%; left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
-			<div class='sunset_text' id='sunset_text'         style="top: 40.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
+			<img src="./img/zon/sunset.gif"                   style="top: 50.1%; left: 3%;  z-index: 10; width: 32%; height: 25%; position: absolute;" />
+			<div class='sunset_text' id='sunset_text'         style="top: 60.1%; left: 40%; z-index: 10; width: 50%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 
-			<img src="./img/zon/daglengte.gif"                style="top: 45.1%; left: 3%;  z-index: 10; width: 32%; height: 15%; position: absolute;" />
-			<div class='daglengte_text' id='daglengte_text'   style="top: 55.0%; left: 40%; z-index: 10; width: 40%; height: 15%; line-height: 1.0em; position: absolute;"></div>
-
-			<img src="./img/maan/maan_th_mask1.gif"           style="top: 60.0%; left: 7%; z-index: 20; height: 40%; position: absolute;" />
-			<img class="maan_th" id="maan_th" src=""          style="top: 60.6%; left: 7%; z-index: 10; height: 40%; position: absolute;" />
-			<div class='fase_text' id='fase_text'             style="top: 69.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
-			<div class='verlicht_text' id='verlicht_text'     style="top: 82.0%; left: 40%; z-index: 10; width: 50%; height: 15%; line-height: 1.0em; position: absolute;"></div>
+			<img src="./img/zon/daglengte.gif"                style="top: 75.1%; left: 3%;  z-index: 10; width: 32%; height: 25%; position: absolute;" />
+			<div class='daglengte_text' id='daglengte_text'   style="top: 85.1%; left: 40%; z-index: 10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
+		</div>
+		<div Class='box_moonphase' id='box_moonphase'>
+			<img src="./img/maan/maan_th_mask1.gif"           style="top: 0.0%; left: 7%; z-index: 20; height: 100%; position: absolute;" />
+			<img class="maan_th" id="maan_th" src=""          style="top: 0.6%; left: 7%; z-index: 10; height: 100%; position: absolute;" />
+			<div class='fase_text' id='fase_text'             style="top: 22.0%; left: 40%; z-index: 10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
+			<div class='verlicht_text' id='verlicht_text'     style="top: 55.0%; left: 40%; z-index: 10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
 		</div>
 	</div>
 </body>
@@ -515,6 +516,7 @@ EOF
 	var naam = '<?php echo $naam?>';
 	var P1 = '<?php echo $P1?>';
 	var aantal = '<?php echo $aantal?>';
+	var groupMoonSun = <?php echo $groupMoonSun ?>;
 	var op_sn = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][0], "',";} ?>];
 	var pn_sn = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][3], "',";} ?>];
 	var op_id = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][1], "',";} ?>];
@@ -1335,7 +1337,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php e_panelen($aantal); ?>
+				<?php panelenSeries($aantal); ?>
 			});
 		});
 
@@ -1482,7 +1484,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php e_panelen($aantal); ?>
+				<?php panelenSeries($aantal); ?>
 			});
 		});
 
@@ -1966,9 +1968,15 @@ EOF
 	});
 	document.getElementById("box_sunrise").addEventListener("click", function() {
 		this.classList.toggle("box_sunrise-is-clicked");
+		if (groupMoonSun) {
+			document.getElementById("box_moonphase").classList.toggle("box_moonphase-is-clicked");
+		}
 	});
 	document.getElementById("box_moonphase").addEventListener("click", function() {
 		this.classList.toggle("box_moonphase-is-clicked");
+		if (groupMoonSun) {
+			document.getElementById("box_sunrise").classList.toggle("box_sunrise-is-clicked");
+		}
 	});
 	document.getElementById("box_inverter").addEventListener("click", function() {
 		this.classList.toggle("box_inverter-is-clicked");
