@@ -473,11 +473,18 @@ div.map_huis {
 	div.box_sunrise {
 		left: .1%;
 		top: 88%;
-		width: 63%;
-		height: 10%;
+		width: 55%;
+		height: 6%;
 		font-size: 2.0vw;
 	}
 
+	div.box_moonphase {
+		left: .1%;
+		top: 94%;
+		width: 55%;
+		height: 4%;
+		font-size: 2.0vw;
+	}
 	div.box_panel_energy {
 		left: .1%;
 		top: 105.1%;
@@ -540,9 +547,17 @@ div.map_huis {
 	}
 	div.box_sunrise {
 		left: .1%;
-		top: 260%;
+		top: 270%;
 		width: 50%;
-		height: 30%;
+		height: 20%;
+		font-size: 2.0vw;
+	}
+
+	div.box_moonphase {
+		left: .1%;
+		top: 291%;
+		width: 50%;
+		height: 12%;
 		font-size: 2.0vw;
 	}
 	div.box_panel_energy {
