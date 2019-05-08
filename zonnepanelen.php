@@ -2304,7 +2304,7 @@ EOF
 			id: 'SolarElecNet',
 			type: 'area',
 			name: 'Solar Retour <?php echo $ElecLeverancier?>',
-			color: 'rgba(30,242,110,1)',
+			color: 'rgba(65,225,105,1)',
 			stack: 'sreturn',
 		}, false);
 		chart.addSeries({
