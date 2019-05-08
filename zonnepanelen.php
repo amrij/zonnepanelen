@@ -516,6 +516,7 @@ EOF
 	var naam = '<?php echo $naam?>';
 	var P1 = '<?php echo $P1?>';
 	var aantal = '<?php echo $aantal?>';
+	var groupMoonSun = <?php echo $groupMoonSun ?>;
 	var op_sn = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][0], "',";} ?>];
 	var pn_sn = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][3], "',";} ?>];
 	var op_id = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][1], "',";} ?>];
@@ -1967,9 +1968,15 @@ EOF
 	});
 	document.getElementById("box_sunrise").addEventListener("click", function() {
 		this.classList.toggle("box_sunrise-is-clicked");
+		if (groupMoonSun) {
+			document.getElementById("box_moonphase").classList.toggle("box_moonphase-is-clicked");
+		}
 	});
 	document.getElementById("box_moonphase").addEventListener("click", function() {
 		this.classList.toggle("box_moonphase-is-clicked");
+		if (groupMoonSun) {
+			document.getElementById("box_sunrise").classList.toggle("box_sunrise-is-clicked");
+		}
 	});
 	document.getElementById("box_inverter").addEventListener("click", function() {
 		this.classList.toggle("box_inverter-is-clicked");
