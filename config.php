@@ -43,7 +43,8 @@ $ingr = 1; // 0 = alleen lijn, 1 = gevuld
 // inverter en panelen grafiek kleur actuele dag
 // Hex Code #RRGGBB: '#4169E1', '#0000FF' .... zie https://www.rapidtables.com/web/color/
 // Decimal Code(R,G,B): 'rgb(65,105,225)', 'rgb(0,0,255)' .... zie https://www.rapidtables.com/web/color/
-$kleur = '#4169E1';
+$kleur = '#4169E1'; // kleur royalbleu voor actuele dag
+$kleur1 = '#009900'; // kleur groen lijn voorafgaande dag
 
 //#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
 //** P1 waarden aangeven
