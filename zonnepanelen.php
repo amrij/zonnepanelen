@@ -269,7 +269,7 @@ omschrijving: hoofdprogramma
 
 		}
 
-		function panelenSeries($aantal, $kleur) {
+		function panelenSeries($aantal, $kleur2) {
 			print "
 					series: [\n";
 			for ($i=$aantal; $i>=2; $i--) {  print "			{
@@ -300,7 +300,7 @@ omschrijving: hoofdprogramma
 					showInLegend: true,
 					type: 'spline',
 					yAxis: 0,
-					color: '" . $kleur . "',
+					color: '" . $kleur2 . "',
 					data: []//this will be filled by requestData()
 				}],\n";
 		}
@@ -1337,7 +1337,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php panelenSeries($aantal, $kleur); ?>
+				<?php panelenSeries($aantal, $kleur2); ?>
 			});
 		});
 
@@ -1484,7 +1484,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php panelenSeries($aantal, $kleur); ?>
+				<?php panelenSeries($aantal, $kleur2); ?>
 			});
 		});
 
