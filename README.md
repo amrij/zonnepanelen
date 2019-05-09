@@ -13,15 +13,16 @@ After configuration, the website can be started by going to the root of the Webs
 1. Unpack the file img/maan/maan.zip.
 2. Customize config.php  
 In config.php the following information is defined:  
-   - data for access to the database;
-   - the latitude and longitude of the location of the panels;
+   - Data for access to the database;
+   - The latitude and longitude of the location of the panels;
    - Background image to use;
-   - indicate power on the panels;
-   - type of inverter (1 or 3 phase);
-   - the name of the inverter (type number);
-   - the optimizer id, number of the panel, the direction, panel SN and panel power in pW.
-   - Extra information for p1:
-   - indicate to show P1 values;
+   - Indicate power on the panels;
+   - Type of inverter (1 or 3 phase);
+   - The name of the inverter (type number);
+   - The optimizer id, number of the panel, the direction, panel SN and panel power in pW.
+   - Additional information voor lay-out inverter and solar panels;
+   - Additional information for p1:
+   - Indicate to show P1 values;
    - P1 script to be used to retrieve the information;
    - Electricity supplier;
    - Electricity contract start date, which will be used to show the totals for the contract period in stead of the current year.
