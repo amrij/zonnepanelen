@@ -243,7 +243,7 @@ omschrijving: hoofdprogramma
 			print "],\n";
 		}
 
-		function productieSeries($ingr) {
+		function productieSeries($ingr, $kleur) {
 			print "
 					series: [\n";
 			for ($i=0; $i<=13; $i++) {  print "			{
@@ -262,14 +262,14 @@ omschrijving: hoofdprogramma
 						type: " . ($ingr ? "'areaspline'" : "'spline'") . ",
 						yAxis: 0,
 						lineWidth: 2,
-						color: '#4169E1'," .
+						color:  '" . $kleur . "'," .
 						($ingr ? "					fillOpacity: 0.3,\n" : "") . "
 						data: []//this will be filled by requestData()
 					}],\n";
 
 		}
 
-		function panelenSeries($aantal) {
+		function panelenSeries($aantal, $kleur) {
 			print "
 					series: [\n";
 			for ($i=$aantal; $i>=2; $i--) {  print "			{
@@ -300,7 +300,7 @@ omschrijving: hoofdprogramma
 					showInLegend: true,
 					type: 'spline',
 					yAxis: 0,
-					color: '#4169E1',
+					color: '" . $kleur . "',
 					data: []//this will be filled by requestData()
 				}],\n";
 		}
@@ -1337,7 +1337,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php panelenSeries($aantal); ?>
+				<?php panelenSeries($aantal, $kleur); ?>
 			});
 		});
 
@@ -1484,7 +1484,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php panelenSeries($aantal); ?>
+				<?php panelenSeries($aantal, $kleur); ?>
 			});
 		});
 
@@ -1618,7 +1618,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries($ingr) ?>
+				<?php productieSeries($ingr, $kleur) ?>
 			});
 		});
 
@@ -1752,7 +1752,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries($ingr) ?>
+				<?php productieSeries($ingr, $kleur) ?>
 			});
 		});
 
@@ -1915,7 +1915,7 @@ EOF
 						name: 'Vermogen',
 						type: 'spline',
 						yAxis: 0,
-						color: '#4169E1',
+						color: '<?php echo $kleur ?>',
 						data: []//this will be filled by requestData()
 					}]
 				});
