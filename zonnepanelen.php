@@ -1999,13 +1999,13 @@ EOF
 <?php
 if ($P1 == 1){
 echo <<<EOF
-	document.getElementById("box_daygraph").addEventListener("click", function() {
-		this.classList.toggle("box_daygraph-is-clicked");
+	document.getElementById("box_daygraph").addEventListener("click", function() {(window.innerHeight-event.clientY > 64 ?
+		this.classList.toggle("box_daygraph-is-clicked"): "");
 		wchart.reflow();
 		wchart.reflow();
 	});
-	document.getElementById("box_monthgraph").addEventListener("click", function() {
-		this.classList.toggle("box_monthgraph-is-clicked");
+	document.getElementById("box_monthgraph").addEventListener("click", function() {(window.innerHeight-event.clientY > 64 ?
+		this.classList.toggle("box_monthgraph-is-clicked"): "" );
 		ychart.reflow();
 		ychart.reflow();
 	});
