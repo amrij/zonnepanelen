@@ -1616,7 +1616,7 @@ EOF
 							mouseOver: function () {
 								if (this.index != this.chart.series.length-1) {
 									this.update({
-										color: '#009900',
+										color: '<?php echo $kleur1 ?>',
 										zIndex: 50,
 										fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
 										showInLegend: true,
@@ -1625,12 +1625,21 @@ EOF
 							},
 							mouseOut: function () {
 								if (this.index != this.chart.series.length-1) {
-									this.update({
-										color: '#d4d0d0',
-										zIndex: this.index,
-										fillOpacity: 0.0,
-										showInLegend: false,
-									})
+									if (this.index != 13) {
+										this.update({
+											color: '#d4d0d0',
+											zIndex: this.index,
+											fillOpacity: 0.0,
+											showInLegend: false,
+										})
+									}else{
+										this.update({
+											color: '<?php echo $kleur1 ?>',
+											zIndex: this.index,
+											fillOpacity: 0.0,
+											showInLegend: false,
+										})
+									}
 								}
 							},
 						},
@@ -1766,7 +1775,7 @@ EOF
 							mouseOver: function () {
 								if (this.index != this.chart.series.length-1) {
 									this.update({
-										color: '#009900',
+										color: '<?php echo $kleur1 ?>',
 										zIndex: 15,
 										fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
 										showInLegend: true,
@@ -1775,12 +1784,21 @@ EOF
 							},
 							mouseOut: function () {
 								if (this.index != this.chart.series.length-1) {
-									this.update({
-										color: '#d4d0d0',
-										zIndex: this.index,
-										fillOpacity: 0.0,
-										showInLegend: false,
-									})
+									if (this.index != 13) {
+										this.update({
+											color: '#d4d0d0',
+											zIndex: this.index,
+											fillOpacity: 0.0,
+											showInLegend: false,
+										})
+									}else{
+										this.update({
+											color: '<?php echo $kleur1 ?>',
+											zIndex: this.index,
+											fillOpacity: 0.0,
+											showInLegend: false,
+										})
+									}
 								}
 							},
 						},
