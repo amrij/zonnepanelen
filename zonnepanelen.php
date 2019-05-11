@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.64.5
+versie: 1.65.0
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  5-05-2019
+datum:  10-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -251,7 +251,7 @@ omschrijving: hoofdprogramma
 						showInLegend: false,
 						type: 'spline',
 						yAxis: 0,
-						color: " . ($i > 12 ? "'".$kleur1."'": "'#d4d0d0'") . ", 
+						color: " . ($i > 12 ? "'".$kleur1."'": "'#d4d0d0'") . ",
 						data: []//this will be filled by requestData()
 					},";
 			}
