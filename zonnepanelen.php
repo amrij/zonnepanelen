@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.65.0
+versie: 1.66.0
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
@@ -250,6 +250,7 @@ omschrijving: hoofdprogramma
 						name: productie[" . $i . "],
 						showInLegend: false,
 						type: 'spline',
+						animation: 0,
 						yAxis: 0,
 						color: " . ($i > 12 ? "'".$kleur1."'": "'#d4d0d0'") . ",
 						data: []//this will be filled by requestData()
@@ -260,6 +261,7 @@ omschrijving: hoofdprogramma
 						name: productie[14],
 						showInLegend: true,
 						type: " . ($ingr ? "'areaspline'" : "'spline'") . ",
+						animation: 0,
 						yAxis: 0,
 						lineWidth: 2,
 						color:  '" . $kleur . "'," .
@@ -276,6 +278,7 @@ omschrijving: hoofdprogramma
 					name: 'Paneel_" . $i . "',
 					showInLegend: false,
 					type: 'spline',
+					animation: 0,
 					yAxis: 0,
 					color: '#d4d0d0',
 					data: []//this will be filled by requestData()
@@ -286,6 +289,7 @@ omschrijving: hoofdprogramma
 					name: 'Energie Productie',
 					showInLegend: true,
 					type: 'areaspline',
+					animation: 0,
 					marker: {
 						symbol: 'triangle'
 					},
@@ -299,6 +303,7 @@ omschrijving: hoofdprogramma
 					name: 'Paneel_1',
 					showInLegend: true,
 					type: 'spline',
+					animation: 0,
 					yAxis: 0,
 					color: '" . $kleur2 . "',
 					data: []//this will be filled by requestData()
@@ -603,8 +608,8 @@ EOF
 	function paneelChart(event, id) {
 		if (id <= aantal) {
 			inverter_redraw = 0;
-			document.getElementById("chart_vermogen").innerHTML = "";
-			document.getElementById("chart_energy").innerHTML = "";
+			document.getElementById("box_chart_vermogen").style.display = "none"
+			document.getElementById("box_chart_energy").style.display = "none"
 			// #### Vermogen  #####
 			var series = paneel_chartv.series[0];
 			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
@@ -614,6 +619,10 @@ EOF
 			} else {
 				paneelFillSeries('Vermogen', shift, id, paneel_chartv);
 			}
+			paneel_charte.redraw();
+			paneel_chartv.redraw();
+			document.getElementById("box_panel_vermogen").style.display = "block"
+			document.getElementById("box_panel_energy").style.display = "block"
 		}
 	}
 
@@ -625,8 +634,10 @@ EOF
 		inverter_redraw = 1;
 		setTimeout(function () {
 			if (inverter_redraw == 1) {
-				document.getElementById("panel_vermogen").innerHTML ="";
-				document.getElementById("panel_energy").innerHTML ="";
+				document.getElementById("box_panel_vermogen").style.display = "none"
+				document.getElementById("box_panel_energy").style.display = "none"
+				document.getElementById("box_chart_vermogen").style.display = "block"
+				document.getElementById("box_chart_energy").style.display = "block"
 				inverter_chart.redraw();
 				vermogen_chart.redraw();
 			}
@@ -1097,8 +1108,8 @@ EOF
 		inv4Data = eval(inv4Data)
 		date3 = inv4Data[0]["date3"];
 		datum1 = inv4Data[0]["datum1"];
-		document.getElementById("panel_vermogen").innerHTML ="";
-		document.getElementById("panel_energy").innerHTML ="";
+		document.getElementById("box_panel_vermogen").style.display = "none"
+		document.getElementById("box_panel_energy").style.display = "none"
 		document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
 		document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
 		document.getElementById("sunset_text").innerHTML = sunset+" uur";
@@ -1199,6 +1210,7 @@ EOF
 		$(document).ready(function() {
 			paneel_chartv = new Highcharts.Chart({
 				chart: {
+					animation: false,
 					type: 'area',
 					renderTo: 'panel_vermogen',
 					spacingTop: 10,
@@ -1344,6 +1356,7 @@ EOF
 		$(document).ready(function() {
 			paneel_charte = new Highcharts.Chart({
 				chart: {
+					animation: false,
 					type: 'area',
 					renderTo: 'panel_energy',
 					spacingTop: 10,
@@ -1491,6 +1504,7 @@ EOF
 		$(document).ready(function() {
 			inverter_chart = new Highcharts.Chart({
 				chart: {
+					animation: false,
 					type: 'area',
 					renderTo: "chart_energy",
 					spacingTop: 10,
@@ -1625,6 +1639,7 @@ EOF
 		$(document).ready(function() {
 			vermogen_chart = new Highcharts.Chart({
 				chart: {
+					animation: false,
 					type: 'area',
 					renderTo: "chart_vermogen",
 					spacingTop: 10,
@@ -2174,9 +2189,12 @@ EOF
 			},
 			legend: {
 				enabled: true,
+				alignColumns: false,
 				itemStyle: {
 					color: 'gray',
-					fontWeight: 'bold'
+					fontWeight: 'bold',
+					padding: '5px',
+					width: '100%',
 				}
 			},
 			credits: {
