@@ -627,10 +627,12 @@ EOF
 			} else {
 				paneelFillSeries('Vermogen', shift, id, paneel_chartv);
 			}
-			document.getElementById("box_panel_vermogen").style.display = "block"
-			document.getElementById("box_panel_energy").style.display = "block"
 			paneel_charte.redraw();
 			paneel_chartv.redraw();
+			document.getElementById("box_panel_vermogen").style.display = "block"
+			document.getElementById("box_panel_energy").style.display = "block"
+			paneel_charte.reflow();
+			paneel_chartv.reflow();
 		}
 	}
 
@@ -644,10 +646,12 @@ EOF
 			if (inverter_redraw == 1) {
 				document.getElementById("box_panel_vermogen").style.display = "none"
 				document.getElementById("box_panel_energy").style.display = "none"
-				document.getElementById("box_chart_vermogen").style.display = "block"
-				document.getElementById("box_chart_energy").style.display = "block"
 				inverter_chart.redraw();
 				vermogen_chart.redraw();
+				document.getElementById("box_chart_vermogen").style.display = "block"
+				document.getElementById("box_chart_energy").style.display = "block"
+				inverter_chart.reflow();
+				vermogen_chart.reflow();
 			}
 		}, 500);
 	}
