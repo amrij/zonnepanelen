@@ -243,7 +243,7 @@ omschrijving: hoofdprogramma
 			print "],\n";
 		}
 
-		function productieSeries($ingr, $kleur, $kleur1) {
+		function productieSeries($ingr, $kleur, $kleur1, $kleurg) {
 			print "
 					series: [\n";
 			for ($i=0; $i<=13; $i++) {  print "			{
@@ -253,7 +253,7 @@ omschrijving: hoofdprogramma
 						animation: 0,
 						trackByArea: true,
 						yAxis: 0,
-						color: " . ($i > 12 ? "'".$kleur1."'": "'#d4d0d0'") . ",
+						color: " . ($i > 12 ? "'".$kleur1."'": "'".$kleurg."'") . ",
 						fillOpacity: 0.0,
 						findNearestPointBy: 'xy',
 						zIndex: " . $i . ",
@@ -277,7 +277,7 @@ omschrijving: hoofdprogramma
 
 		}
 
-		function panelenSeries($aantal, $kleur2) {
+		function panelenSeries($aantal, $kleur2, $kleurg) {
 			print "
 					series: [\n";
 			for ($i=$aantal; $i>=2; $i--) {  print "			{
@@ -286,7 +286,7 @@ omschrijving: hoofdprogramma
 					type: 'spline',
 					animation: 0,
 					yAxis: 0,
-					color: '#d4d0d0',
+					color: '".$kleurg."',
 					data: []//this will be filled by requestData()
 				},";
 			}
@@ -1355,7 +1355,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php panelenSeries($aantal, $kleur2); ?>
+				<?php panelenSeries($aantal, $kleur2, $kleurg); ?>
 			});
 		});
 
@@ -1503,7 +1503,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php panelenSeries($aantal, $kleur2); ?>
+				<?php panelenSeries($aantal, $kleur2, $kleurg); ?>
 			});
 		});
 
@@ -1627,7 +1627,7 @@ EOF
 								if (this.index != this.chart.series.length-1) {
 									if (this.index != 13) {
 										this.update({
-											color: '#d4d0d0',
+											color: '<?php echo $kleurg ?>',
 											zIndex: this.index,
 											fillOpacity: 0.0,
 											showInLegend: false,
@@ -1662,7 +1662,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries($ingr, $kleur, $kleur1) ?>
+				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg) ?>
 			});
 		});
 
@@ -1786,7 +1786,7 @@ EOF
 								if (this.index != this.chart.series.length-1) {
 									if (this.index != 13) {
 										this.update({
-											color: '#d4d0d0',
+											color: '<?php echo $kleurg ?>',
 											zIndex: this.index,
 											fillOpacity: 0.0,
 											showInLegend: false,
@@ -1821,7 +1821,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries($ingr, $kleur, $kleur1) ?>
+				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg) ?>
 			});
 		});
 
