@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.66.0
+versie: 1.66.1
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  10-05-2019
+datum:  12-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -249,10 +249,14 @@ omschrijving: hoofdprogramma
 			for ($i=0; $i<=13; $i++) {  print "			{
 						name: productie[" . $i . "],
 						showInLegend: false,
-						type: 'spline',
+						type: 'areaspline',
 						animation: 0,
+						trackByArea: true,
 						yAxis: 0,
 						color: " . ($i > 12 ? "'".$kleur1."'": "'#d4d0d0'") . ",
+						fillOpacity: 0.0,
+						findNearestPointBy: 'xy',
+						zIndex: " . $i . ",
 						data: []//this will be filled by requestData()
 					},";
 			}
@@ -260,12 +264,14 @@ omschrijving: hoofdprogramma
 					{
 						name: productie[14],
 						showInLegend: true,
-						type: " . ($ingr ? "'areaspline'" : "'spline'") . ",
+						type: 'areaspline',
 						animation: 0,
 						yAxis: 0,
 						lineWidth: 2,
 						color:  '" . $kleur . "'," .
-						($ingr ? "					fillOpacity: 0.3,\n" : "") . "
+						"fillOpacity: ".($ingr ? "0.3" : "0.0").",
+						findNearestPointBy: 'xy',
+						zIndex: " . $i . ",
 						data: []//this will be filled by requestData()
 					}],\n";
 
@@ -527,11 +533,13 @@ EOF
 	var op_id = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][1], "',";} ?>];
 	var rpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][2], "',";} ?>];
 	var vpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][4], ",";} ?>];
-	var PVGtxt = "<?php echo $PVGtxt; ?>";
+	var PVGtxt = "<?php echo (isset($PVGtxt) ? $PVGtxt : "") ?>";
 	var PVGis = [0<?php for ($i=0; $i<=11; $i++){ echo ",", $PVGis[$i];} ?>];
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
 	var data_p = [];
 	var data_i = [];
+	var gem_verm = <?php echo (isset($Gem_Verm) ? $Gem_Verm : 1); ?>;
+	var sgem_verm = gem_verm;
 
 	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','$productie[1]','$productie[0]'"?>];
 	var start_i = 0;
@@ -619,10 +627,10 @@ EOF
 			} else {
 				paneelFillSeries('Vermogen', shift, id, paneel_chartv);
 			}
-			paneel_charte.redraw();
-			paneel_chartv.redraw();
 			document.getElementById("box_panel_vermogen").style.display = "block"
 			document.getElementById("box_panel_energy").style.display = "block"
+			paneel_charte.redraw();
+			paneel_chartv.redraw();
 		}
 	}
 
@@ -1186,10 +1194,19 @@ EOF
 							inverter_chart.series[i].setData([]);
 							vermogen_chart.series[i].setData([]);
 						}
+						var s_cnt = gem_verm;
+						var s_serie = "x";
+						var s_gem_pow = 0;
 						for(var i = 0; i < data_i.length; i++){
 							if (data_i[i]['op_id'] == "i"){
+								if (gem_verm > 1 && s_serie != 14-data_i[i]['serie']) {
+									s_serie = 14-data_i[i]['serie'];
+									s_gem_pow = data_i[i]['p1_current_power_prd'];
+								} else {
+									s_gem_pow = (s_gem_pow * (s_cnt-1) + parseFloat(data_i[i]['p1_current_power_prd']))/s_cnt;
+								}
 								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
-								vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_current_power_prd']*1], false, shift);
+								vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),s_gem_pow*1], false, shift);
 							}
 						}
 						inverter_chart.redraw();
@@ -1335,10 +1352,10 @@ EOF
 						lineWidth: 1,
 						marker: {
 							enabled: false,
-							type: 'triangle',
+							symbol: 'circle',
 							states: {
 								hover: {
-								enabled: true,
+									enabled: true,
 								}
 							}
 						}
@@ -1467,7 +1484,7 @@ EOF
 					}]
 				},
 				plotOptions: {
-					  spline: {
+					spline: {
 						lineWidth: 1,
 						marker: {
 							enabled: false,
@@ -1478,15 +1495,15 @@ EOF
 								}
 							}
 						}
-					  },
-					  areaspline: {
+					},
+					areaspline: {
 						lineWidth: 1,
 						marker: {
 							enabled: false,
-							type: 'triangle',
+							symbol: 'circle',
 							states: {
 								hover: {
-								enabled: true,
+									enabled: true,
 								}
 							}
 						}
@@ -1570,6 +1587,9 @@ EOF
 					enabled: false
 				},
 				tooltip: {
+			        positioner: function () {
+						return { x: 10, y: 75 };
+					},
 					formatter: function () {
 						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
 						var sortedPoints = this.points.sort(function(a, b){
@@ -1598,30 +1618,42 @@ EOF
 					crosshairs: [{
 						width: 1,
 						color: 'red',
-						zIndex: 3
+						zIndex: 20
 					}]
 				},
 				plotOptions: {
-					  spline: {
+					series: {
+						 events: {
+							mouseOver: function () {
+								if (this.index != this.chart.series.length-1) {
+									this.update({
+										color: '#009900',
+										zIndex: 50,
+										fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
+										showInLegend: true,
+									})
+								}
+							},
+							mouseOut: function () {
+								if (this.index != this.chart.series.length-1) {
+									this.update({
+										color: '#d4d0d0',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									})
+								}
+							},
+						},
+					},
+					areaspline: {
 						lineWidth: 1,
 						marker: {
 							enabled: false,
 							symbol: 'circle',
 							states: {
 								hover: {
-									enabled: false
-								}
-							}
-						}
-					  },
-					  areaspline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							type: 'triangle',
-							states: {
-								hover: {
-									enabled: false,
+									enabled: true
 								}
 							}
 						}
@@ -1705,6 +1737,9 @@ EOF
 					enabled: false
 				},
 				tooltip: {
+			        positioner: function () {
+						return { x: 10, y: 75 };
+					},
 					formatter: function () {
 						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
 						var sortedPoints = this.points.sort(function(a, b){
@@ -1737,35 +1772,68 @@ EOF
 					}]
 				},
 				plotOptions: {
-					  spline: {
+					series: {
+ 						events: {
+							mouseOver: function () {
+								if (this.index != this.chart.series.length-1) {
+									this.update({
+										color: '#009900',
+										zIndex: 15,
+										fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
+										showInLegend: true,
+									})
+								}
+							},
+							mouseOut: function () {
+								if (this.index != this.chart.series.length-1) {
+									this.update({
+										color: '#d4d0d0',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									})
+								}
+							},
+						},
+					},
+					areaspline: {
 						lineWidth: 1,
 						marker: {
 							enabled: false,
 							symbol: 'circle',
 							states: {
 								hover: {
-									enabled: true
-								}
-							}
-						}
-					  },
-					  areaspline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							type: 'triangle',
-							states: {
-								hover: {
-									enabled: true,
+								enabled: true
 								}
 							}
 						}
 					},
 				},
 				exporting: {
-					enabled: false,
-					filename: 'power_chart',
-					url: 'export.php'
+					enabled: (gem_verm == 1 ? false : true),
+					menuItemDefinitions: {
+						// Custom definition
+						btn1: {
+							onclick: function () {
+								gem_verm = 1;
+								requestDatai();
+							},
+							text: 'Momentopname'
+						},
+						// Custom definition
+						btn2: {
+							onclick: function () {
+								gem_verm = sgem_verm;
+								requestDatai();
+							},
+							text: sgem_verm +' punts gemiddelde'
+						}
+					},
+					buttons: {
+						contextButton: {
+							menuItems: ['btn1', 'btn2']
+						}
+					}
 				},
 				<?php productieSeries($ingr, $kleur, $kleur1) ?>
 			});
@@ -1885,7 +1953,7 @@ EOF
 						}]
 					},
 					plotOptions: {
-						  spline: {
+						spline: {
 							lineWidth: 1,
 							marker: {
 								enabled: false,
@@ -1896,15 +1964,15 @@ EOF
 									}
 								}
 							}
-						  },
-						  areaspline: {
+						},
+						areaspline: {
 							lineWidth: 1,
 							marker: {
 								enabled: false,
-								type: 'triangle',
+								symbol: 'circle',
 								states: {
 									hover: {
-									enabled: true,
+									enabled: true
 									}
 								}
 							}

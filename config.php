@@ -47,6 +47,7 @@ $kleur = '#4169E1'; // kleur royalbleu voor actuele dag
 $kleur1 = '#009900'; // kleur groen voor lijn voorafgaande dag inverter grafiek (grijs = '#d4d0d0')
 $kleur2 = '#009900'; // kleur groen voor lijn actueel paneel
 $kleurg = '#d4d0d0'; // kleur grijs voor lijn overige dagen / panelen
+$Gem_Verm = 1 ;      // bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
 
 //#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
 //** P1 waarden aangeven
