@@ -1201,31 +1201,7 @@ EOF
 				data: { "date" : datum }, //optional
 				success: function(data) {
 					data_i = eval(data);
-					if(inverter_redraw == 1) {
-						var series = inverter_chart.series[0];
-						var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-						for (var i=0; i<=14; i++){
-							inverter_chart.series[i].setData([]);
-							vermogen_chart.series[i].setData([]);
-						}
-						var s_cnt = gem_verm;
-						var s_serie = "x";
-						var s_gem_pow = 0;
-						for(var i = 0; i < data_i.length; i++){
-							if (data_i[i]['op_id'] == "i"){
-								if (gem_verm > 1 && s_serie != 14-data_i[i]['serie']) {
-									s_serie = 14-data_i[i]['serie'];
-									s_gem_pow = data_i[i]['p1_current_power_prd'];
-								} else {
-									s_gem_pow = (s_gem_pow * (s_cnt-1) + parseFloat(data_i[i]['p1_current_power_prd']))/s_cnt;
-								}
-								inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
-								vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),s_gem_pow*1], false, shift);
-							}
-						}
-						inverter_chart.redraw();
-						vermogen_chart.redraw();
-					}
+					UpdateDatai()
 					setTimeout(requestDatai, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
@@ -1235,7 +1211,46 @@ EOF
 			});
 		}
 
-		function requestDatav() {
+		function simple_moving_averager(period) {
+			var nums = [];
+			return function(num) {
+				nums.push(num);
+				if (nums.length > period)
+					nums.splice(0,1);  // remove the first element of the array
+				var sum = 0;
+				for (var i in nums)
+					sum += nums[i];
+				var n = period;
+				if (nums.length < period)
+					n = nums.length;
+				return(sum/n);
+			}
+		}
+		function UpdateDatai() {
+			if(inverter_redraw == 1) {
+				var series = inverter_chart.series[0];
+				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+				for (var i=0; i<=14; i++){
+					inverter_chart.series[i].setData([]);
+					vermogen_chart.series[i].setData([]);
+				}
+				var s_cnt = gem_verm;
+				var s_serie = "x";
+				var sma = simple_moving_averager(gem_verm);
+				for(var i = 0; i < data_i.length; i++){
+					if (data_i[i]['op_id'] == "i"){
+						if (gem_verm > 1 && s_serie != 14-data_i[i]['serie']) {
+							s_serie = 14-data_i[i]['serie'];
+							sma = simple_moving_averager(gem_verm);
+						}
+						n_gem_pow = sma(parseFloat(data_i[i]['p1_current_power_prd']));
+						inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
+						vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),n_gem_pow], false, shift);
+					}
+				}
+				inverter_chart.redraw();
+				vermogen_chart.redraw();
+			}
 		}
 
 		$(document).ready(function() {
@@ -1705,7 +1720,6 @@ EOF
 					spacingBottom: 0,
 					zoomType: 'none',
 					spacingRight: 5,
-					events: {load: requestDatav}
 				},
 				title: {
 				   text: null
@@ -1849,7 +1863,7 @@ EOF
 							onclick: function () {
 								gem_verm = 1;
 								vermogen_chart.yAxis[0].update({ title: { text: ' Vermogen (W)' }, });
-								requestDatai();
+								UpdateDatai();
 							},
 							text: 'Momentopname'
 						},
@@ -1858,7 +1872,7 @@ EOF
 							onclick: function () {
 								gem_verm = sgem_verm;
 								vermogen_chart.yAxis[0].update({ title: { text: gem_verm + ' punts gem. Vermogen (W)' }, });
-								requestDatai();
+								UpdateDatai();
 							},
 							text: sgem_verm +' punts gemiddelde'
 						}
