@@ -601,50 +601,46 @@ EOF
 			'I_in':         { 'metric': 'iin',                  'tekst': 'Stroom In',   'unit': 'A' }
 		};
 
-	function paneelFillSeries(metric, shift, x, ichart) {
-		for (var i = 0; i < data_p.length; i++){
-			if (data_p[i]['op_id'] !== x && data_p[i]['serie'] == 0){
+	function paneelFillSeries(metric, id, ichart) {
+		for (var i=0; i<=aantal; i++) {
+			ichart.series[i].setData([], false);
+		}
+		var series = ichart.series[0];
+		var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+		for (var i = 0; i < data_p.length; i++) {
+			if (data_p[i]['op_id'] !== id && data_p[i]['serie'] == 0) {
 				var sIdx = data_p[i]['op_id'] - 1;
-				if (data_p[i]['op_id'] > x ){ --sIdx; }
-				ichart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+				if (data_p[i]['op_id'] > id ){ --sIdx; }
+				ichart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']), data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
 			} else {
-				ichart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']),data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+				ichart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']), data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
 			}
 		}
-		ichart.setTitle(null, { text: 'Paneel: '+op_id[x]+' en alle andere panelen', x: 20});
-		ichart.legend.update({x:10,y:20});
-		ichart.series[aantal].update({name: paneelGraph[metric]['tekst'] + " paneel: "+op_id[x], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
+		ichart.setTitle(null, { text: 'Paneel: ' + op_id[id] + ' en alle andere panelen', x: 20});
+		ichart.legend.update({x: 10, y: 20});
+		ichart.series[aantal].update({name: paneelGraph[metric]['tekst'] + " paneel: " + op_id[id], style: {font: 'Arial', fontWeight: 'bold', fontSize: '12px' }});
 		ichart.series[aantal-1].update({showInLegend: false});
 		ichart.series[aantal-2].update({showInLegend: true, name: paneelGraph[metric]['tekst'] + " overige panelen"});
 		ichart.yAxis[0].update({ opposite: true });
 		ichart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
 		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+		ichart.reflow();
 	}
 
 	function paneelChart(event, id) {
 		if (id <= aantal) {
 			inverter_redraw = 0;
-			document.getElementById("box_chart_vermogen").style.display = "none"
-			document.getElementById("box_chart_energy").style.display = "none"
+			document.getElementById("box_chart_vermogen").style.display = "none";
+			document.getElementById("box_chart_energy").style.display = "none";
 			// #### Vermogen  #####
-			var series = paneel_chartv.series[0];
-			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-			for (var i=0; i<=aantal; i++) {
-				paneel_chartv.series[i].setData([], false);
-				paneel_charte.series[i].setData([], false);
-			}
-			paneelFillSeries('Energie', shift, id, paneel_charte);
+			paneelFillSeries('Energie', id, paneel_charte);
 			if (event.shiftKey) {
-				paneelFillSeries('Temperatuur', shift, id, paneel_chartv);
+				paneelFillSeries('Temperatuur', id, paneel_chartv);
 			} else {
-				paneelFillSeries('Vermogen', shift, id, paneel_chartv);
+				paneelFillSeries('Vermogen', id, paneel_chartv);
 			}
-			paneel_charte.redraw();
-			paneel_chartv.redraw();
-			document.getElementById("box_panel_vermogen").style.display = "block"
-			document.getElementById("box_panel_energy").style.display = "block"
-			paneel_charte.reflow();
-			paneel_chartv.reflow();
+			document.getElementById("box_panel_vermogen").style.display = "block";
+			document.getElementById("box_panel_energy").style.display = "block";
 		}
 	}
 
