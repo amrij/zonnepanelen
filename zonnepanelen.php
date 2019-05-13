@@ -700,9 +700,8 @@ EOF
 		var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
 		if ( inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = datumz;}
 		var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
-		var mdiff = (tnow - tlast)/60000;
 		if (datum1 < tomorrow) {
-			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || mdiff > 10) {
+			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || tnow - tlast > 600000) {
 				s_p1CounterDelivToday = p1CounterDelivToday;
 				s_p1CounterToday = p1CounterToday;
 				s_lasttimestamp = (inv1Data[0]["MODE"] == "MPPT") ? inv1Data[0]["IT"] : "";
