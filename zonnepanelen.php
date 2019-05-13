@@ -843,8 +843,6 @@ EOF
 							document.getElementById("p1_text").innerHTML = p1Usage +" Watt";
 						}
 					}
-					var wdate = new Date(date2);
-					var cdate = new Date();
 					if (datum1 < tomorrow) {
 						var diff = p1CounterToday - p1CounterDelivToday;
 						var cdiff = "red_text";
