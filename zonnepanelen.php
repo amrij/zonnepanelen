@@ -265,7 +265,6 @@ omschrijving: hoofdprogramma
 						yAxis: 0,
 						color: " . ($i > 12 ? "'".$kleur1."'": "'".$kleurg."'") . ",
 						fillOpacity: 0.0,
-						findNearestPointBy: 'xy',
 						zIndex: " . $i . ",
 						data: []//this will be filled by requestData()
 					},";
@@ -280,7 +279,6 @@ omschrijving: hoofdprogramma
 						lineWidth: 2,
 						color:  '" . $kleur . "'," .
 						"fillOpacity: ".($ingr ? "0.3" : "0.0").",
-						findNearestPointBy: 'xy',
 						zIndex: " . $i . ",
 						data: []//this will be filled by requestData()
 					}],\n";
