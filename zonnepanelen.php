@@ -279,7 +279,7 @@ omschrijving: hoofdprogramma
 						lineWidth: 2,
 						color:  '" . $kleur . "'," .
 						"fillOpacity: ".($ingr ? "0.3" : "0.0").",
-						zIndex: " . $i . ",
+						zIndex: 20,
 						data: []//this will be filled by requestData()
 					}],\n";
 
@@ -1648,7 +1648,7 @@ EOF
 								if (this.index != this.chart.series.length-1) {
 									this.update({
 										color: '<?php echo $kleur2 ?>',
-										zIndex: 50,
+										zIndex: 15,
 										fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
 										showInLegend: true,
 									})
