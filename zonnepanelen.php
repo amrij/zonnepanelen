@@ -696,11 +696,11 @@ EOF
 			s_p1CounterToday = p1CounterToday;
 			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
-		var now = new Date();
-		var tnow =  new Date("1970-01-01 "+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
-		if ( inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = datumz;}
-		var tlast = new Date("1970-01-01 "+inv1Data[0]["IT"].substring(11));
+		if (inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = datumz;}
 		if (datum1 < tomorrow) {
+			var now = new Date();
+			var tnow = new Date("1970-01-01 " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
+			var tlast = new Date("1970-01-01 " + inv1Data[0]["IT"].substring(11));
 			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || tnow - tlast > 600000) {
 				s_p1CounterDelivToday = p1CounterDelivToday;
 				s_p1CounterToday = p1CounterToday;
