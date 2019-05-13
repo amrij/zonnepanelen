@@ -48,8 +48,8 @@ $kleur1 = '#009900'; // kleur groen voor lijn voorafgaande dag inverter grafiek 
 $kleur2 = '#009900'; // kleur groen voor lijn actueel paneel
 $kleurg = '#d4d0d0'; // kleur grijs voor lijn overige dagen / panelen
 $Gem_Verm = 1 ;      // bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
-$kleurSR = 'rgba(0,153,0,0.7)';     // kleur Solar Retoer
-$fillOpacitySR = 0.4;
+$kleurSR = 'rgba(0,153,0,0.7)';     // kleur Solar Retoer ...... zie https://cssgenerator.org/rgba-and-hex-color-generator.html
+$fillOpacitySR = 0.4;				// opvul ondoorzichtigheid 0 = geheel doorzichtig, 0.5 is half doorzichtig 1 = ondoorzichtig
 $kleurSV = 'rgba(0,153,0,0.4)';     // kleur Solar Verbruik
 $fillOpacitySV = 0.2;
 $kleurVL = 'rgba(65,105,225,0.8)';  // kleur Verbruik Levering
