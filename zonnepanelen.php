@@ -152,8 +152,8 @@ omschrijving: hoofdprogramma
 		$today = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
 		$winter = date("I",$today)-1;
 		$jaar = date("Y",$today);
-		$maand = date("m",$today)-1;
-		$dag = date("d",$today)-1;
+		$maand = date("m",$today);
+		$dag = date("d",$today);
 		$datum1 = (new DateTime("today " . date("Y-m-d 00:00:00", time())))->getTimestamp();
 		$datumz = date("d-m-Y H:i:s",$today);
 		$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
@@ -182,7 +182,7 @@ omschrijving: hoofdprogramma
 		$con_m =  intval($con_date_fields[1]) == 0 ? 1 : intval($con_date_fields[1]) ;
 		$con_s_y = $jaar;
 		$con_e_y = $jaar + 1;
-		if($con_m > $maand || ($con_m == $maand && $con_d < $dag)) {
+		if($con_m > $maand || ($con_m == $maand && $con_d > $dag)) {
 			$con_s_y = $jaar -1;
 			$con_e_y = $jaar;
 		}
