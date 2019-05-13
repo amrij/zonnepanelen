@@ -1714,7 +1714,7 @@ EOF
 				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: {
-						text: 'Vermogen (W)'
+						text: (gem_verm > 1 ? gem_verm + ' punts gem.' : '') + ' Vermogen (W)'
 					},
 					opposite: true,
 					tickPositioner: function () {
@@ -1838,6 +1838,7 @@ EOF
 						btn1: {
 							onclick: function () {
 								gem_verm = 1;
+								vermogen_chart.yAxis[0].update({ title: { text: ' Vermogen (W)' }, });
 								requestDatai();
 							},
 							text: 'Momentopname'
@@ -1846,6 +1847,7 @@ EOF
 						btn2: {
 							onclick: function () {
 								gem_verm = sgem_verm;
+								vermogen_chart.yAxis[0].update({ title: { text: gem_verm + ' punts gem. Vermogen (W)' }, });
 								requestDatai();
 							},
 							text: sgem_verm +' punts gemiddelde'
