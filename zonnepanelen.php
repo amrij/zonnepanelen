@@ -475,13 +475,8 @@ EOF
 		}, event); // Pass through our original event to qTip
 	})
 
-	$(document).on('mouseout', 'area', function(event) {
-
-		// check for tool_paneel_xx
-		var panelid = this.id;
-		if (panelid.substring(0, 11) == "tool_paneel") {
-			paneelChartcl();
-		}
+	$(document).on('mouseout', '', function(event) {
+		paneelChartcl();
 	})
 
 	$(document).on('mouseover', 'area', function(event) {
@@ -627,6 +622,10 @@ EOF
 			// #### Vermogen  #####
 			var series = paneel_chartv.series[0];
 			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+			for (var i=0; i<=aantal; i++) {
+				paneel_chartv.series[i].setData([], false);
+				paneel_charte.series[i].setData([], false);
+			}
 			paneelFillSeries('Energie', shift, id, paneel_charte);
 			if (event.shiftKey) {
 				paneelFillSeries('Temperatuur', shift, id, paneel_chartv);
@@ -643,10 +642,6 @@ EOF
 	}
 
 	function paneelChartcl() {
-		for (var i=0; i<=aantal; i++) {
-			paneel_chartv.series[i].setData([], false);
-			paneel_charte.series[i].setData([], false);
-		}
 		inverter_redraw = 1;
 		setTimeout(function () {
 			if (inverter_redraw == 1) {
@@ -659,7 +654,7 @@ EOF
 				inverter_chart.reflow();
 				vermogen_chart.reflow();
 			}
-		}, 500);
+		}, 200);
 	}
 
 	function waarde(l,d,x){
