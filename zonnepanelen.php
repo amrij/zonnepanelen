@@ -189,6 +189,16 @@ omschrijving: hoofdprogramma
 		$contract_datum_start = sprintf("%04d-%02d-%02d", $con_s_y, $con_m, $con_d);
 		$contract_datum_end = sprintf("%04d-%02d-%02d", $con_e_y, $con_m, $con_d);
 
+		// set defaults in case not provided in config.php, to avoid errors.
+		$kleur = (isset($kleur) ? $kleur : '#4169E1');
+		$kleur1 = (isset($kleur1) ? $kleur1 : '#009900');
+		$kleur2 = (isset($kleur2) ? $kleur2 : '#009900');
+		$kleurg = (isset($kleurg) ? $kleurg : '#d4d0d0');
+		$vermogen = (isset($vermogen) ? $vermogen : 1);
+		$groupMoonSun = (isset($groupMoonSun) ? $groupMoonSun : 1);
+		$PVGtxt = (isset($PVGtxt) ? $PVGtxt : 'PVGis');
+		$Gem_Verm = (isset($Gem_Verm) ? $Gem_Verm : 1);
+		// start functions
 		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
 			$epsilon = 0.000000000001;
 			do {
@@ -533,7 +543,7 @@ EOF
 	var op_id = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][1], "',";} ?>];
 	var rpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][2], "',";} ?>];
 	var vpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][4], ",";} ?>];
-	var PVGtxt = "<?php echo (isset($PVGtxt) ? $PVGtxt : "") ?>";
+	var PVGtxt = '<?php echo $PVGtxt; ?>';
 	var PVGis = [0<?php for ($i=0; $i<=11; $i++){ echo ",", $PVGis[$i];} ?>];
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
 	var data_p = [];
