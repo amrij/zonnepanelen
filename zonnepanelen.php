@@ -412,7 +412,6 @@ EOF
 		echo '				<div class="box_Zonnepaneel_'.$i.'">'."\n";
 		echo '					<img src="./img/dummy.gif" alt="" width="100%" Height="100%" style="width: 100%; height: 100%;  position: relative; z-index: 15;" usemap="#'.$i.'">'."\n";
 		echo '					<map name="'.$i.'">'."\n";
-		// echo '						<area id="tool_paneel_'.$i.'" data-ttitle="Paneel '.$op_id[$i][1].'" shape="rect" coords="0,0,252,252" title="" onmouseover="paneelChart(event,'.$i.')" onmouseout="paneelChartcl()">'."\n";
 		echo '						<area id="tool_paneel_'.$i.'" data-ttitle="Paneel '.$op_id[$i][1].'" shape="rect" coords="0,0,252,252" title="">'."\n";
 		echo '					</map>'."\n";
 		echo '				</div>'."\n";
@@ -486,7 +485,6 @@ EOF
 	})
 
 	$(document).on('mouseover', 'area', function(event) {
-		// check for tool_paneel_xx
 		var panelid = this.id;
 		if (panelid.substring(0, 11) == "tool_paneel") {
 			var id = parseInt(panelid.substring(12),10);
