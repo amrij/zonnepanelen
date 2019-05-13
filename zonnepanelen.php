@@ -198,6 +198,13 @@ omschrijving: hoofdprogramma
 		$groupMoonSun = (isset($groupMoonSun) ? $groupMoonSun : 1);
 		$PVGtxt = (isset($PVGtxt) ? $PVGtxt : 'PVGis');
 		$Gem_Verm = (isset($Gem_Verm) ? $Gem_Verm : 1);
+		$kleurSR = (isset($kleurSR) ? $kleurSR : 'rgba(0,153,0,0.7)');
+		$fillOpacitySR = (isset($fillOpacitySR ) ? $fillOpacitySR : 0.4);
+		$kleurSV = (isset($kleurSV) ? $kleurSV : 'rgba(0,153,0,0.4)');
+		$fillOpacitySV = (isset($fillOpacitySV ) ? $fillOpacitySV : 0.2);
+		$kleurVL = (isset($kleurVL) ? $kleurVL : 'rgba(65,105,225,0.8)');
+		$kleurVS = (isset($kleurVS) ? $kleurVS :'rgba(65,105,225,0.6)');
+		$kleurS =  (isset($kleurS) ? $kleurS :'rgba(255,0,0,0.9)');
 		// start functions
 		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
 			$epsilon = 0.000000000001;
@@ -2437,20 +2444,13 @@ EOF
 	}
 
 	function AddSeriestoChart(chart, switchtype) {
-		cr = hexToRgb("<?php echo $kleur ?>").r;
-		cg = hexToRgb("<?php echo $kleur ?>").g;
-		cb = hexToRgb("<?php echo $kleur ?>").b;
-		cr2 = hexToRgb("<?php echo $kleur2 ?>").r;
-		cg2 = hexToRgb("<?php echo $kleur2 ?>").g;
-		cb2 = hexToRgb("<?php echo $kleur2 ?>").b;
-
+		totDecimals = 0;
 		chart.addSeries({
 			id: 'SolarElecNet',
 			type: 'areaspline',
 			name: 'Solar Retour <?php echo $ElecLeverancier?>',
-			color: 'rgba('+cr2+','+cg2+','+cb2+',0.8)',
-			Opacity: 0.7,
-			fillOpacity: 0.4,
+			color: '<?php echo $kleurSR ?>',
+			fillOpacity: '<?php echo $fillOpacitySR ?>',
 			stack: 'sreturn',
 		}, false);
 		chart.addSeries({
@@ -2458,9 +2458,8 @@ EOF
 			type: 'areaspline',
 			name: 'Solar verbruik',
 			showInLegend: true,
-			color: 'rgba('+cr2+','+cg2+','+cb2+',0.3)',
-			Opacity: 0.4,
-			fillOpacity: 0.2,
+			color: '<?php echo $kleurSV ?>',
+			fillOpacity: '<?php echo $fillOpacitySV ?>',
 			stack: 'sreturn',
 		}, false);
 		chart.addSeries({
@@ -2491,15 +2490,15 @@ EOF
 				}
 			},
 			tooltip: {
-				valueDecimals: 0
+				valueDecimals: totDecimals
 			},
-			color: 'rgba('+cr+','+cg+','+cb+',0.8)',
+			color: '<?php echo $kleurVL ?>',
 			stack: 'susage',
 		}, false);
 		chart.addSeries({
 			id: 'verbruikSolar',
 			name: 'Verbruik Solar',
-			color: 'rgba('+cr+','+cg+','+cb+',0.5)',
+			color: '<?php echo $kleurVS ?>',
 			stack: 'susage',
 		}, false);
 		if (PVGis[1] > 0) {
@@ -2507,10 +2506,10 @@ EOF
 				id: 'SolarPVGis',
 				type: 'line',
 				name: PVGtxt+' schatting',
-				color: 'rgba(255,0,0,0.6)',
+				color: '<?php echo $kleurS ?>',
 				lineWidth: 1,
 				marker: {
-					radius: 1.5,
+					radius: 2,
 					enabled: true
 				},
 			}, false);
@@ -2540,15 +2539,5 @@ EOF
 	function daysInMonth (month, year) { // Use 1 for January, 2 for February, etc.
 	  return new Date(year, month, 0).getDate();
 	}
-
-	function hexToRgb(hex) {
-		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-		return result ? {
-			r: parseInt(result[1], 16),
-			g: parseInt(result[2], 16),
-			b: parseInt(result[3], 16)
-		} : null;
-	}
-
 </script>
 </html>

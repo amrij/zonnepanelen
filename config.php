@@ -48,6 +48,13 @@ $kleur1 = '#009900'; // kleur groen voor lijn voorafgaande dag inverter grafiek 
 $kleur2 = '#009900'; // kleur groen voor lijn actueel paneel
 $kleurg = '#d4d0d0'; // kleur grijs voor lijn overige dagen / panelen
 $Gem_Verm = 1 ;      // bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
+$kleurSR = 'rgba(0,153,0,0.7)';     // kleur Solar Retoer
+$fillOpacitySR = 0.4;
+$kleurSV = 'rgba(0,153,0,0.4)';     // kleur Solar Verbruik
+$fillOpacitySV = 0.2;
+$kleurVL = 'rgba(65,105,225,0.8)';  // kleur Verbruik Levering
+$kleurVS = 'rgba(65,105,225,0.6)';  // kleur Verbruik Solar
+$kleurS =  'rgba(255,0,0,0.9)';     // kleur schatting opbrengst solar
 
 //#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
 //** P1 waarden aangeven
