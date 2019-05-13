@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.66.1
+versie: 1.66.2
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  12-05-2019
+datum:  13-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -2282,8 +2282,14 @@ EOF
 					pointPadding: 0.15,
 					groupPadding: 0
 				},
-				area: {
+				areaspline: {
 					stacking: 'normal',
+					lineWidth: 1,
+					marker: {
+						symbol: 'circle',
+						radius: 1.5,
+						enabled: true
+					},
 					minPointLength: 4,
 					pointPadding: 0.1,
 					groupPadding: 0
@@ -2407,7 +2413,6 @@ EOF
 			}
 		});
 		var series;
-		var totDecimals = 3;
 		if (datatableSolarElecNet.length > 0) {
 			series = chart.get('SolarElecNet');
 			series.setData(datatableSolarElecNet, false);
@@ -2432,20 +2437,30 @@ EOF
 	}
 
 	function AddSeriestoChart(chart, switchtype) {
-		totDecimals = 0;
+		cr = hexToRgb("<?php echo $kleur ?>").r;
+		cg = hexToRgb("<?php echo $kleur ?>").g;
+		cb = hexToRgb("<?php echo $kleur ?>").b;
+		cr2 = hexToRgb("<?php echo $kleur2 ?>").r;
+		cg2 = hexToRgb("<?php echo $kleur2 ?>").g;
+		cb2 = hexToRgb("<?php echo $kleur2 ?>").b;
+
 		chart.addSeries({
 			id: 'SolarElecNet',
-			type: 'area',
+			type: 'areaspline',
 			name: 'Solar Retour <?php echo $ElecLeverancier?>',
-			color: 'rgba(65,225,105,1)',
+			color: 'rgba('+cr2+','+cg2+','+cb2+',0.8)',
+			Opacity: 0.7,
+			fillOpacity: 0.4,
 			stack: 'sreturn',
 		}, false);
 		chart.addSeries({
 			id: 'SolarVerbruik',
-			type: 'area',
+			type: 'areaspline',
 			name: 'Solar verbruik',
 			showInLegend: true,
-			color: 'rgba(3,222,190,1)',
+			color: 'rgba('+cr2+','+cg2+','+cb2+',0.3)',
+			Opacity: 0.4,
+			fillOpacity: 0.2,
 			stack: 'sreturn',
 		}, false);
 		chart.addSeries({
@@ -2476,15 +2491,15 @@ EOF
 				}
 			},
 			tooltip: {
-				valueDecimals: totDecimals
+				valueDecimals: 0
 			},
-			color: 'rgba(60,130,252,0.5)',
+			color: 'rgba('+cr+','+cg+','+cb+',0.8)',
 			stack: 'susage',
 		}, false);
 		chart.addSeries({
 			id: 'verbruikSolar',
 			name: 'Verbruik Solar',
-			color: 'rgba(3,190,252,0.5)',
+			color: 'rgba('+cr+','+cg+','+cb+',0.5)',
 			stack: 'susage',
 		}, false);
 		if (PVGis[1] > 0) {
@@ -2495,7 +2510,7 @@ EOF
 				color: 'rgba(255,0,0,0.6)',
 				lineWidth: 1,
 				marker: {
-					radius: 2,
+					radius: 1.5,
 					enabled: true
 				},
 			}, false);
@@ -2525,5 +2540,15 @@ EOF
 	function daysInMonth (month, year) { // Use 1 for January, 2 for February, etc.
 	  return new Date(year, month, 0).getDate();
 	}
+
+	function hexToRgb(hex) {
+		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		return result ? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		} : null;
+	}
+
 </script>
 </html>
