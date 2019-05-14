@@ -624,6 +624,7 @@ EOF
 		ichart.yAxis[0].update({ opposite: true });
 		ichart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
 		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
+		ichart.redraw();
 		ichart.reflow();
 	}
 
