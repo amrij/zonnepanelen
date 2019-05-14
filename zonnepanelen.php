@@ -1614,7 +1614,7 @@ EOF
 					formatter: function () {
 						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
 						var sortedPoints = this.points.sort(function(a, b){
-							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+							return (b.y - a.y);
 						});
 						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){
@@ -1772,7 +1772,7 @@ EOF
 					formatter: function () {
 						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
 						var sortedPoints = this.points.sort(function(a, b){
-							return ((a.y > b.y) ? -1 : ((a.y < b.y) ? 1 : 0));
+							return (b.y - a.y);
 						});
 						$.each(sortedPoints, function () {
 							for (i=0; i<=14; i++){
