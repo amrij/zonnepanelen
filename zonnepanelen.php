@@ -1223,8 +1223,8 @@ EOF
 				var series = inverter_chart.series[0];
 				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 				for (var i=0; i<=14; i++){
-					inverter_chart.series[i].setData([]);
-					vermogen_chart.series[i].setData([]);
+					inverter_chart.series[i].setData([], false);
+					vermogen_chart.series[i].setData([], false);
 				}
 				var s_cnt = gem_verm;
 				var s_serie = "x";
