@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.28
+// versie: 1.29
 // auteur: André Rijkeboer
-// datum:  08-04-2019
+// datum:  15-04-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
 
 include('config.php');
@@ -67,7 +67,7 @@ for ($i = 1; $i <= $aantal; $i++) {
 	$diff['T' . $i]	= 0;
 	$diff['E' . $i]	= 0;
 	$diff['VM' . $i]	= 0;
-	$diff['VMT' . $i]	= 0;
+	$diff['VMT' . $i]	= "    00:00:00";
 }
 $diff['IT']	= $d1;
 $diff['ITMIN']	= 0;
@@ -121,6 +121,7 @@ If ($midnight >= $begin) {
 			}
 		}
 		// convert to proper values
+		if ($max == 0) {$max = 1;}
 		for ($i = 1; $i <= $aantal; $i++) {
 			$diff['C' . $i]   = sprintf("%.2f", $diff['O' . $i]/$max);
 			$diff['O' . $i]   = sprintf("%.2f", $diff['O' . $i] * 0.25);
