@@ -110,8 +110,8 @@ omschrijving: hoofdprogramma
 		function mylog($error, $errlvl)
 		{
 			echo "<div style=background-color:Red;color:white;>";
-			echo "<p>We found a problem in the PHP code: $errlvl  => $error<br>";
-			echo "The website can't be shown until this issue is fixed.</p>";
+			echo "<p>We found a problem in the PHP code: $errlvl<br><br>$error<br><br>";
+			echo "<p>The website can't be shown until this issue is fixed.</p>";
 			echo "</div>";
 		}
 		// end error handling
