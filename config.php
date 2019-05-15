@@ -47,18 +47,18 @@ $kleur = '#4169E1'; // kleur royalbleu voor actuele dag
 $kleur1 = '#009900'; // kleur groen voor lijn voorafgaande dag inverter grafiek (grijs = '#d4d0d0')
 $kleur2 = '#009900'; // kleur groen voor lijn actueel paneel
 $kleurg = '#d4d0d0'; // kleur grijs voor lijn overige dagen / panelen
-$Gem_Verm = 1 ;      // bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
+$Gem_Verm = '1' ;      // bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
 $kleurSR = 'rgba(0,153,0,0.7)';     // kleur Solar Retoer ...... zie https://cssgenerator.org/rgba-and-hex-color-generator.html
-$fillOpacitySR = 0.4;				// opvul ondoorzichtigheid 0 = geheel doorzichtig, 0.5 is half doorzichtig 1 = ondoorzichtig
+$fillOpacitySR = '0.4';				// opvul ondoorzichtigheid 0 = geheel doorzichtig, 0.5 is half doorzichtig 1 = ondoorzichtig
 $kleurSV = 'rgba(0,153,0,0.4)';     // kleur Solar Verbruik
-$fillOpacitySV = 0.2;
+$fillOpacitySV = '0.2';
 $kleurVL = 'rgba(65,105,225,0.8)';  // kleur Verbruik Levering
 $kleurVS = 'rgba(65,105,225,0.6)';  // kleur Verbruik Solar
 $kleurS =  'rgba(255,0,0,0.9)';     // kleur schatting opbrengst solar
 
 //#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
 //** P1 waarden aangeven
-$P1 = 0; // 0 = nee, 1 = ja
+$P1 = '0'; // 0 = nee, 1 = ja
 
 //** Algemene velden
 $ElecLeverancier = "Engie";                            // naam electra leverancier
@@ -88,15 +88,15 @@ $DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen p1&Conve
 //#### einde aanpassing
 
 // aangeven vermogen op het paneel
-$vermogen = 1; // 0 = nee, 1 = ja
+$vermogen = '1'; // 0 = nee, 1 = ja
 
 // Sunrise and Moon box management
 // 0: moon and sunrise boxes are resize separately.
 // 1: clicking moon or sunrise will enlarge both of them
-$groupMoonSun = 1;
+$groupMoonSun = '1';
 
 // gegevens van het zonnepanelensysteem
-$inverter = 3; // 1 voor enkel fase en 3 voor 3 fase inverter
+$inverter = '3'; // 1 voor enkel fase en 3 voor 3 fase inverter
 $naam = "SolarEdge SE7k"; //naam van de inverter
 //optimizer id en positie paneel, de richting van de panelen Vertikaal = 0, Horizontaal = 1
 // het serienummer en het vermogen van het paneel
