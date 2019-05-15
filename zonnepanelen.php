@@ -755,7 +755,8 @@ EOF
 					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active"] + "</td><td>W</td></tr>" +
 					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
 					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
-					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr></table>");
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
+					"</table>");
 		} else {
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
@@ -766,7 +767,8 @@ EOF
 					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active1"] + "</td><td>" + inv1Data[0]["p_active2"] + "</td><td>"+inv1Data[0]["p_active3"] + "</td><td>W</td></tr>" +
 					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
 					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
-					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><td><tdstyle=\"font-size:smaller\">Wh/Wp</td></tr></table>");
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
+					"</table>");
 		}
 		update_map_fields();
 
@@ -792,7 +794,8 @@ EOF
 					"<tr><td>Spanning in:</td><td>" + inv1Data[0]["VI"+i] + "</td><td>V</td></tr>" +
 					"<tr><td>Spanning uit:</td><td>" + inv1Data[0]["VU"+i] + "</td><td>V</td></tr>" +
 					"<tr><td>Temperatuur:</td><td>" + inv1Data[0]["T"+i] + "</td><td>°C</td></tr>" +
-					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr></table>");
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
+					"</table>");
 			if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#000000"; }
 			else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#080f16"; }
 			else if ( inv1Data[0]["C"+i] < 0.2) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor =  "#101e2d"; }
@@ -980,60 +983,53 @@ EOF
 					}
 					document.getElementById("huis_1").setAttribute("data-tcontent",
 							"<table class=qtiptable>" +
-							"<tr><td colspan=2 style=\"text-align:center\"><b>" + s_lasttimestamp + "</b></td></tr>" +
-							"<tr><td colspan=2 style=\"text-align:center\"><br><b>Vandaag</b></td></tr>" +
-							"<tr><td>Zonne energie:</td><td>" + waarde(0,2,SolarProdToday - s_p1CounterDelivToday) + " kWh</td></tr>" +
-							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,2,s_p1CounterToday) + " kWh</td></tr>" +
-							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,2,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) + " kWh\r\n</td></tr>" +
-							"<tr><td colspan=2 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
-							"<tr><td>Zonne energie:</td><td>" + waarde(0,1,mvs) + " kWh</td></tr>" +
-							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,1,mve) + " kWh</td></tr>" +
-							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,1,mve+mvs) + " kWh\r\n</td></tr>" +
-							"<tr><td colspan=2 style=\"text-align:center\"><br><b>Jaar vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
-							"<tr><td>Zonne energie:</td><td>" + waarde(0,0,yvs) + " kWh" +  "</td></tr>" +
-							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,0,yve) + " kWh</td></tr>" +
-							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,0,yve+yvs) + " kWh</td></tr></table>");
+							"<tr><td colspan=3 style=\"text-align:center\"><b>" + s_lasttimestamp + "</b></td></tr>" +
+							"<tr><td colspan=3 style=\"text-align:center\"><br><b>Vandaag</b></td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,2,SolarProdToday - s_p1CounterDelivToday) + "</td><td>kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,2,s_p1CounterToday) + "</td><td>kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,2,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) + "</td><td>kWh\r\n</td></tr>" +
+							"<tr><td colspan=3 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,1,mvs) + "</td><td>kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,1,mve) + "</td><td>kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,1,mve+mvs) + "</td><td>kWh\r\n</td></tr>" +
+							"<tr><td colspan=3 style=\"text-align:center\"><br><b>Jaar vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,0,yvs) + "</td><td>kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,0,yve) + "</td><td>kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,0,yve+yvs) + "</td><td>kWh</td></tr>" +
+							"</table>");
 				}
 			} else {
 				document.getElementById("p1_huis").innerHTML = "No Data";
 				document.getElementById("huis_1").setAttribute("data-tcontent","No Data");
 			}
 
-			var cur = ((document.getElementById("p1_text").className == "red_text") ? "verbruik:<td class=\"red_text\">" : "retour:</td><td class=\"green_text\">")+ document.getElementById("p1_text").innerHTML;
+			var cur = ((document.getElementById("p1_text").className == "red_text") ? "verbruik:<td class=\"red_text\">" : "retour:</td><td class=\"green_text\">") + document.getElementById("p1_text").innerHTML;
 			document.getElementById("meter_1").setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
-					"<tr><td colspan=2 style=\"text-align:center\"><b>Huidig</b></td></tr>" +
+					"<tr><td colspan=3 style=\"text-align:center\"><b>Huidig</b></td></tr>" +
 					"<tr><td>" + cur + "</td></tr>" +
-					"<tr><td colspan=2 style=\"text-align:center\"><br><b>Vandaag</b></td></tr>" +
-					"<tr><td>verbruik:</td><td>" + waarde(0,2,ve) + " kWh</td></tr>" +
-					"<tr><td>retour:</td><td>" + waarde(0,2,se)  + " kWh</td></tr>" +
-					"<tr><td>netto:</td><td class="+(ve-se<0 ? "green_text" : "red_text")+">" + waarde(0,2,ve-se)   + " kWh</td></tr>" +
-					"<tr><td colspan=2 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
-					"<tr><td>verbruik:</td><td>" + waarde(0,1,mve) + " kWh</td></tr>" +
-					"<tr><td>retour:</td><td>" + waarde(0,1,mse)  + " kWh</td></tr>" +
-					"<tr><td>netto:</td><td class="+(mve-mse<0 ? "green_text" : "red_text")+">" + waarde(0,1,mve-mse)   + " kWh</td></tr>" +
-					"<tr><td colspan=2 style=\"text-align:center\"><br><b>Totaal vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
-					"<tr><td>verbruik:</td><td>" + waarde(0,0,yve) + " kWh</td></tr>" +
-					"<tr><td>retour:</td><td>" + waarde(0,0,yse)  + " kWh</td></tr>" +
-					"<tr><td>netto:</td><td class="+(yve-yse<0 ? "green_text" : "red_text")+">" + waarde(0,0,yve-yse)   + " kWh</td></tr></table>");
+					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Vandaag</b></td></tr>" +
+					"<tr><td>verbruik:</td><td>" + waarde(0,2,ve) + "</td><td>kWh</td></tr>" +
+					"<tr><td>retour:</td><td>" + waarde(0,2,se) + "</td><td>kWh</td></tr>" +
+					"<tr><td>netto:</td><td class=" + (ve-se<0 ? "green_text" : "red_text") + ">" + waarde(0,2,ve-se) + "</td><td>kWh</td></tr>" +
+					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
+					"<tr><td>verbruik:</td><td>" + waarde(0,1,mve) + "</td><td>kWh</td></tr>" +
+					"<tr><td>retour:</td><td>" + waarde(0,1,mse) + "</td><td>kWh</td></tr>" +
+					"<tr><td>netto:</td><td class=" + (mve-mse<0 ? "green_text" : "red_text") + ">" + waarde(0,1,mve-mse) + "</td><td>kWh</td></tr>" +
+					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Totaal vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
+					"<tr><td>verbruik:</td><td>" + waarde(0,0,yve) + "</td><td>kWh</td></tr>" +
+					"<tr><td>retour:</td><td>" + waarde(0,0,yse) + "</td><td>kWh</td></tr>" +
+					"<tr><td>netto:</td><td class=" + (yve-yse<0 ? "green_text" : "red_text") + ">" + waarde(0,0,yve-yse) + "</td><td>kWh</td></tr>" +
+					"</table>");
 
-			var curtext=document.getElementById("inverter_1").getAttribute("data-tcontent");
-			var ins = curtext.indexOf("<tr><td>Vandaag:")-9;
-			var ins2 = curtext.indexOf("</table>")-1;
-			if (ins>0) {
-				curtext = curtext.substring(0,ins);
-			} else if (ins2>0) {
-				curtext = curtext.substring(0,ins2);
-			}
 			var PVGisd = "";
 			var PVGism = "";
 			var PVGisj = "";
 			if (PVGis[cm] > 0) {
-				PVGisd = " (" + waarde(0,0,PVGis[cm]/cdays) + ")" ;
-				PVGism = " (" + waarde(0,0,PVGis[cm]/cdays*cd) + ")" ;
+				PVGisd = " (" + waarde(0,0,PVGis[cm]/cdays) + ")";
+				PVGism = " (" + waarde(0,0,PVGis[cm]/cdays*cd) + ")";
 				var tPVGis=0;
 				for (i=1; i<PVGis.length; i++) {
-
 					if (i == con_month) { <?php // add part contract month start ?>
 						var factor = (cdays-con_day + 1)/cdays;
 						tPVGis += PVGis[i]*factor;
@@ -1047,21 +1043,24 @@ EOF
 						if (i > con_month && cm > con_month) {<?php // add months after start contract when contract date is passd this year ?>
 							tPVGis += PVGis[i];
 						}
-
 						if (i < con_month && cm < con_month) {<?php // add months before start contract when contract date is later this year ?>
 							tPVGis += PVGis[i];
 						}
 					}
 				}
-
 				PVGisj = " (" + waarde(0,0,tPVGis) + ")";
 			}
+			var curtext=document.getElementById("inverter_1").getAttribute("data-tcontent");
+			var ins = curtext.indexOf("<tr id='i'>");
+			if (ins == -1) { ins = curtext.indexOf("</table>"); }
+			curtext = curtext.substring(0,ins);
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
 					curtext +
-					"<tr></tr>" +
+					"<tr id='i'><td colspan=3>&nbsp;</td></tr>" +
 					"<tr><td>Vandaag:</td><td>" + waarde(0,2,SolarProdToday) + PVGisd + "</td><td>kWh</td></tr>" +
-					"<tr><td>Maand:</td><td>" + waarde(0,1,mse + msv) + PVGism +  "</td><td>kWh</td></tr>" +
-					"<tr><td>" + contract_datum+":</td><td>" + waarde(0,0,yse + ysv) + PVGisj + "</td><td>kWh</td></tr></table>");
+					"<tr><td>Maand:</td><td>" + waarde(0,1,mse + msv) + PVGism + "</td><td>kWh</td></tr>" +
+					"<tr><td>" + contract_datum + ":</td><td>" + waarde(0,0,yse + ysv) + PVGisj + "</td><td>kWh</td></tr>" + 
+					"</table>");
 
 			if (datum1 >= tomorrow) {
 				var ddiff=ve-se;
