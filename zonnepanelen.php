@@ -120,15 +120,17 @@ omschrijving: hoofdprogramma
 			include('general_functions.php');
 		}
 		include('config.php');
+
 		$mysqli = new mysqli($host, $user, $passwd, $db, $port);
-		// end SQL database check
-		$query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
-		$result = $mysqli->query($query);
-		$row = mysqli_fetch_assoc($result);
-		$begin = gmdate("Y-m-d",$row['timestamp']);
-		$thread_id = $mysqli->thread_id;
-		$mysqli->kill($thread_id);
-		$mysqli->close();
+		if (!mysqli_connect_errno()) {
+			$query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
+			$result = $mysqli->query($query);
+			$row = mysqli_fetch_assoc($result);
+			$begin = gmdate("Y-m-d",$row['timestamp']);
+			$thread_id = $mysqli->thread_id;
+			$mysqli->kill($thread_id);
+			$mysqli->close();
+		}
 
 		if ($aantal < 0) { $aantal = 0;}
 		for ($i=1; $i<=$aantal; $i++){
