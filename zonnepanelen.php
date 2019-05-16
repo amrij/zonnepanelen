@@ -617,7 +617,6 @@ EOF
 		ichart.yAxis[0].update({ title: { text: paneelGraph[metric]['tekst'] + ' (' + paneelGraph[metric]['unit'] + ')' }, });
 		ichart.yAxis[1].update({ labels: { enabled: false }, title: { text: null } });
 		ichart.redraw();
-		ichart.reflow();
 	}
 
 	function paneelChart(event, id) {
@@ -634,6 +633,8 @@ EOF
 			}
 			document.getElementById("box_panel_vermogen").style.display = "block";
 			document.getElementById("box_panel_energy").style.display = "block";
+			paneel_charte.reflow();
+			paneel_chartv.reflow();
 		}
 	}
 
