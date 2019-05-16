@@ -2175,7 +2175,7 @@ EOF
 					pointPadding: 0.15,
 					groupPadding: 0
 				},
-				area: {
+				areaspline: {
 					stacking: 'normal',
 					lineWidth: 1,
 					marker: {
@@ -2424,3 +2424,4 @@ EOF
 	}
 </script>
 </html>
+1
