@@ -179,6 +179,7 @@ if ($period == 'c' ){
 	cv,
 	cr
 	From P1_Meter
+	where tiestamp <" . $tomorrow . "
 	order by timestamp desc limit 1");
 	$row = mysqli_fetch_assoc($result);	
 	$diff['ServerTime'] = $row['time'];
