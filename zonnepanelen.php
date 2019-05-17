@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.66.2
+versie: 1.66.3
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  13-05-2019
+datum:  16-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -951,12 +951,33 @@ EOF
 				var dd_end = datediff(con_end_date,pdate);
 				if(con_start_year == py && con_month == pm) {
 					<?php // we are in the start month of the contract so calculate the pro rate monthtotal/cdays*(cdays-contractstartday+1) ?>
-					var factor = (cdays-con_day+1)/cdays;
-					yse += ychart.series[0].data[i].y * factor;
-					ysv += ychart.series[1].data[i].y * factor;
-					yve += ychart.series[2].data[i].y * factor;
-					yvs += ychart.series[3].data[i].y * factor;
-				} else if(dd_start > 0 && dd_end > 0) {
+					var pdays = daysInMonth(con_month, py);
+					var endmonth = py + "-" + pm + "-" + pdays;
+					var maantal = cdays - con_day + 1;
+					var url='<?php echo $DataURL?>?period=d&aantal='+maantal+"&date="+endmonth;
+					var datam1 = $.ajax({
+						url: '<?php echo $DataURL?>',
+						dataType: "json",
+						type: 'GET',
+						data: { "period" : "d", "aantal" : maantal, "date" : endmonth  },
+						async: false,
+					}).responseText;
+					datam1 = eval(datam1)
+					if (typeof datam1 != 'undefined') {
+						if (cm == con_month && cd >= con_day) { maantal -= (cdays - cd);}
+						for (y=0; y< maantal; y++) {
+							var prod = datam1[y]['prod'];  //Solar productie
+							var v1 = datam1[y]['v1'];      // verbruik hoog
+							var v2 = datam1[y]['v2'];      // verbruik laag
+							var r1 = datam1[y]['r1'];      // return hoog
+							var r2 = datam1[y]['r2'];      // return laag
+							yve += v1 + v2;
+							yvs += prod - r1 - r2;
+							yse += r1 + r2;
+							ysv += prod - r1 - r2;
+						}
+					}
+			} else if(dd_start > 0 && dd_end > 0) {
 					<?php // we are within de contract period so add to contract year total ?>
 					yse += ychart.series[0].data[i].y;
 					ysv += ychart.series[1].data[i].y;
@@ -1022,19 +1043,26 @@ EOF
 				var tPVGis=0;
 				for (i=1; i<PVGis.length; i++) {
 					if (i == con_month) { <?php // add part contract month start ?>
-						var factor = (cdays-con_day + 1)/cdays;
+						if ( cm == con_month && cd >= con_day ){
+							var factor = (cd-con_day + 1)/cdays;
+						}else if( cm > con_month ){
+							var factor = (cdays-con_day + 1)/cdays;
+						}else{
+							var factor = (cdays-con_day + 1 + cd)/cdays;
+						}
 						tPVGis += PVGis[i]*factor;
 					}
-					if (i == cm) { <?php // add part current month?>
+					if (i == cm && i !=con_month ) { <?php // add part current month?>
 						var cdays = daysInMonth(cm, cy);
 						var factor = cd/cdays;
 						tPVGis += PVGis[i]*factor;
 					}
 					if (i != con_month && i != cm ) {
-						if (i > con_month && cm > con_month) {<?php // add months after start contract when contract date is passd this year ?>
+						if (i > con_month && cm > con_month && i < cm) {<?php // add months after start contract when contract date is passd this year ?>
 							tPVGis += PVGis[i];
 						}
-						if (i < con_month && cm < con_month) {<?php // add months before start contract when contract date is later this year ?>
+						
+						if (cy > con_start_year){ // add months between start and begin dit jaar
 							tPVGis += PVGis[i];
 						}
 					}
@@ -2424,4 +2452,3 @@ EOF
 	}
 </script>
 </html>
-1
