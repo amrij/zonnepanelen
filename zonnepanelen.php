@@ -950,7 +950,7 @@ EOF
 				var dd_start = datediff(pdate,con_start_date);
 				var dd_end = datediff(con_end_date,pdate);
 				if(con_start_year == py && con_month == pm) {
-					<?php // we are in the start month of the contract so calculate the pro rate monthtotal/cdays*(cdays-contractstartday+1) ?>
+					<?php // we are in the start month of the contract so get only the data for those remaining days of the month ?>
 					var pdays = daysInMonth(con_month, py);
 					var endmonth = py + "-" + pm + "-" + pdays;
 					var maantal = cdays - con_day + 1;
@@ -977,12 +977,12 @@ EOF
 							ysv += prod - r1 - r2;
 						}
 					}
-			} else if(dd_start > 0 && dd_end > 0) {
-					<?php // we are within de contract period so add to contract year total ?>
-					yse += ychart.series[0].data[i].y;
-					ysv += ychart.series[1].data[i].y;
-					yve += ychart.series[2].data[i].y;
-					yvs += ychart.series[3].data[i].y;
+				} else if(dd_start > 0 && dd_end > 0) {
+						<?php // we are within de contract period so add to contract year total ?>
+						yse += ychart.series[0].data[i].y;
+						ysv += ychart.series[1].data[i].y;
+						yve += ychart.series[2].data[i].y;
+						yvs += ychart.series[3].data[i].y;
 				}
 			});
 
@@ -1061,7 +1061,7 @@ EOF
 						if (i > con_month && cm > con_month && i < cm) {<?php // add months after start contract when contract date is passd this year ?>
 							tPVGis += PVGis[i];
 						}
-						
+
 						if (cy > con_start_year){ // add months between start and begin dit jaar
 							tPVGis += PVGis[i];
 						}
@@ -1078,7 +1078,7 @@ EOF
 					"<tr id='i'><td colspan=3>&nbsp;</td></tr>" +
 					"<tr><td>Vandaag:</td><td>" + waarde(0,2,SolarProdToday) + PVGisd + "</td><td>kWh</td></tr>" +
 					"<tr><td>Maand:</td><td>" + waarde(0,1,mse + msv) + PVGism + "</td><td>kWh</td></tr>" +
-					"<tr><td>" + contract_datum + ":</td><td>" + waarde(0,0,yse + ysv) + PVGisj + "</td><td>kWh</td></tr>" + 
+					"<tr><td>" + contract_datum + ":</td><td>" + waarde(0,0,yse + ysv) + PVGisj + "</td><td>kWh</td></tr>" +
 					"</table>");
 
 			if (datum1 >= tomorrow) {
