@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.66.3
+versie: 1.67.0
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  16-05-2019
+datum:  17-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
