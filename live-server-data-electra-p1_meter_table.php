@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.67.0 aangepast door André Rijkeboer
+// versie: 1.6.3 aangepast door André Rijkeboer
 // auteur: Jos van der Zande based on model from André Rijkeboer
 //
-// datum:  17-05-2018 
+// datum:  18-05-2018 
 // omschrijving: ophalen van de P1 en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //
@@ -34,11 +34,6 @@
 //		  	PRIMARY KEY (datum),
 //		  	KEY (datum)
 //			);
-//
-// ***************************************************************************************************************
-// * Indien deze gebruiker niet de rechten heeft om dit aan te maken dan moet dit met de hand worden uitgevoerd. *
-// * De gebruiker moet wel de rechten hebben voor insert en update                                               *
-// ***************************************************************************************************************
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-domoticz.php/period=c
 //~ ==========================================================================
@@ -72,12 +67,14 @@ $period = $_GET['period'];
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 if($limit == ''){ $limit = '30';}
 $SQLdatefilter = '"%Y-%m-%d"';
+$SQLdatefilter1 = 'Y-m-d';
 if( $period == '') { $period = 'c';}
 if( $period == '' || $period == 'd' ) {
 	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 	$limitf =  $limit * 86400;
 } elseif ($period == 'm') {
 	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m")';
+	$SQLdatefilter1 = 'Y-m';
 	$limitf = 31*$limit*86400;
 } else {
 	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
@@ -182,11 +179,19 @@ if ($period == 'c' ){
 	where timestamp >= " . $yesterday. " and timestamp < " . $tomorrow . "
 	order by timestamp desc limit 1");
 	$row = mysqli_fetch_assoc($result);	
-	$diff['ServerTime'] = $row['time'];
-	$diff['CounterToday'] = $row['dv'];
-	$diff['CounterDelivToday'] = $row['dr'];
-	$diff['Usage'] = $row['cv'];
-	$diff['UsageDeliv'] = $row['cr'];
+	if ($row){
+		$diff['ServerTime'] = $row['time'];
+		$diff['CounterToday'] = $row['dv'];
+		$diff['CounterDelivToday'] = $row['dr'];
+		$diff['Usage'] = $row['cv'];
+		$diff['UsageDeliv'] = $row['cr'];
+	} else {
+		$diff['ServerTime'] = date("Y-m-d H:i:s",$time);
+		$diff['CounterToday'] = 0;
+		$diff['CounterDelivToday'] = 0;
+		$diff['Usage'] = 0;
+		$diff['UsageDeliv'] = 0;
+	}		
 	array_push($total, $diff);
 } else {
 	//open MySQL database
@@ -213,10 +218,23 @@ if ($period == 'c' ){
 		$diff['v2'] = round($row["v2"],2);
 		$diff['r1'] = round($row["r1"],2);
 		$diff['r2'] = round($row["r2"],2);
-
+	
 		//voeg het resultaat toe aan de total-array
 		array_push($total, $diff);
 	}
+	if (!$total){
+		$diff['idate'] = date("Y-m-d",$time);
+		$diff['serie'] = date($SQLdatefilter1,$time);
+		$diff['prod'] = 0;
+		$diff['v1'] = 0;
+		$diff['v2'] = 0;
+		$diff['r1'] = 0;
+		$diff['r2'] = 0;
+	
+		//voeg het resultaat toe aan de total-array
+		array_push($total, $diff);
+	}
+		
 }
  
 // Sluit DB
