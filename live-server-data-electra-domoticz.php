@@ -35,8 +35,8 @@
 //~ {"idate":"2019-03-01","serie":"2019-03","prod":128.23,"v1":63.63,"v2":34.71,"r1":15.8,"r2":72.11}
 //~ ]
 
-$limit = $_GET['aantal'];
-$period = $_GET['period'];
+$limit = array_key_exists('aantal', $_GET) ? $_GET['aantal'] : "";
+$period = array_key_exists('period', $_GET) ? $_GET['period'] : "";
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 
 if($limit == ''){
