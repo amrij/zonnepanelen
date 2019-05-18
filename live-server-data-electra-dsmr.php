@@ -252,6 +252,7 @@ if ($period == 'c' ){
 		$diff['r2'] = 0;
 
 		// get inverter data for that period
+		$diff['prod'] = 0;
 		foreach($inverter_data as $j => $row){
 			$compdate = date($JSON_SUM,strtotime(date($row['iDate'])));
 			if ($compdate==$checkdate) {
@@ -268,6 +269,10 @@ if ($period == 'c' ){
 		$tv2 = 0;
 		$tr1 = 0;
 		$tr2 = 0;
+		$diff['v1'] = 0;
+		$diff['v2'] = 0;
+		$diff['r1'] = 0;
+		$diff['r2'] = 0;
 		foreach($dsmrdata as $item) {     //foreach element in $arr
 			$compdate = date($JSON_SUM,strtotime($item['d']));
 			if ($compdate==$checkdate) {
