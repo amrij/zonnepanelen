@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.67.0
+versie: 1.67.1
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  17-05-2019
+datum:  18-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -559,6 +559,33 @@ EOF
 	var pvs = 0;
 	var pse = 0;
 	var psv = 0;
+	var ve = 0;
+	var vs = 0;
+	var se = 0;
+	var sv = 0;
+	var mse = 0;
+	var msv = 0;
+	var mve = 0;
+	var mvs = 0;
+	var yse = 0;
+	var ysv = 0;
+	var yve = 0;
+	var yvs = 0;
+	var tPVGis=0;
+	var PVGisd = "";
+	var PVGism = "";
+	var PVGisj = "";
+	var starty = 0;
+	var cdate = new Date(date2);
+	var cd = cdate.getDate();
+	var cm = cdate.getMonth()+1;
+	var cy = cdate.getFullYear();
+	var con_start_date = new Date(contract_start_date);
+	var con_end_date = new Date(contract_end_date);
+	var con_day = con_start_date.getDate();
+	var con_month = con_start_date.getMonth()+1;
+	var con_start_year = con_start_date.getFullYear();
+	var cdays = daysInMonth(con_month, cy);
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 
@@ -899,48 +926,14 @@ EOF
 		return Math.floor(res / 86400);
 	}
 
-	function update_map_fields() {
-		if (wchart != "" && wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
-			var cdate = new Date(date2);
-			var cd = cdate.getDate();
-			var cm = cdate.getMonth()+1;
-			var cy = cdate.getFullYear();
-			var con_start_date = new Date(contract_start_date);
-			var con_end_date = new Date(contract_end_date);
-			var con_day = con_start_date.getDate();
-			var con_month = con_start_date.getMonth()+1;
-			var con_start_year = con_start_date.getFullYear();
-			var cdays = daysInMonth(con_month, cy);
-			var ve = 0;
-			var vs = 0;
-			var se = 0;
-			var sv = 0;
-			var mse = 0;
-			var msv = 0;
-			var mve = 0;
-			var mvs = 0;
-			$.each(wchart.series[2].data, function(i, point) {
-				var pdate = new Date(point.x);
-				var pd = pdate.getDate();
-				var pm = pdate.getMonth()+1;
-				var py = pdate.getFullYear();
-				if(cy == py && cm == pm && cd >= pd) {
-					if (cd == pd) {
-						se += wchart.series[0].data[i].y;
-						sv += wchart.series[1].data[i].y;
-						ve += wchart.series[2].data[i].y;
-						vs += wchart.series[3].data[i].y;
-					}
-					mse += wchart.series[0].data[i].y;
-					msv += wchart.series[1].data[i].y;
-					mve += wchart.series[2].data[i].y;
-					mvs += wchart.series[3].data[i].y;
-				}
-			});
-			var yse = 0;
-			var ysv = 0;
-			var yve = 0;
-			var yvs = 0;
+	function update_jaar() {
+ 			yse = 0;
+			ysv = 0;
+			yve = 0;
+			yvs = 0;
+			PVGisd = "";
+			PVGism = "";
+			PVGisj = "";
 			$.each(ychart.series[2].data, function(i, point) {
 				var pdate = new Date(point.x);
 				var pd = pdate.getDate();
@@ -953,7 +946,7 @@ EOF
 					<?php // we are in the start month of the contract so get only the data for those remaining days of the month ?>
 					var pdays = daysInMonth(con_month, py);
 					var endmonth = py + "-" + pm + "-" + pdays;
-					var maantal = cdays - con_day + 1;
+					var maantal = pdays - con_day + 1;
 					var url='<?php echo $DataURL?>?period=d&aantal='+maantal+"&date="+endmonth;
 					var datam1 = $.ajax({
 						url: '<?php echo $DataURL?>',
@@ -984,8 +977,76 @@ EOF
 						yve += ychart.series[2].data[i].y;
 						yvs += ychart.series[3].data[i].y;
 				}
+				
 			});
 
+			yse -= se;
+			ysv -= sv;
+			yve -= ve;
+			yvs -= vs;
+			if (PVGis[cm] > 0) {
+				PVGisd = " (" + waarde(0,0,PVGis[cm]/cdays) + ")";
+				PVGism = " (" + waarde(0,0,PVGis[cm]/cdays*cd) + ")";
+				tPVGis=0;
+				for (i=1; i<PVGis.length; i++) {
+					if (i == con_month) { <?php // add part contract month start ?>
+						if ( cm == con_month && cd >= con_day ){
+							var factor = (cd-con_day + 1)/cdays;
+						}else if( cm > con_month ){
+							var factor = (cdays-con_day + 1)/cdays;
+						}else{
+							var factor = (cdays-con_day + 1 + cd)/cdays;
+						}
+						tPVGis += PVGis[i]*factor;
+					}
+					if (i == cm && i !=con_month ) { <?php // add part current month?>
+						cdays = daysInMonth(cm, cy);
+						var factor = cd/cdays;
+						tPVGis += PVGis[i]*factor;
+					}
+					if (i != con_month && i != cm ) {
+						if (i > con_month && cm > con_month && i < cm) {<?php // add months after start contract when contract date is passd this year ?>
+							tPVGis += PVGis[i];
+						}
+
+						if (cy > con_start_year){ // add months between start and begin dit jaar
+							tPVGis += PVGis[i];
+						}
+					}
+				}
+				PVGisj = " (" + waarde(0,0,tPVGis) + ")";
+			}
+	}
+	function update_map_fields() {
+		if (wchart != "" && wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
+			ve = 0;
+			vs = 0;
+			se = 0;
+			sv = 0;
+			mse = 0;
+			msv = 0;
+			mve = 0;
+			mvs = 0;
+			$.each(wchart.series[2].data, function(i, point) {
+				var pdate = new Date(point.x);
+				var pd = pdate.getDate();
+				var pm = pdate.getMonth()+1;
+				var py = pdate.getFullYear();
+				if(cy == py && cm == pm && cd >= pd) {
+					if (cd == pd) {
+						se += wchart.series[0].data[i].y;
+						sv += wchart.series[1].data[i].y;
+						ve += wchart.series[2].data[i].y;
+						vs += wchart.series[3].data[i].y;
+					}
+					mse += wchart.series[0].data[i].y;
+					msv += wchart.series[1].data[i].y;
+					mve += wchart.series[2].data[i].y;
+					mvs += wchart.series[3].data[i].y;
+				}
+			});
+			if (starty == 0 ){ update_jaar();}
+			starty = 1;
 			document.getElementById("p1_huis").className = "red_text";
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
@@ -1005,9 +1066,9 @@ EOF
 							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,1,mve) + "</td><td>kWh</td></tr>" +
 							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,1,mve+mvs) + "</td><td>kWh\r\n</td></tr>" +
 							"<tr><td colspan=3 style=\"text-align:center\"><br><b>Jaar vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
-							"<tr><td>Zonne energie:</td><td>" + waarde(0,0,yvs) + "</td><td>kWh</td></tr>" +
-							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,0,yve) + "</td><td>kWh</td></tr>" +
-							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,0,yve+yvs) + "</td><td>kWh</td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,0,yvs + vs) + "</td><td>kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,0,yve + ve) + "</td><td>kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,0,yve + yvs + ve + vs) + "</td><td>kWh</td></tr>" +
 							"</table>");
 				}
 			} else {
@@ -1029,46 +1090,11 @@ EOF
 					"<tr><td>retour:</td><td>" + waarde(0,1,mse) + "</td><td>kWh</td></tr>" +
 					"<tr><td>netto:</td><td class=" + (mve-mse<0 ? "green_text" : "red_text") + ">" + waarde(0,1,mve-mse) + "</td><td>kWh</td></tr>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Totaal vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
-					"<tr><td>verbruik:</td><td>" + waarde(0,0,yve) + "</td><td>kWh</td></tr>" +
-					"<tr><td>retour:</td><td>" + waarde(0,0,yse) + "</td><td>kWh</td></tr>" +
-					"<tr><td>netto:</td><td class=" + (yve-yse<0 ? "green_text" : "red_text") + ">" + waarde(0,0,yve-yse) + "</td><td>kWh</td></tr>" +
+					"<tr><td>verbruik:</td><td>" + waarde(0,0,yve + ve) + "</td><td>kWh</td></tr>" +
+					"<tr><td>retour:</td><td>" + waarde(0,0,yse + se) + "</td><td>kWh</td></tr>" +
+					"<tr><td>netto:</td><td class=" + (yve - yse + ve - se<0 ? "green_text" : "red_text") + ">" + waarde(0,0,yve - yse + ve - se) + "</td><td>kWh</td></tr>" +
 					"</table>");
 
-			var PVGisd = "";
-			var PVGism = "";
-			var PVGisj = "";
-			if (PVGis[cm] > 0) {
-				PVGisd = " (" + waarde(0,0,PVGis[cm]/cdays) + ")";
-				PVGism = " (" + waarde(0,0,PVGis[cm]/cdays*cd) + ")";
-				var tPVGis=0;
-				for (i=1; i<PVGis.length; i++) {
-					if (i == con_month) { <?php // add part contract month start ?>
-						if ( cm == con_month && cd >= con_day ){
-							var factor = (cd-con_day + 1)/cdays;
-						}else if( cm > con_month ){
-							var factor = (cdays-con_day + 1)/cdays;
-						}else{
-							var factor = (cdays-con_day + 1 + cd)/cdays;
-						}
-						tPVGis += PVGis[i]*factor;
-					}
-					if (i == cm && i !=con_month ) { <?php // add part current month?>
-						var cdays = daysInMonth(cm, cy);
-						var factor = cd/cdays;
-						tPVGis += PVGis[i]*factor;
-					}
-					if (i != con_month && i != cm ) {
-						if (i > con_month && cm > con_month && i < cm) {<?php // add months after start contract when contract date is passd this year ?>
-							tPVGis += PVGis[i];
-						}
-
-						if (cy > con_start_year){ // add months between start and begin dit jaar
-							tPVGis += PVGis[i];
-						}
-					}
-				}
-				PVGisj = " (" + waarde(0,0,tPVGis) + ")";
-			}
 			var curtext=document.getElementById("inverter_1").getAttribute("data-tcontent");
 			var ins = curtext.indexOf("<tr id='i'>");
 			if (ins == -1) { ins = curtext.indexOf("</table>"); }
@@ -1078,13 +1104,13 @@ EOF
 					"<tr id='i'><td colspan=3>&nbsp;</td></tr>" +
 					"<tr><td>Vandaag:</td><td>" + waarde(0,2,SolarProdToday) + PVGisd + "</td><td>kWh</td></tr>" +
 					"<tr><td>Maand:</td><td>" + waarde(0,1,mse + msv) + PVGism + "</td><td>kWh</td></tr>" +
-					"<tr><td>" + contract_datum + ":</td><td>" + waarde(0,0,yse + ysv) + PVGisj + "</td><td>kWh</td></tr>" +
+					"<tr><td>" + contract_datum + ":</td><td>" + waarde(0,0,yse + ysv + se + sv) + PVGisj + "</td><td>kWh</td></tr>" +
 					"</table>");
 
 			if (datum1 >= tomorrow) {
-				var ddiff = ve-se;
-				var mdiff = mve-mse;
-				var ydiff = yve-yse;
+				var ddiff = ve - se;
+				var mdiff = mve - mse;
+				var ydiff = yve - yse + ve - se;
 				var dcdiff = "red_text";
 				var mcdiff = "red_text";
 				var ycdiff = "red_text";
@@ -1103,15 +1129,15 @@ EOF
 				document.getElementById("sum_text").innerHTML = "<table width=100% class=data-table>"+
 						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+datev+"</b></td></tr>" +
 						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>"+contract_datum+"</u></td></tr>" +
-						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv)+"</td></tr>"+
+						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv + se + sv)+"</td></tr>"+
 						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/cdays)+'</td><td>'+waarde(0,0,PVGis[cm]/cdays*cd)+ '</td><td>'+waarde(0,0,tPVGis)+'</td></tr>'}` +
 						"<tr><td colspan=5><br><u>Huis verbruik</u></td></tr>" +
-						"<tr><td colspan=2>solar:</td><td>"+waarde(0,0,sv)+"</td><td>"+waarde(0,0,msv)+"</td><td>"+waarde(0,0,ysv)+"</td></tr>"+
-						"<tr><td colspan=2>net:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve)+"</td></tr>"+
-						"<tr><td colspan=2><b>Totaal:</b></td><td><b>"+waarde(0,0,ve+sv)+"</b></td><td><b>"+waarde(0,0,mve+msv)+"</b></td><td><b>"+waarde(0,0,yve+ysv)+"</b></td></tr>"+
+						"<tr><td colspan=2>solar:</td><td>"+waarde(0,0,sv)+"</td><td>"+waarde(0,0,msv)+"</td><td>"+waarde(0,0,ysv + sv)+"</td></tr>"+
+						"<tr><td colspan=2>net:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve + ve)+"</td></tr>"+
+						"<tr><td colspan=2><b>Totaal:</b></td><td><b>"+waarde(0,0,ve+sv)+"</b></td><td><b>"+waarde(0,0,mve+msv)+"</b></td><td><b>"+waarde(0,0,yve + ysv + ve +sv)+"</b></td></tr>"+
 						"<tr><td colspan=5><br><u><?php echo $ElecLeverancier?></u></td></tr>" +
-						"<tr><td colspan=2>verbruik:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve)+"</td></tr>"+
-						"<tr><td colspan=2>retour:</td><td>"+waarde(0,0,se)+"</td><td>"+waarde(0,0,mse)+"</td><td>"+waarde(0,0,yse)+"</td></tr>"+
+						"<tr><td colspan=2>verbruik:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve + ve)+"</td></tr>"+
+						"<tr><td colspan=2>retour:</td><td>"+waarde(0,0,se)+"</td><td>"+waarde(0,0,mse)+"</td><td>"+waarde(0,0,yse + se)+"</td></tr>"+
 						"<tr><td colspan=2><b>Netto:</b></td><td class="+dcdiff+"><b>"+waarde(0,0,ddiff)+"</b></td><td class="+mcdiff+"><b>"+waarde(0,0,mdiff)+"</b></td><td class="+ycdiff+"><b>"+waarde(0,0,ydiff)+"</b></td></tr>"+
 						"</table>";
 			}
