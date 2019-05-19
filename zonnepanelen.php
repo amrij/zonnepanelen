@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.67.1
+versie: 1.67.2
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  18-05-2019
+datum:  19-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -116,6 +116,15 @@ omschrijving: hoofdprogramma
 		}
 		// end error handling
 
+		function conv2rgba($rgbval,$opacity)
+		{
+			if (substr($rgbval,0,1) == "#") {
+				list($r, $g, $b) = sscanf($rgbval, "#%02x%02x%02x");
+				$rgbval = 'rgba(' . $r . ',' . $g . ',' . $b . ',' . $opacity . ')';
+			}
+			return $rgbval;
+		}
+
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { include('general_functions.php'); }
 		include('config.php');
 
@@ -196,13 +205,13 @@ omschrijving: hoofdprogramma
 		$groupMoonSun = (isset($groupMoonSun) ? $groupMoonSun : 1);
 		$PVGtxt = (isset($PVGtxt) ? $PVGtxt : 'PVGis');
 		$Gem_Verm = (isset($Gem_Verm) ? $Gem_Verm : 1);
-		$kleurSR = (isset($kleurSR) ? $kleurSR : 'rgba(0,153,0,0.7)');
-		$fillOpacitySR = (isset($fillOpacitySR ) ? $fillOpacitySR : 0.4);
-		$kleurSV = (isset($kleurSV) ? $kleurSV : 'rgba(0,153,0,0.4)');
-		$fillOpacitySV = (isset($fillOpacitySV ) ? $fillOpacitySV : 0.2);
-		$kleurVL = (isset($kleurVL) ? $kleurVL : 'rgba(65,105,225,0.8)');
-		$kleurVS = (isset($kleurVS) ? $kleurVS :'rgba(65,105,225,0.6)');
-		$kleurS = (isset($kleurS) ? $kleurS :'rgba(255,0,0,0.9)');
+		$kleurSR = conv2rgba((isset($kleurSR) ? $kleurSR : 'rgba(0,153,0,0.7)'),(isset($OpacitySR) ? $OpacitySR : '0.7'));
+		$fillOpacitySR = (isset($fillOpacitySR ) ? $fillOpacitySR : '0.4');
+		$kleurSV = conv2rgba((isset($kleurSV) ? $kleurSV : 'rgba(0,153,0,0.7)'),(isset($OpacitySV) ? $OpacitySV : '0.4'));
+		$fillOpacitySV = (isset($fillOpacitySV ) ? $fillOpacitySV : '0.2');
+		$kleurVL = conv2rgba((isset($kleurVL) ? $kleurVL : 'rgba(65,105,225,0.8)'),(isset($OpacityVL) ? $OpacityVL : '0.8'));
+		$kleurVS = conv2rgba((isset($kleurVS) ? $kleurVS : 'rgba(65,105,225,0.6)'),(isset($OpacityVS) ? $OpacityVS : '0.6'));
+		$kleurS = conv2rgba((isset($kleurS) ? $kleurS : 'rgba(255,0,0,0.9)'),(isset($OpacityS) ? $OpacityS : '0.9'));
 		// start functions
 		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
 			$epsilon = 0.000000000001;
@@ -977,7 +986,7 @@ EOF
 						yve += ychart.series[2].data[i].y;
 						yvs += ychart.series[3].data[i].y;
 				}
-				
+
 			});
 
 			yse -= se;

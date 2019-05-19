@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.67.0
+// versie: 1.67.2
 // auteur: André Rijkeboer
-// datum:  17-05-2019
+// datum:  19-05-2019
 // omschrijving: configuratie bestand
 
 // gegevens voor het openen van de database
@@ -42,19 +42,25 @@ $ingr = 1; // 0 = alleen lijn, 1 = gevuld
 
 // inverter en panelen grafiek kleur actuele dag
 // Hex Code #RRGGBB: '#4169E1', '#0000FF' .... zie https://www.rapidtables.com/web/color/
-// Decimal Code(R,G,B): 'rgb(65,105,225)', 'rgb(0,0,255)' .... zie https://www.rapidtables.com/web/color/
-$kleur = '#4169E1'; // kleur royalbleu voor actuele dag
-$kleur1 = '#009900'; // kleur groen voor lijn voorafgaande dag inverter grafiek (grijs = '#d4d0d0')
-$kleur2 = '#009900'; // kleur groen voor lijn actueel paneel
-$kleurg = '#d4d0d0'; // kleur grijs voor lijn overige dagen / panelen
+// transparantie: 0 = geheel doorzichtig, 0.5 is half doorzichtig, 1 = ondoorzichtig
+$kleur = '#4169E1';    // kleur royalbleu voor actuele dag
+$kleur1 = '#009900';   // kleur groen voor lijn voorafgaande dag inverter grafiek (grijs = '#d4d0d0')
+$kleur2 = '#009900';   // kleur groen voor lijn actueel paneel
+$kleurg = '#d4d0d0';   // kleur grijs voor lijn overige dagen / panelen
 $Gem_Verm = '1' ;      // bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
-$kleurSR = 'rgba(0,153,0,0.7)';     // kleur Solar Retour ...... zie https://cssgenerator.org/rgba-and-hex-color-generator.html
-$fillOpacitySR = '0.4';				   // opvul ondoorzichtigheid 0 = geheel doorzichtig, 0.5 is half doorzichtig 1 = ondoorzichtig
-$kleurSV = 'rgba(0,153,0,0.4)';     // kleur Solar Verbruik
-$fillOpacitySV = '0.2';
-$kleurVL = 'rgba(65,105,225,0.8)';  // kleur Verbruik Levering
-$kleurVS = 'rgba(65,105,225,0.6)';  // kleur Verbruik Solar
-$kleurS =  'rgba(255,0,0,0.9)';     // kleur schatting opbrengst solar
+$kleurSR = '#009900';  // kleur Solar Retour
+$OpacitySR = '0.7';      // Lijn transparantie
+$fillOpacitySR = '0.4';  // opvul transparantie
+$kleurSV = '#009900';  // kleur Solar Verbruik
+$OpacitySV = '0.4';      // Lijn transparantie
+$fillOpacitySV = '0.2';  // opvul transparantie
+$kleurVL = '#4169E1';  // kleur Verbruik Levering
+$OpacityVL = '0.8';      // Lijn transparantie
+$kleurVS = '#4169E1';  // kleur Verbruik Solar
+$OpacityVS = '0.6';      // Lijn transparantie
+$kleurS =  '#FF0000';  // kleur schatting opbrengst solar
+$OpacityS = '0.9';       // Lijn transparantie
+
 
 //#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
 //** P1 waarden aangeven
