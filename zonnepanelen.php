@@ -2231,6 +2231,56 @@ EOF
 						}
 						s += '<b><?php echo $ElecLeverancier?> verbruik: <b>' + Highcharts.numberFormat(sVE-sRE,1) + '</b> kWh';
 					}
+
+					if (this.points[0].point.series.chart.renderTo.id == "daygraph") {
+						for (i=0; i<=13; i++){
+							var td = inverter_chart.series[i].name.replace(/(\S*)\s(\d{2})-(\d{2})-(\d{4})/, '$4-$3-$2');
+							var tdt = new Date(td);
+							if (tdt.getTime() == this.x) {
+								inverter_chart.series[i].update({
+									color: '<?php echo $kleur2 ?>',
+									zIndex: 15,
+									fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
+									showInLegend: true,
+								},false)
+								vermogen_chart.series[i].update({
+									color: '<?php echo $kleur2 ?>',
+									zIndex: 15,
+									fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
+									showInLegend: true,
+								},false)
+							} else {
+								if (i != 13) {
+									inverter_chart.series[i].update({
+										color: '<?php echo $kleurg ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									},false)
+									vermogen_chart.series[i].update({
+										color: '<?php echo $kleurg ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									},false)
+								}else{
+									inverter_chart.series[i].update({
+										color: '<?php echo $kleur1 ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									},false)
+									vermogen_chart.series[i].update({
+										color: '<?php echo $kleur1 ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									},false)
+								}
+							}
+						}
+					}
+
 					return s;
 				},
 				shared: true
