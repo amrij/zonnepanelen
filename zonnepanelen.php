@@ -1191,7 +1191,12 @@ EOF
 	$(function() {
 		Highcharts.setOptions({
 			global: { useUTC: false, },
-			style: { fontFamily: 'Arial' }
+			style: { fontFamily: 'Arial' },
+			lang: {
+				months: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+				weekdays: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'],
+				shortMonths: ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
+            },
 		})
 		var urlname = 'live-server-data-s.php'
 		var urlname1 = 'live-server-data-paneel.php'
