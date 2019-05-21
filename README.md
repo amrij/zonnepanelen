@@ -36,7 +36,7 @@ In config.php the following information is defined:
   ![Alt text](docs/zonnepanelen.png?raw=true "zonnepanelen.php")
 
 ## screenshots zonnepanelen.php $P1 = 1:
-  ![Alt text](docs/zonnepanelen-electra_LT_new.PNG?raw=true "Laptop")
+  ![Alt text](docs/zonnepanelen-p1.PNG?raw=true "Computer")
   ![Alt text](docs/zonnepanelen-electra_Mobiel.jpg?raw=true "Mobile portrait")
 
 ## SQL issues
