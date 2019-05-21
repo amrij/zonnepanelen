@@ -680,12 +680,12 @@ EOF
 			if (inverter_redraw == 1) {
 				document.getElementById("box_panel_vermogen").style.display = "none"
 				document.getElementById("box_panel_energy").style.display = "none"
-				inverter_chart.redraw();
-				vermogen_chart.redraw();
+				inverter_charte.redraw();
+				inverter_chartv.redraw();
 				document.getElementById("box_chart_vermogen").style.display = "block"
 				document.getElementById("box_chart_energy").style.display = "block"
-				inverter_chart.reflow();
-				vermogen_chart.reflow();
+				inverter_charte.reflow();
+				inverter_chartv.reflow();
 			}
 		}, 200);
 	}
@@ -1198,13 +1198,13 @@ EOF
 				shortMonths: ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
             },
 		})
-		var urlname = 'live-server-data-s.php'
-		var urlname1 = 'live-server-data-paneel.php'
-		var urlname2 = 'live-server-data-inverter.php'
+		var urlPower = 'live-server-data-s.php'
+		var urlPaneel = 'live-server-data-paneel.php'
+		var urlInverter = 'live-server-data-inverter.php'
 
-		function requestData1() {
+		function requestDataPower() {
 			$.ajax({
-				url: urlname,//url of data source
+				url: urlPower,//url of data source
 				type: 'GET',
 				data: { "date" : datum }, //optional
 				success: function(data) {
@@ -1216,44 +1216,44 @@ EOF
 						power_chart.series[1].addPoint([Date.UTC(data[i]['jaar'],data[i]['maand'],data[i]['dag'],data[i]['uur'],data[i]['minuut'],data[i]['sec']),data[i]['p1_current_power_prd']*1], false, shift);
 					}
 					power_chart.redraw();
-					urlname = 'live-server-data-c.php';
-					setTimeout(requestData1, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
+					urlPower = 'live-server-data-c.php';
+					setTimeout(requestDataPower, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					setTimeout(requestData1, 1000*10);
+					setTimeout(requestDataPower, 1000*10);
 				},
 				cache: false
 			});
 		}
 
-		function requestData2() {
+		function requestDataPaneel() {
 			$.ajax({
-				url: urlname1,//url of data source
+				url: urlPaneel,//url of data source
 				type: 'GET',
 				data: { "date" : datum }, //optional
 				success: function(data) {
 					data_p = eval(data);
-					setTimeout(requestData2, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
+					setTimeout(requestDataPaneel, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					setTimeout(requestData2, 1000*10);
+					setTimeout(requestDataPaneel, 1000*10);
 				},
 				cache: false
 			});
 		}
 
-		function requestDatai() {
+		function requestDataInverter() {
 			$.ajax({
-				url: urlname2,//url of data source
+				url: urlInverter,//url of data source
 				type: 'GET',
 				data: { "date" : datum }, //optional
 				success: function(data) {
 					data_i = eval(data);
-					UpdateDatai()
-					setTimeout(requestDatai, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
+					UpdateDataInverter()
+					setTimeout(requestDataInverter, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
-					setTimeout(requestDatai, 1000*10);
+					setTimeout(requestDataInverter, 1000*10);
 				},
 				cache: false
 			});
@@ -1276,13 +1276,13 @@ EOF
 				return(sum/n);
 			}
 		}
-		function UpdateDatai() {
+		function UpdateDataInverter() {
 			if(inverter_redraw == 1) {
-				var series = inverter_chart.series[0];
+				var series = inverter_charte.series[0];
 				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 				for (var i=0; i<=14; i++){
-					inverter_chart.series[i].setData([], false);
-					vermogen_chart.series[i].setData([], false);
+					inverter_charte.series[i].setData([], false);
+					inverter_chartv.series[i].setData([], false);
 				}
 				var s_serie = "x";
 				var sma = simple_moving_averager(gem_verm);
@@ -1293,12 +1293,12 @@ EOF
 							sma = simple_moving_averager(gem_verm);
 						}
 						n_gem_pow = sma(parseFloat(data_i[i]['p1_current_power_prd']));
-						inverter_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
-						vermogen_chart.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),n_gem_pow], false, shift);
+						inverter_charte.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
+						inverter_chartv.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),n_gem_pow], false, shift);
 					}
 				}
-				inverter_chart.redraw();
-				vermogen_chart.redraw();
+				inverter_charte.redraw();
+				inverter_chartv.redraw();
 			}
 		}
 
@@ -1315,7 +1315,7 @@ EOF
 					alignTicks:true,
 					spacingBottom: 0,
 					zoomType: 'none',
-					events: {load: requestData2}
+					events: {load: requestDataPaneel}
 				},
 				title: { text: null },
 				subtitle: {
@@ -1445,7 +1445,7 @@ EOF
 					spacingBottom: 0,
 					zoomType: 'none',
 					//only needed once as I show both graphs and they use same data -> paneel_chartv
-					//events: {load: requestData2}
+					//events: {load: requestDataPaneel}
 				},
 				title: { text: null },
 				subtitle: {
@@ -1562,7 +1562,7 @@ EOF
 		});
 
 		$(document).ready(function() {
-			inverter_chart = new Highcharts.Chart({
+			inverter_charte = new Highcharts.Chart({
 				chart: {
 					animation: false,
 					type: 'area',
@@ -1574,7 +1574,7 @@ EOF
 					alignTicks:true,
 					spacingBottom: 0,
 					zoomType: 'none',
-					events: {load: requestDatai},
+					events: {load: requestDataInverter},
 					spacingRight: 5
 				},
 				title: { text: null },
@@ -1709,7 +1709,7 @@ EOF
 		});
 
 		$(document).ready(function() {
-			vermogen_chart = new Highcharts.Chart({
+			inverter_chartv = new Highcharts.Chart({
 				chart: {
 					animation: false,
 					type: 'area',
@@ -1852,8 +1852,8 @@ EOF
 						btn1: {
 							onclick: function () {
 								gem_verm = 1;
-								vermogen_chart.yAxis[0].update({ title: { text: ' Vermogen (W)' }, });
-								UpdateDatai();
+								inverter_chartv.yAxis[0].update({ title: { text: ' Vermogen (W)' }, });
+								UpdateDataInverter();
 							},
 							text: 'Momentopname'
 						},
@@ -1861,8 +1861,8 @@ EOF
 						btn2: {
 							onclick: function () {
 								gem_verm = sgem_verm;
-								vermogen_chart.yAxis[0].update({ title: { text: gem_verm + ' punts gem. Vermogen (W)' }, });
-								UpdateDatai();
+								inverter_chartv.yAxis[0].update({ title: { text: gem_verm + ' punts gem. Vermogen (W)' }, });
+								UpdateDataInverter();
 							},
 							text: sgem_verm +' punts gemiddelde'
 						}
@@ -1886,7 +1886,7 @@ EOF
 						alignTicks:true,
 						spacingBottom: 0,
 						zoomType: 'x',
-						events: {load: requestData1}
+						events: {load: requestDataPower}
 					},
 					title: { text: null },
 					subtitle: {
@@ -2084,15 +2084,15 @@ EOF
 		this.classList.toggle("box_chart_energy-is-clicked");
 		document.getElementById("box_panel_energy").classList.toggle("box_panel_energy-is-clicked");
 		paneel_charte.reflow();
-		inverter_chart.reflow();
-		inverter_chart.reflow();
+		inverter_charte.reflow();
+		inverter_charte.reflow();
 	});
 	document.getElementById("box_chart_vermogen").addEventListener("click", function() {
 		this.classList.toggle("box_chart_vermogen-is-clicked");
 		document.getElementById("box_panel_vermogen").classList.toggle("box_panel_vermogen-is-clicked");
 		paneel_chartv.reflow();
-		vermogen_chart.reflow();
-		vermogen_chart.reflow();
+		inverter_chartv.reflow();
+		inverter_chartv.reflow();
 	});
 
 <?php
@@ -2110,9 +2110,9 @@ echo <<<EOF
 	});
 	window.addEventListener('resize', function(){
 		paneel_charte.reflow();
-		inverter_chart.reflow();
+		inverter_charte.reflow();
 		paneel_chartv.reflow();
-		vermogen_chart.reflow();
+		inverter_chartv.reflow();
 		wchart.reflow();
 		ychart.reflow();
 	}, true);
@@ -2127,9 +2127,9 @@ echo <<<EOF
 	});
 	window.addEventListener('resize', function(){
 		paneel_charte.reflow();
-		inverter_chart.reflow();
+		inverter_charte.reflow();
 		paneel_chartv.reflow();
-		vermogen_chart.reflow();
+		inverter_chartv.reflow();
 		power_chart.reflow();
 	}, true);
 EOF
@@ -2235,16 +2235,16 @@ EOF
 
 					if (this.points[0].point.series.chart.renderTo.id == "daygraph") {
 						for (i=0; i<=13; i++){
-							var td = inverter_chart.series[i].name.replace(/(\S*)\s(\d{2})-(\d{2})-(\d{4})/, '$4-$3-$2');
+							var td = inverter_charte.series[i].name.replace(/(\S*)\s(\d{2})-(\d{2})-(\d{4})/, '$4-$3-$2');
 							var tdt = new Date(td);
 							if (tdt.getTime() == this.x) {
-								inverter_chart.series[i].update({
+								inverter_charte.series[i].update({
 									color: '<?php echo $kleur2 ?>',
 									zIndex: 15,
 									fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
 									showInLegend: true,
 								},false)
-								vermogen_chart.series[i].update({
+								inverter_chartv.series[i].update({
 									color: '<?php echo $kleur2 ?>',
 									zIndex: 15,
 									fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
@@ -2252,26 +2252,26 @@ EOF
 								},false)
 							} else {
 								if (i != 13) {
-									inverter_chart.series[i].update({
+									inverter_charte.series[i].update({
 										color: '<?php echo $kleurg ?>',
 										zIndex: this.index,
 										fillOpacity: 0.0,
 										showInLegend: false,
 									},false)
-									vermogen_chart.series[i].update({
+									inverter_chartv.series[i].update({
 										color: '<?php echo $kleurg ?>',
 										zIndex: this.index,
 										fillOpacity: 0.0,
 										showInLegend: false,
 									},false)
 								}else{
-									inverter_chart.series[i].update({
+									inverter_charte.series[i].update({
 										color: '<?php echo $kleur1 ?>',
 										zIndex: this.index,
 										fillOpacity: 0.0,
 										showInLegend: false,
 									},false)
-									vermogen_chart.series[i].update({
+									inverter_chartv.series[i].update({
 										color: '<?php echo $kleur1 ?>',
 										zIndex: this.index,
 										fillOpacity: 0.0,
