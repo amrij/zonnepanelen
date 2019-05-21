@@ -1262,6 +1262,8 @@ EOF
 		function simple_moving_averager(period) {
 			var nums = [];
 			return function(num) {
+				if (period <= 1)
+					return num;
 				nums.push(num);
 				if (nums.length > period)
 					nums.splice(0,1); // remove the first element of the array
@@ -1282,7 +1284,6 @@ EOF
 					inverter_chart.series[i].setData([], false);
 					vermogen_chart.series[i].setData([], false);
 				}
-				var s_cnt = gem_verm;
 				var s_serie = "x";
 				var sma = simple_moving_averager(gem_verm);
 				for(var i = 0; i < data_i.length; i++){
