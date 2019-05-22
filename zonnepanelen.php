@@ -969,12 +969,12 @@ EOF
 					datam1 = eval(datam1)
 					if (typeof datam1 != 'undefined') {
 						if (cm == con_month && cd >= con_day) { maantal -= (cdays - cd);}
-						for (y=0; y< maantal; y++) {
-							var prod = datam1[y]['prod'];  //Solar productie
-							var v1 = datam1[y]['v1'];      // verbruik hoog
-							var v2 = datam1[y]['v2'];      // verbruik laag
-							var r1 = datam1[y]['r1'];      // return hoog
-							var r2 = datam1[y]['r2'];      // return laag
+						for (y = 0; y < maantal; y++) {
+							var prod = parseFloat(datam1[y]['prod']);  //Solar productie
+							var v1 = parseFloat(datam1[y]['v1']);      // verbruik hoog
+							var v2 = parseFloat(datam1[y]['v2']);      // verbruik laag
+							var r1 = parseFloat(datam1[y]['r1']);      // return hoog
+							var r2 = parseFloat(datam1[y]['r2']);      // return laag
 							yve += v1 + v2;
 							yvs += prod - r1 - r2;
 							yse += r1 + r2;
