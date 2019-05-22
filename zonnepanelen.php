@@ -155,6 +155,7 @@ omschrijving: hoofdprogramma
 		$ds = array_key_exists('ds', $_GET) ? $_GET['ds'] : "";
 		setlocale(LC_ALL, 'nl_NL');
 		if ($date == '') { $date = date("d-m-Y H:i:s", time()); }
+		$InvDays = (isset($InvDays) ? $InvDays : '14');
 		for ($i=0; $i<=$InvDays; $i++){
 			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)] . date(" d-m-Y", strtotime($date)-$i*86400);
 		}
