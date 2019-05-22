@@ -2251,35 +2251,23 @@ EOF
 									showInLegend: true,
 								},false)
 							} else {
-								if (i != 13) {
-									inverter_charte.series[i].update({
-										color: '<?php echo $kleurg ?>',
-										zIndex: this.index,
-										fillOpacity: 0.0,
-										showInLegend: false,
-									},false)
-									inverter_chartv.series[i].update({
-										color: '<?php echo $kleurg ?>',
-										zIndex: this.index,
-										fillOpacity: 0.0,
-										showInLegend: false,
-									},false)
-								}else{
-									inverter_charte.series[i].update({
-										color: '<?php echo $kleur1 ?>',
-										zIndex: this.index,
-										fillOpacity: 0.0,
-										showInLegend: false,
-									},false)
-									inverter_chartv.series[i].update({
-										color: '<?php echo $kleur1 ?>',
-										zIndex: this.index,
-										fillOpacity: 0.0,
-										showInLegend: false,
-									},false)
-								}
+								var col = (i == 13) ? '<?php echo $kleur1 ?>' : '<?php echo $kleurg ?>';
+								inverter_charte.series[i].update({
+									color: col,
+									zIndex: this.index,
+									fillOpacity: 0.0,
+									showInLegend: false,
+								},false)
+								inverter_chartv.series[i].update({
+									color: col,
+									zIndex: this.index,
+									fillOpacity: 0.0,
+									showInLegend: false,
+								},false)
 							}
 						}
+						inverter_charte.redraw();
+						inverter_chartv.redraw();
 					}
 
 					return s;
