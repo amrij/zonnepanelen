@@ -34,9 +34,8 @@ $tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
 $total = array();
 $diff = array();
 
-$dagen = 14;
-$dag = [gmdate("d", $today-($dagen-1)*86400), $dagen];
-$date_i = $today-$dagen*86400;
+$dag = [gmdate("d", $today-($InvDays-1)*86400), $InvDays];
+$date_i = $today-$InvDays*86400;
 
 //open MySQL database
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
