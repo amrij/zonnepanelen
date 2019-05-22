@@ -67,9 +67,10 @@ $OpacityS = '0.9';       // Lijn transparantie
 $P1 = '0'; // 0 = nee, 1 = ja
 
 //** Algemene velden
-$ElecLeverancier = "Engie";                            // naam electra leverancier
-$ElecDagGraph = '60';                                   // aantal dagen in grafiek
-$ElecMaandGraph = '13';                                 // aantal maanden in grafiek
+$ElecLeverancier = "Engie";                         // naam electra leverancier
+$ElecDagGraph = '60';                               // aantal dagen in grafiek
+$ElecMaandGraph = '13';                             // aantal maanden in grafiek
+$InvDays = '14';                                    // aantal voorafgaande dagen in inverter grafieken
 // contract startdatum (dd-mm) energie leverancier tbv jaar totalen op de website.
 // 01-01 wordt gebruikt indien niet gespecificeerd om zo het huidige jaar totaal te geven
 $contract_datum = '01-01';    // dd-mm

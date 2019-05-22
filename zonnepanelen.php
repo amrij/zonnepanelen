@@ -155,7 +155,7 @@ omschrijving: hoofdprogramma
 		$ds = array_key_exists('ds', $_GET) ? $_GET['ds'] : "";
 		setlocale(LC_ALL, 'nl_NL');
 		if ($date == '') { $date = date("d-m-Y H:i:s", time()); }
-		for ($i=0; $i<=14; $i++){
+		for ($i=0; $i<=$InvDays; $i++){
 			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)] . date(" d-m-Y", strtotime($date)-$i*86400);
 		}
 		$today = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
@@ -267,10 +267,10 @@ omschrijving: hoofdprogramma
 			print "],\n";
 		}
 
-		function productieSeries($ingr, $kleur, $kleur1, $kleurg) {
+		function productieSeries($ingr, $kleur, $kleur1, $kleurg, $InvDays) {
 			print "
 					series: [\n";
-			for ($i=0; $i<=13; $i++) { print "			{
+			for ($i = 0; $i <= $InvDays - 1; $i++) { print "			{
 						name: productie[" . $i . "],
 						showInLegend: false,
 						type: 'areaspline',
@@ -285,7 +285,7 @@ omschrijving: hoofdprogramma
 			}
 			print "
 					{
-						name: productie[14],
+						name: productie[" . $InvDays . "],
 						showInLegend: true,
 						type: 'areaspline',
 						animation: 0,
@@ -549,8 +549,9 @@ EOF
 	var data_i = [];
 	var gem_verm = <?php echo (isset($Gem_Verm) ? $Gem_Verm : 1); ?>;
 	var sgem_verm = gem_verm;
+	var InvDays = <?php echo $InvDays ?>;
 
-	var productie = [<?php echo "'$productie[14]','$productie[13]','$productie[12]','$productie[11]','$productie[10]','$productie[9]','$productie[8]','$productie[7]','$productie[6]','$productie[5]','$productie[4]','$productie[3]','$productie[2]','$productie[1]','$productie[0]'"?>];
+	var productie = [<?php for ($i=$InvDays; $i>=0; $i--){ echo "'", $productie[$i], "',"; } ?>];
 	var start_i = 0;
 	var inverter_redraw = 1;
 	var SolarProdToday = 0;
@@ -1280,7 +1281,7 @@ EOF
 			if(inverter_redraw == 1) {
 				var series = inverter_charte.series[0];
 				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-				for (var i=0; i<=14; i++){
+				for (var i=0; i<=InvDays; i++){
 					inverter_charte.series[i].setData([], false);
 					inverter_chartv.series[i].setData([], false);
 				}
@@ -1288,13 +1289,13 @@ EOF
 				var sma = simple_moving_averager(gem_verm);
 				for(var i = 0; i < data_i.length; i++){
 					if (data_i[i]['op_id'] == "i"){
-						if (gem_verm > 1 && s_serie != 14-data_i[i]['serie']) {
-							s_serie = 14-data_i[i]['serie'];
+						if (gem_verm > 1 && s_serie != InvDays-data_i[i]['serie']) {
+							s_serie = InvDays-data_i[i]['serie'];
 							sma = simple_moving_averager(gem_verm);
 						}
 						n_gem_pow = sma(parseFloat(data_i[i]['p1_current_power_prd']));
-						inverter_charte.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
-						inverter_chartv.series[14-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),n_gem_pow], false, shift);
+						inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
+						inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),n_gem_pow], false, shift);
 					}
 				}
 				inverter_charte.redraw();
@@ -1579,7 +1580,7 @@ EOF
 				},
 				title: { text: null },
 				subtitle: {
-					text: "Energie op <?php echo $datev;?> en 14 voorafgaande dagen",
+					text: "Energie op <?php echo $datev . " en " . $InvDays;?> voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
@@ -1631,7 +1632,7 @@ EOF
 							return (b.y - a.y);
 						});
 						$.each(sortedPoints, function () {
-							for (i=0; i<=14; i++){
+							for (i=0; i<=InvDays; i++){
 								if (this.series.name == productie[i]) {
 									this.point.series.options.marker.states.hover.enabled = false;
 									s += '<br>';
@@ -1640,9 +1641,9 @@ EOF
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-									if (i == 14) {s += "<b>";}
+									if (i == InvDays) {s += "<b>";}
 									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
-									if (i == 14) {s += "</b>";}
+									if (i == InvDays) {s += "</b>";}
 								}
 							}
 						});
@@ -1671,7 +1672,7 @@ EOF
 							},
 							mouseOut: function () {
 								if (this.index != this.chart.series.length-1) {
-									if (this.index != 13) {
+									if (this.index != InvDays-1) {
 										this.update({
 											color: '<?php echo $kleurg ?>',
 											zIndex: this.index,
@@ -1704,7 +1705,7 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg) ?>
+				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg, $InvDays) ?>
 			});
 		});
 
@@ -1725,7 +1726,7 @@ EOF
 				},
 				title: { text: null },
 				subtitle: {
-					text: "Vermogen op <?php echo $datev;?> en 14 voorafgaande dagen",
+					text: "Vermogen op <?php echo $datev . " en " . $InvDays;?> voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
@@ -1777,7 +1778,7 @@ EOF
 							return (b.y - a.y);
 						});
 						$.each(sortedPoints, function () {
-							for (i=0; i<=14; i++){
+							for (i=0; i<= InvDays; i++){
 								if (this.series.name == productie[i]) {
 									this.point.series.options.marker.states.hover.enabled = false;
 									s += '<br>';
@@ -1786,9 +1787,9 @@ EOF
 										this.point.series.options.marker.states.hover.enabled = true;
 										this.point.series.options.marker.states.hover.lineColor = 'red';
 									}
-									if (i == 14) {s += "<b>";}
+									if (i == InvDays) {s += "<b>";}
 									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
-									if (i == 14) {s += "</b>";}
+									if (i == InvDays) {s += "</b>";}
 								}
 							}
 						});
@@ -1817,7 +1818,7 @@ EOF
 							},
 							mouseOut: function () {
 								if (this.index != this.chart.series.length-1) {
-									if (this.index != 13) {
+									if (this.index != InvDays-1) {
 										this.update({
 											color: '<?php echo $kleurg ?>',
 											zIndex: this.index,
@@ -1869,7 +1870,7 @@ EOF
 					},
 					buttons: { contextButton: { menuItems: ['btn1', 'btn2'] } }
 				},
-				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg) ?>
+				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg, $InvDays) ?>
 			});
 		});
 
@@ -2234,7 +2235,7 @@ EOF
 					}
 
 					if (this.points[0].point.series.chart.renderTo.id == "daygraph") {
-						for (i=0; i<=13; i++){
+						for (i=0; i<=InvDays-1; i++){
 							var td = inverter_charte.series[i].name.replace(/(\S*)\s(\d{2})-(\d{2})-(\d{4})/, '$4-$3-$2');
 							var tdt = new Date(td);
 							if (tdt.getTime() == this.x) {
@@ -2251,7 +2252,7 @@ EOF
 									showInLegend: true,
 								},false)
 							} else {
-								var col = (i == 13) ? '<?php echo $kleur1 ?>' : '<?php echo $kleurg ?>';
+								var col = (i == InvDays-1) ?  '<?php echo $kleur1 ?>' : '<?php echo $kleurg ?>'
 								inverter_charte.series[i].update({
 									color: col,
 									zIndex: this.index,
