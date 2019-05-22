@@ -2277,7 +2277,28 @@ EOF
 				shared: true
 			},
 			plotOptions: {
-				series: { dataLabels: { }, },
+				series: {
+					dataLabels: { },
+					events: {
+						mouseOut: function () {
+							for (i=0; i<=13; i++){
+								var col = (i == InvDays-1) ?  '<?php echo $kleur1 ?>' : '<?php echo $kleurg ?>'
+								inverter_charte.series[i].update({
+									color: col,
+									zIndex: this.index,
+									fillOpacity: 0.0,
+									showInLegend: false,
+								},false)
+								inverter_chartv.series[i].update({
+									color: col,
+									zIndex: this.index,
+									fillOpacity: 0.0,
+									showInLegend: false,
+								},false)
+							}
+						}
+					}
+				},
 				column: {
 					stacking: 'normal',
 					minPointLength: 4,
