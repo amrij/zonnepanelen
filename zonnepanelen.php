@@ -2281,7 +2281,7 @@ EOF
 					dataLabels: { },
 					events: {
 						mouseOut: function () {
-							for (i=0; i<=13; i++){
+							for (i=0; i<=InvDays -1; i++){
 								var col = (i == InvDays-1) ?  '<?php echo $kleur1 ?>' : '<?php echo $kleurg ?>'
 								inverter_charte.series[i].update({
 									color: col,
@@ -2296,6 +2296,8 @@ EOF
 									showInLegend: false,
 								},false)
 							}
+							inverter_charte.redraw();
+							inverter_chartv.redraw();
 						}
 					}
 				},
