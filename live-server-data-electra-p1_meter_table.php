@@ -66,18 +66,14 @@ $limit = $_GET['aantal'];
 $period = $_GET['period'];
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 if($limit == ''){ $limit = '30';}
-$SQLdatefilter = '"%Y-%m-%d"';
-$SQLdatefilter1 = 'Y-m-d';
 if( $period == '') { $period = 'c';}
-if( $period == '' || $period == 'd' ) {
-	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
-	$limitf =  $limit * 86400;
-} elseif ($period == 'm') {
-	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m")';
+if ($period == 'm') {
+	$datefilter = "%Y-%m";
 	$SQLdatefilter1 = 'Y-m';
 	$limitf = 31*$limit*86400;
 } else {
-	$datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
+	$datefilter = "%Y-%m-%d";
+	$SQLdatefilter1 = 'Y-m-d';
 	$limitf =  $limit * 86400;
 }
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
@@ -200,7 +196,7 @@ if ($period == 'c' ){
 	$p1revrow = ["se_day" => 0];
 	// haal de gegevens op
 	foreach($mysqli->query('SELECT * FROM ( ' .
-							'SELECT '.$datefilter.' as oDate, DATE(t2.d) as iDate, sum(t2.tzon) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
+							'SELECT DATE_FORMAT(t2.d, "' . $datefilter . '") as oDate, DATE(t2.d) as iDate, sum(t2.tzon) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
 							'	 FROM      (SELECT DATE_FORMAT(datum, "%Y-%m-%d") as d, sum(v1) as sv1, sum(v2) as sv2, sum(r1) as sr1, sum(r2) as sr2, sum(prod) as tzon ' .
 							'			   FROM   P1_Meter_Overzicht ' .
 							'              where datum < "'.$morgen.'"'.
