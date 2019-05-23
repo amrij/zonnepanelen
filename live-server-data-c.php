@@ -53,6 +53,7 @@ $diff['dag']    = gmdate("d", $row['timestamp']);
 $diff['uur']    = gmdate("H", $row['timestamp']);
 $diff['minuut'] = gmdate("i", $row['timestamp']);
 $diff['sec']    = gmdate("s", $row['timestamp']);
+$diff['ts'] = $row['timestamp'] * 1000;
 $diff['p1_volume_prd'] = sprintf("%.3f", $row['de_day_total']/1000);
 $diff['p1_current_power_prd'] = $row['p_active'];
 //voeg het resultaat toe aan de total-array
