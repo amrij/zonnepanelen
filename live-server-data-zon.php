@@ -84,13 +84,11 @@ If ($midnight >= $begin) {
 	// loop through all records and make calculations in php. Usin max() and sum() functions
 	// makes things complicated or needs multiple queries.
 	$format = '%d-%m-%Y %H:%i:%s';
-	$query = sprintf("SELECT HEX(op_id) optimizer, FROM_UNIXTIME(timestamp, '%s') time, v_in, v_out, i_in, temperature, uptime, e_day
-			FROM telemetry_optimizers
-			WHERE timestamp > %s AND timestamp < %s
-			order BY HEX(op_id), timestamp",
-			$format, $today, $tomorrow);
+	$query = "SELECT HEX(op_id) optimizer, FROM_UNIXTIME(timestamp, '" . $format . "') time, v_in, v_out, i_in, temperature, uptime, e_day" .
+		" FROM telemetry_optimizers" .
+		" WHERE timestamp > " . $today . " AND timestamp < " . $tomorrow . 
+		" order BY HEX(op_id), timestamp";
 	$result = $mysqli->query($query);
-
 	if ($result) {
 		$prev_id = 0;
 		$prev_uptime = 0;
@@ -138,12 +136,11 @@ If ($midnight >= $begin) {
 	// INVERTER DATA
 	// Collect min/max over the day
 	// By using two queries there is no need to go through all data of the day
-	$table = $inverter == 1 ? "telemetry_inverter " : "telemetry_inverter_3phase ";
+	$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
 	$cols = $inverter == 1 ? "p_active" : "p_active1+p_active2+p_active3";
-	$query = sprintf("SELECT MIN(temperature) t_min, MAX(temperature) t_max, MAX(%s) p_max, max(e_total)-min(e_total) e_day
-			  FROM %s
-			  WHERE timestamp BETWEEN %s AND %s
-			  ", $cols, $table, $today, $tomorrow);
+	$query = "SELECT MIN(temperature) t_min, MAX(temperature) t_max, MAX(" . $cols . ") p_max, max(e_total)-min(e_total) e_day" .
+		" FROM " . $table .
+		" WHERE timestamp BETWEEN " . $today . " AND " . $tomorrow;
 	$result = $mysqli->query($query);
 	if ($result) {
 		$row = mysqli_fetch_assoc($result);
@@ -157,11 +154,10 @@ If ($midnight >= $begin) {
 	$cols = $inverter == 1 ? "v_ac, i_ac, frequency, p_active"
 				: "v_ac1, v_ac2, v_ac3, i_ac1, i_ac2, i_ac3, frequency1, frequency2, frequency3, p_active1, p_active2, p_active3, p_active1+p_active2+p_active3 p_active";
 
-	$query = sprintf("SELECT FROM_UNIXTIME(timestamp, '%s') datum, temperature t_act, mode, FORMAT(v_dc,3) as v_dc,
-				 %s
-			  FROM %s
-			  WHERE timestamp BETWEEN %s AND %s ORDER BY timestamp DESC limit 1
-			  ", $format, $cols, $table, $today, $tomorrow);
+	$query = "SELECT FROM_UNIXTIME(timestamp, '" . $format . "') datum, temperature t_act, mode, FORMAT(v_dc,3) as v_dc, " .
+			$cols .
+		" FROM " . $table .
+		" WHERE timestamp BETWEEN " . $today . " AND " . $tomorrow . " ORDER BY timestamp DESC limit 1";
 	$result = $mysqli->query($query);
 	if ($result) {
 		$row = mysqli_fetch_assoc($result);
