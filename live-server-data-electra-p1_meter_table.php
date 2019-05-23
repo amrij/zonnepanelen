@@ -83,21 +83,20 @@ if( $period == '' || $period == 'd' ) {
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 if($d1 == ''){$d1 = date("d-m-Y H:i:s", time());}
 
-$time = strtotime(gmdate("d-m-Y 12:00:00",(new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp()));
+$time = strtotime(gmdate("d-m-Y 12:00:00",(new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp()));
 $d3 = date("Y-m-d", strtotime($d1));
 $d3a = date("d", strtotime($d1));
 $d3b = date("Y-m", strtotime($d1));
 if ($d3a == '01' and $period == 'm'){
 	$limit -=1;
 }
-$winter = 2 - date("I",$today);
 $d2 = time();
-$date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$yesterday1 = gmdate("Y-m-d",(new DateTime(sprintf("yesterday %s",date("Y-m-d 12:00:00", time()))))->getTimestamp());
-$morgen = date("Y-m-d",(new DateTime(sprintf("tomorrow %s",date("Y-m-d 12:00:00", $time))))->getTimestamp());
-$today = gmdate("Y-m-d H:i:s",(new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", $time))))->getTimestamp());
-$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$yesterday = (new DateTime(sprintf("yesterday %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
+$date = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
+$yesterday1 = gmdate("Y-m-d",(new DateTime("yesterday " . date("Y-m-d 12:00:00", time())))->getTimestamp());
+$morgen = date("Y-m-d",(new DateTime("tomorrow " . date("Y-m-d 12:00:00", $time)))->getTimestamp());
+$today = gmdate("Y-m-d H:i:s",(new DateTime("today " . date("Y-m-d 00:00:00", $time)))->getTimestamp());
+$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
+$yesterday = (new DateTime("yesterday " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 $total = array();
 $diff = array();
 include('config.php');
@@ -234,7 +233,6 @@ if ($period == 'c' ){
 		//voeg het resultaat toe aan de total-array
 		array_push($total, $diff);
 	}
-		
 }
  
 // Sluit DB
