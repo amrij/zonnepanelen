@@ -97,10 +97,7 @@ $tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))
 $yesterday = (new DateTime("yesterday " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 $total = array();
 $diff = array();
-$inverterstr = 'telemetry_inverter';
-if ($inverter == 3){
-	$inverterstr = 'telemetry_inverter_3phase';
-}
+$table = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
 
 //open MySQL database
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
@@ -111,13 +108,13 @@ $val = $mysqli->query('select 1 from `P1_Meter_Overzicht` LIMIT 1');
 if($val == FALSE)
 {
 	// creëer tabel P1_Meter_Overzicht 
-	$sql = "CREATE TABLE `P1_Meter_Overzicht` (
-		  `datum` date NOT NULL COMMENT 'Datum',
-		  `prod` float DEFAULT NULL COMMENT 'Solar productie',
-		  `v1` float DEFAULT NULL COMMENT 'Verbruik laag tarief',
-		  `v2` float DEFAULT NULL COMMENT 'Verbruik hoog tarief',
-		  `r1` float DEFAULT NULL COMMENT 'Retour laag tarief',
-		  `r2` float DEFAULT NULL COMMENT 'Retour hoog tarief',
+	$sql = "CREATE TABLE P1_Meter_Overzicht (
+		  datum date NOT NULL COMMENT 'Datum',
+		  prod float DEFAULT NULL COMMENT 'Solar productie',
+		  v1 float DEFAULT NULL COMMENT 'Verbruik laag tarief',
+		  v2 float DEFAULT NULL COMMENT 'Verbruik hoog tarief',
+		  r1 float DEFAULT NULL COMMENT 'Retour laag tarief',
+		  r2 float DEFAULT NULL COMMENT 'Retour hoog tarief',
 		  PRIMARY KEY (datum),
 		  KEY (datum)
 		)";
@@ -128,7 +125,7 @@ if($val == FALSE)
 
 }
 // controleer of er iets in P1_Meter_Overzicht staat
-$val = $mysqli->query('select UNIX_TIMESTAMP(datum) datum from `P1_Meter_Overzicht` order by datum desc LIMIT 1');
+$val = $mysqli->query('select UNIX_TIMESTAMP(datum) datum from P1_Meter_Overzicht order by datum desc LIMIT 1');
 $row = mysqli_fetch_assoc($val);
 if ($row){
 	// zet de laaste gegevens in P1_Meter_Overzicht
@@ -139,7 +136,7 @@ if ($row){
 	'max(mv1)-min(mv1) as sv1, max(mv2)-min(mv2) as sv2, max(mr1)-min(mr1) as sr1, max(mr2)-min(mr2) as sr2 '.
 	'FROM P1_Meter where timestamp >= '.$van.' and timestamp < '.$tomorrow.' GROUP BY d ) t2 left join (SELECT timestamp, '.
 	'DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon '.
-	'FROM ' . $inverterstr . ' where timestamp >= '.$van.' and timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
+	'FROM ' . $table . ' where timestamp >= '.$van.' and timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
 	') output ORDER by Datum '.
 	'ON DUPLICATE KEY UPDATE '.
 	'prod = output.prod, v1 = output.v1, v2 = output.v2, r1 = output.r1, r2 = output.r2'; 
@@ -154,7 +151,7 @@ if ($row){
 	'max(mv1)-min(mv1) as sv1, max(mv2)-min(mv2) as sv2, max(mr1)-min(mr1) as sr1, max(mr2)-min(mr2) as sr2 '.
 	'FROM P1_Meter where timestamp < '.$tomorrow.' GROUP BY d ) t2 left join (SELECT timestamp, '.
 	'DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon '.
-	'FROM ' . $inverterstr . ' where timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
+	'FROM ' . $table . ' where timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
 	') output ORDER by Datum'; 
 	if ($mysqli->query($sql) !== TRUE) {
 		echo "Error insert table: " . $mysqli->error;
@@ -165,15 +162,10 @@ if ($period == 'c' ){
 	// ***************************************************************************************************************
 	// Haal huidig energy verbruik/retour op van de P1_ElectriciteitsMeter .... ????
 	// ***************************************************************************************************************
-	$result = $mysqli->query("SELECT
-	FROM_UNIXTIME(timestamp) as time,
-	dv,
-	dr,
-	cv,
-	cr
-	From P1_Meter
-	where timestamp >= " . $yesterday. " and timestamp < " . $tomorrow . "
-	order by timestamp desc limit 1");
+	$result = $mysqli->query("SELECT FROM_UNIXTIME(timestamp) as time, dv, dr, cv, cr" .
+				" From P1_Meter" .
+				" where timestamp >= " . $yesterday. " and timestamp < " . $tomorrow .
+				" order by timestamp desc limit 1");
 	$row = mysqli_fetch_assoc($result);	
 	if ($row){
 		$diff['ServerTime'] = $row['time'];
@@ -190,23 +182,21 @@ if ($period == 'c' ){
 	}		
 	array_push($total, $diff);
 } else {
-	//open MySQL database
-	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 	// haal gegevens van de panelen op
 	$diff = array();
 	$p1revrow = ["se_day" => 0];
 	// haal de gegevens op
 	foreach($mysqli->query('SELECT * FROM ( ' .
-							'SELECT DATE_FORMAT(t2.d, "' . $datefilter . '") as oDate, DATE(t2.d) as iDate, sum(t2.tzon) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
-							'	 FROM      (SELECT DATE_FORMAT(datum, "%Y-%m-%d") as d, sum(v1) as sv1, sum(v2) as sv2, sum(r1) as sr1, sum(r2) as sr2, sum(prod) as tzon ' .
-							'			   FROM   P1_Meter_Overzicht ' .
-							'              where datum < "'.$morgen.'"'.
-							'			   GROUP BY d ' .
-							'			   ) t2 ' .
-							' GROUP BY oDate ' .
-							' ORDER by t2.d desc ' .
-							' LIMIT '.$limit.' ) output' .
-							' ORDER by oDate ;'   ) as $j => $row){
+				'	SELECT DATE_FORMAT(t2.d, "' . $datefilter . '") as oDate, DATE(t2.d) as iDate, sum(t2.tzon) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
+				'	FROM	(SELECT DATE_FORMAT(datum, "%Y-%m-%d") as d, sum(v1) as sv1, sum(v2) as sv2, sum(r1) as sr1, sum(r2) as sr2, sum(prod) as tzon ' .
+				'			FROM   P1_Meter_Overzicht ' .
+				'       		where datum < "'.$morgen.'"'.
+				'			GROUP BY d ' .
+				'		) t2 ' .
+				'	GROUP BY oDate ' .
+				'	ORDER by t2.d desc ' .
+				'	LIMIT '.$limit.' ) output' .
+				' ORDER by oDate ;') as $j => $row){
 		$diff['idate'] = date($row['iDate']);
 		$diff['serie'] = date($row['oDate']);
 		$diff['prod'] = round($row["prod"],2);
