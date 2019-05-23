@@ -278,7 +278,7 @@ omschrijving: hoofdprogramma
 						animation: 0,
 						trackByArea: true,
 						yAxis: 0,
-						color: '" . ($i > 12 ? $kleur1 : $kleurg) . "',
+						color: '" . ($i > $InvDays - 2 ? $kleur1 : $kleurg) . "',
 						fillOpacity: 0.0,
 						zIndex: " . $i . ",
 						data: []//this will be filled by requestData()
