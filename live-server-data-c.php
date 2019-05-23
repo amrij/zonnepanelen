@@ -41,12 +41,11 @@ $table = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
 $cols  = $inverter == 1 ? 'p_active'           : 'p_active1+p_active2+p_active3';
 
 // haal de gegevens van de inverter op. Totaal van de_day, laatste p_active
-$result = $mysqli->query(
-		'SELECT max(timestamp) as timestamp, (max(e_total)-min(e_total)) as de_day_total, ' .
-		'	(select ' . $cols . ' from ' . $table . ' order by timestamp desc limit 1) as p_active' .
-		' FROM ' . $table .
-		' WHERE timestamp BETWEEN ' . $today . ' AND ' . $tomorrow
-		);
+$query = 'SELECT max(timestamp) as timestamp, (max(e_total)-min(e_total)) as de_day_total, ' .
+	'	(select ' . $cols . ' from ' . $table . ' order by timestamp desc limit 1) as p_active' .
+	' FROM ' . $table .
+	' WHERE timestamp BETWEEN ' . $today . ' AND ' . $tomorrow;
+$result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $diff['jaar']   = gmdate("Y", $row['timestamp']);
 $diff['maand']  = gmdate("m", $row['timestamp'])-1;
