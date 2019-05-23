@@ -38,16 +38,18 @@ $long = 6.0045953; //Longitude East
 $zonnesysteem = "zonnesysteem.gif";
 
 // inverter grafieken layout
-$ingr = 1; // 0 = alleen lijn, 1 = gevuld
+$ingr = 1; 				// 0 = alleen lijn, 1 = gevuld
+$Gem_Verm = '1' ;		// bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
+$InvDays = '14';		// aantal voorafgaande dagen in inverter grafieken
 
-// inverter en panelen grafiek kleur actuele dag
+// inverter en panelen grafiek
+// kleuren
 // Hex Code #RRGGBB: '#4169E1', '#0000FF' .... zie https://www.rapidtables.com/web/color/
 // transparantie: 0 = geheel doorzichtig, 0.5 is half doorzichtig, 1 = ondoorzichtig
 $kleur = '#4169E1';    // kleur royalbleu voor actuele dag
 $kleur1 = '#009900';   // kleur groen voor lijn voorafgaande dag inverter grafiek (grijs = '#d4d0d0')
 $kleur2 = '#009900';   // kleur groen voor lijn actueel paneel
 $kleurg = '#d4d0d0';   // kleur grijs voor lijn overige dagen / panelen
-$Gem_Verm = '1' ;      // bereken het gemiddelde van x metingen om de grafiek wat minder te laten fluctueren
 $kleurSR = '#009900';  // kleur Solar Retour
 $OpacitySR = '0.7';      // Lijn transparantie
 $fillOpacitySR = '0.4';  // opvul transparantie
@@ -70,7 +72,6 @@ $P1 = '0'; // 0 = nee, 1 = ja
 $ElecLeverancier = "Engie";                         // naam electra leverancier
 $ElecDagGraph = '60';                               // aantal dagen in grafiek
 $ElecMaandGraph = '13';                             // aantal maanden in grafiek
-$InvDays = '14';                                    // aantal voorafgaande dagen in inverter grafieken
 // contract startdatum (dd-mm) energie leverancier tbv jaar totalen op de website.
 // 01-01 wordt gebruikt indien niet gespecificeerd om zo het huidige jaar totaal te geven
 $contract_datum = '01-01';    // dd-mm
