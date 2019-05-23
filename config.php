@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.67.2
+// versie: 1.68.0
 // auteur: André Rijkeboer
-// datum:  19-05-2019
+// datum:  23-05-2019
 // omschrijving: configuratie bestand
 
 // gegevens voor het openen van de database
