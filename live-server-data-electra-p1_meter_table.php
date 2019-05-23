@@ -62,11 +62,15 @@
 //~ {"idate":"2019-03-01","serie":"2019-03","prod":128.23,"v1":63.63,"v2":34.71,"r1":15.8,"r2":72.11}
 //~ ]
 
-$limit = $_GET['aantal'];
-$period = $_GET['period'];
+include('config.php');
+
+$limit = array_key_exists('aantal', $_GET) ? $_GET['aantal'] : "";
+$period = array_key_exists('period', $_GET) ? $_GET['period'] : "";
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
-if($limit == ''){ $limit = '30';}
-if( $period == '') { $period = 'c';}
+if ($limit == '') { $limit = '30'; }
+if ($period == '') { $period = 'c'; }
+if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
+
 if ($period == 'm') {
 	$datefilter = "%Y-%m";
 	$SQLdatefilter1 = 'Y-m';
@@ -76,8 +80,6 @@ if ($period == 'm') {
 	$SQLdatefilter1 = 'Y-m-d';
 	$limitf =  $limit * 86400;
 }
-$d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
-if($d1 == ''){$d1 = date("d-m-Y H:i:s", time());}
 
 $time = strtotime(gmdate("d-m-Y 12:00:00",(new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp()));
 $d3 = date("Y-m-d", strtotime($d1));
@@ -95,7 +97,6 @@ $tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))
 $yesterday = (new DateTime("yesterday " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 $total = array();
 $diff = array();
-include('config.php');
 $inverterstr = 'telemetry_inverter';
 if ($inverter == 3){
 	$inverterstr = 'telemetry_inverter_3phase';
