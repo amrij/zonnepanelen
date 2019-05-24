@@ -35,44 +35,38 @@
 //~ {"idate":"2019-03-01","serie":"2019-03","prod":128.23,"v1":63.63,"v2":34.71,"r1":15.8,"r2":72.11}
 //~ ]
 
+include('config.php');
+
 $limit = array_key_exists('aantal', $_GET) ? $_GET['aantal'] : "";
 $period = array_key_exists('period', $_GET) ? $_GET['period'] : "";
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 
-$SQLdatefilter = '"%Y-%m-%d"';
+if($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
+
 if($period == '' || $period == 'd' ) {
 	$SQLdatefilter = '"%Y-%m-%d"';
 	$JSON_SUM = "Y-m-d";
 	$JSON_period = "day";
-	if($limit == ''){
-		$limit = '30';
-	}
+	if($limit == '') { $limit = '30'; }
 	$periods = $limit-1;
 } elseif ($period == 'm') {
 	$SQLdatefilter = '"%Y-%m"';
 	$JSON_SUM = "Y-m";
 	$JSON_period = "month";
-	if($limit == ''){
-		$limit = '12';
-	}
+	if($limit == '') { $limit = '12'; }
 	$periods = $limit*31-1;
 }
 
-if($d1 == ''){
-	$d1 = date("d-m-Y H:i:s", time());
-}
-
-$date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
+$date = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
+$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 $today = new DateTime();
 $total = array();
 $dsmrdata = array();
 $dsmrrec = array();
 $diff = array();
-include('config.php');
 
 // Get current info for P1_ElectriciteitsMeter from DSMR server
-if ($period == 'c' ){
+if ($period == 'c' ) {
 	//Get current info for P1_ElectriciteitsMeter from DSMR server
 	$response = file_get_contents($dsmr_url.'/api/v2/consumption/electricity-live', null, stream_context_create(array(
 			'http' => array(
@@ -194,43 +188,26 @@ if ($period == 'c' ){
 	//-------------------------------------------------------------
 	//open MySQL database
 	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
-	// haal gegevens van de inverter op
 	$diff = array();
 	$p1revrow = ["se_day" => 0];
-	if ($inverter == 1){
-		// haal de gegevens van de enkel fase inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
-		$inverter_data = $mysqli->query(
-				' SELECT * FROM ( ' .
-				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
-				'	 		FROM   solaredge.telemetry_inverter ' .
-				'			WHERE timestamp < ' . $tomorrow.
-				'			GROUP BY d  ' .
-				'		  ) t1 ' .
-				' GROUP BY oDate ' .
-				' ORDER by t1.d desc ' .
-				' LIMIT '.$limit.') output' .
-				' ORDER by oDate ;') ;
-	}else{
-		// haal de gegevens van de 3 fase inverter op
-		$inverter_data = $mysqli->query(
-				' SELECT * FROM ( ' .
-				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
-				'	 		FROM   solaredge.telemetry_inverter_3phase ' .
-				'			WHERE timestamp < ' . $tomorrow.
-				'			GROUP BY d  ' .
-				'		  ) t1 ' .
-				' GROUP BY oDate ' .
-				' ORDER by t1.d desc ' .
-				' LIMIT '.$limit.') output' .
-				' ORDER by oDate ;') ;
-	}
-	// Sluit DB
+        $table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
+	$query = ' SELECT * FROM ( ' .
+		'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
+		'        FROM ( SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
+		'                       FROM ' . $table .
+		'                       WHERE timestamp < ' . $tomorrow .
+		'                       GROUP BY d  ' .
+		'                 ) t1 ' .
+		' GROUP BY oDate ' .
+		' ORDER by t1.d desc ' .
+		' LIMIT '.$limit.') output' .
+		' ORDER by oDate ;';
+	// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
+	$inverter_data = $mysqli->query($query);
 	$thread_id = $mysqli->thread_id;
+	// Sluit DB
 	$mysqli->kill($thread_id);
 	$mysqli->close();
-
 
 	// ================================================================================
 	// loop through the dates and merge the data from DSMR server and the Converter arrays

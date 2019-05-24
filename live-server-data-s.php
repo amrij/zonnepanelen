@@ -22,19 +22,24 @@
 // auteur: André Rijkeboer
 // datum:  18-03-2019
 // omschrijving: ophalen van de stroom en energie gegevens van de inverter (1 dag) eerste keer
+
 include('config.php');
+
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
 $midnight = date("Y-m-d 00:00:00", strtotime($d1));
 $today    = (new DateTime("today " . $midnight))->getTimestamp();
 $tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
+
 $total = array();
 $diff = array();
+
 // open MySQL database
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 // enkel of drie fase inverter
 $table = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
 $cols  = $inverter == 1 ? 'p_active'           : '(p_active1+p_active2+p_active3) as p_active';
+
 // haal de gegevens op
 $de_day_total = 0;
 foreach ($mysqli->query(
@@ -50,11 +55,13 @@ foreach ($mysqli->query(
 	$diff['uur']    = gmdate("H", $row['timestamp']);
 	$diff['minuut'] = gmdate("i", $row['timestamp']);
 	$diff['sec']    = gmdate("s", $row['timestamp']);
+	$diff['ts']   = $row['timestamp'] * 1000;
 	$diff['p1_volume_prd'] = sprintf("%.3f", $de_day_total/1000);
 	$diff['p1_current_power_prd'] = $row['p_active'];
 	//voeg het resultaat toe aan de total-array
 	array_push($total, $diff);
 }
+
 // sluit DB		
 $thread_id = $mysqli->thread_id;
 $mysqli->kill($thread_id);

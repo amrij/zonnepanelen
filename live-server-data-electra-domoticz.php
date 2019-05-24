@@ -35,20 +35,16 @@
 //~ {"idate":"2019-03-01","serie":"2019-03","prod":128.23,"v1":63.63,"v2":34.71,"r1":15.8,"r2":72.11}
 //~ ]
 
+include('config.php');
+
 $limit = array_key_exists('aantal', $_GET) ? $_GET['aantal'] : "";
 $period = array_key_exists('period', $_GET) ? $_GET['period'] : "";
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 
-if($limit == ''){
-	$limit = '30';
-}
+if($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
+if($limit == '') { $limit = '30'; }
 
-$SQLdatefilter = '"%Y-%m-%d"';
-if($period == '' || $period == 'd' ) {
-	$SQLdatefilter = '"%Y-%m-%d"';
-	$JSON_SUM = "Y-m-d";
-	$JSON_period = "day";
-} elseif ($period == 'm') {
+if ($period == 'm') {
 	$SQLdatefilter = '"%Y-%m"';
 	$JSON_SUM = "Y-m";
 	$JSON_period = "month";
@@ -57,19 +53,15 @@ if($period == '' || $period == 'd' ) {
 	$JSON_SUM = "Y-m-d";
 	$JSON_period = "day";
 }
-if($d1 == ''){
-	$d1 = date("d-m-Y H:i:s", time());
-}
-$date = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
-$tomorrow = (new DateTime(sprintf("tomorrow %s",date("Y-m-d 00:00:00", strtotime($d1)))))->getTimestamp();
+$date = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
+$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 $total = array();
 $domodata = array();
 $domorec = array();
 $diff = array();
-include('config.php');
 
 // Get current info for P1_ElectriciteitsMeter from domoticz
-if ($period == 'c' ){
+if ($period == 'c' ) {
 	//Get current info for P1_ElectriciteitsMeter from domoticz
 	$response = file_get_contents('http://'.$domohost.'&/json.htm?type=devices&rid='.$domoidx);
 	$domo_rest = json_decode($response,true);
@@ -172,37 +164,22 @@ if ($period == 'c' ){
 	$diff = array();
 	$date_e = (new DateTime(sprintf("today %s",date("Y-m-d 23:59:59", strtotime($checkdatee)))))->getTimestamp();
 	$p1revrow = ["se_day" => 0];
-	if ($inverter == 1){
-		// haal de gegevens van de enkel fase inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
-		$inverter_data = $mysqli->query(
-				' SELECT * FROM ( ' .
-				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
-				'	 		FROM   solaredge.telemetry_inverter ' .
-				'			WHERE timestamp < ' . $tomorrow.
-				'			GROUP BY d  ' .
-				'		  ) t1 ' .
-				' GROUP BY oDate ' .
-				' ORDER by t1.d desc ' .
-				' LIMIT '.$limit.') output' .
-				' ORDER by oDate ;') ;
-	}else{
-		// haal de gegevens van de 3 fase inverter op
-		$inverter_data = $mysqli->query(
-				' SELECT * FROM ( ' .
-				'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-				'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
-				'	 		FROM   solaredge.telemetry_inverter_3phase ' .
-				'			WHERE timestamp < ' . $tomorrow.
-				'			GROUP BY d  ' .
-				'		  ) t1 ' .
-				' GROUP BY oDate ' .
-				' ORDER by t1.d desc ' .
-				' LIMIT '.$limit.') output' .
-				' ORDER by oDate ;') ;
-	}
-	// Sluit DB
+	$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
+	$query = ' SELECT * FROM ( ' .
+		'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
+		'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
+		'	 		FROM ' . $table .
+		'			WHERE timestamp < ' . $tomorrow .
+		'			GROUP BY d  ' .
+		'		  ) t1 ' .
+		' GROUP BY oDate ' .
+		' ORDER by t1.d desc ' .
+		' LIMIT '.$limit.') output' .
+		' ORDER by oDate ;';
+	// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
+	$inverter_data = $mysqli->query($query);
 	$thread_id = $mysqli->thread_id;
+	// Sluit DB
 	$mysqli->kill($thread_id);
 	$mysqli->close();
 
