@@ -640,10 +640,10 @@ EOF
 		for (var i = 0; i < data_p.length; i++) {
 			if (data_p[i]['op_id'] !== id && data_p[i]['serie'] == 0) {
 				var sIdx = data_p[i]['op_id'] - 1;
-				if (data_p[i]['op_id'] > id ){ --sIdx; }
-				ichart.series[sIdx].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']), data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+				if (data_p[i]['op_id'] > id ) { --sIdx; }
+				ichart.series[sIdx].addPoint([data_p[i]['ts'], data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
 			} else {
-				ichart.series[aantal].addPoint([Date.UTC(data_p[i]['jaar'],data_p[i]['maand'],data_p[i]['dag'],data_p[i]['uur'],data_p[i]['minuut'],data_p[i]['sec']), data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
+				ichart.series[aantal].addPoint([data_p[i]['ts'], data_p[i][paneelGraph[metric]['metric']]*1], false, shift);
 			}
 		}
 		ichart.setTitle(null, { text: 'Paneel: ' + op_id[id] + ' en alle andere panelen', x: 20});
@@ -1214,8 +1214,8 @@ EOF
 					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 					data = eval(data);
 					for(var i = 0; i < data.length; i++){
-						power_chart.series[0].addPoint([Date.UTC(data[i]['jaar'],data[i]['maand'],data[i]['dag'],data[i]['uur'],data[i]['minuut'],data[i]['sec']),data[i]['p1_volume_prd']*1], false, shift);
-						power_chart.series[1].addPoint([Date.UTC(data[i]['jaar'],data[i]['maand'],data[i]['dag'],data[i]['uur'],data[i]['minuut'],data[i]['sec']),data[i]['p1_current_power_prd']*1], false, shift);
+						power_chart.series[0].addPoint([data[i]['ts'],data[i]['p1_volume_prd']*1], false, shift);
+						power_chart.series[1].addPoint([data[i]['ts'],data[i]['p1_current_power_prd']*1], false, shift);
 					}
 					power_chart.redraw();
 					urlPower = 'live-server-data-c.php';
@@ -1295,8 +1295,9 @@ EOF
 							sma = simple_moving_averager(gem_verm);
 						}
 						n_gem_pow = sma(parseFloat(data_i[i]['p1_current_power_prd']));
-						inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),data_i[i]['p1_volume_prd']*1], false, shift);
-						inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([Date.UTC(data_i[i]['jaar'],data_i[i]['maand'],data_i[i]['dag'],data_i[i]['uur'],Math.round(data_i[i]['minuut']*0.2)*5,0),n_gem_pow], false, shift);
+
+						inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['p1_volume_prd']*1], false, shift);
+						inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
 					}
 				}
 				inverter_charte.redraw();
