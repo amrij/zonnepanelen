@@ -58,12 +58,6 @@ while ($row = mysqli_fetch_assoc($result)) {
 		if ($row['optimizer'] == $op_id[$i][0]) {
 			$diff['serie']  = 0;
 			$diff['op_id']  = $i;
-			$diff['jaar']   = gmdate("Y", $row['timestamp']);
-			$diff['maand']  = gmdate("m", $row['timestamp'])-1;
-			$diff['dag']    = gmdate("d", $row['timestamp']);
-			$diff['uur']    = gmdate("H", $row['timestamp']);
-			$diff['minuut'] = gmdate("i", $row['timestamp']);
-			$diff['sec']    = gmdate("s", $row['timestamp']);
 			$diff['ts'] = $row['timestamp'] * 1000;
 			$diff['temperature'] = $row['temperature']*2;
 			$diff['p1_current_power_prd'] = sprintf("%.3f", $row['vermogen']);

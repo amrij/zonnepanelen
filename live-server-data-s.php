@@ -49,12 +49,6 @@ foreach ($mysqli->query(
 		' ORDER BY timestamp')
 		as $j => $row) {
 	$de_day_total += $row["de_day"];
-	$diff['jaar']   = gmdate("Y", $row['timestamp']);
-	$diff['maand']  = gmdate("m", $row['timestamp'])-1;
-	$diff['dag']    = gmdate("d", $row['timestamp']);
-	$diff['uur']    = gmdate("H", $row['timestamp']);
-	$diff['minuut'] = gmdate("i", $row['timestamp']);
-	$diff['sec']    = gmdate("s", $row['timestamp']);
 	$diff['ts']   = $row['timestamp'] * 1000;
 	$diff['p1_volume_prd'] = sprintf("%.3f", $de_day_total/1000);
 	$diff['p1_current_power_prd'] = $row['p_active'];
