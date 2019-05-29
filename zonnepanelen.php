@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.68.0
+versie: 1.68.1
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  23-05-2019
+datum:  29-05-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -623,8 +623,8 @@ EOF
 	}
 
 	var paneelGraph = {
-			'Vermogen':     { 'metric': 'p1_current_power_prd', 'tekst': 'Vermogen',    'unit': 'W' },
-			'Energie':      { 'metric': 'p1_volume_prd',        'tekst': 'Energie',     'unit': 'Wh' },
+			'Vermogen':     { 'metric': 'cp', 					'tekst': 'Vermogen',    'unit': 'W' },
+			'Energie':      { 'metric': 'vp',        			'tekst': 'Energie',     'unit': 'Wh' },
 			'Temperatuur':  { 'metric': 'temperature',          'tekst': 'Temperatuur', 'unit': '°C' },
 			'V_in':         { 'metric': 'vin',                  'tekst': 'Spanning In', 'unit': 'V' },
 			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning Uit','unit': 'V' },
@@ -1200,25 +1200,26 @@ EOF
 				shortMonths: ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
             },
 		})
-		var urlPower = 'live-server-data-s.php'
+		var urlPower = 'live-server-data.php'
 		var urlPaneel = 'live-server-data-paneel.php'
 		var urlInverter = 'live-server-data-inverter.php'
+		var limit = 's'
 
 		function requestDataPower() {
 			$.ajax({
 				url: urlPower,//url of data source
 				type: 'GET',
-				data: { "date" : datum }, //optional
+				data: { "date" : datum, "limit" : limit }, 
 				success: function(data) {
 					var series = power_chart.series[0];
 					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 					data = eval(data);
 					for(var i = 0; i < data.length; i++){
-						power_chart.series[0].addPoint([data[i]['ts'],data[i]['p1_volume_prd']*1], false, shift);
-						power_chart.series[1].addPoint([data[i]['ts'],data[i]['p1_current_power_prd']*1], false, shift);
+						power_chart.series[0].addPoint([data[i]['ts'],data[i]['vp']*1], false, shift);
+						power_chart.series[1].addPoint([data[i]['ts'],data[i]['cp']*1], false, shift);
 					}
 					power_chart.redraw();
-					urlPower = 'live-server-data-c.php';
+					limit = 'c';
 					setTimeout(requestDataPower, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
@@ -1294,9 +1295,9 @@ EOF
 							s_serie = InvDays-data_i[i]['serie'];
 							sma = simple_moving_averager(gem_verm);
 						}
-						n_gem_pow = sma(parseFloat(data_i[i]['p1_current_power_prd']));
+						n_gem_pow = sma(parseFloat(data_i[i]['cp']));
 
-						inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['p1_volume_prd']*1], false, shift);
+						inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['vp']*1], false, shift);
 						inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
 					}
 				}
