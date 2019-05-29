@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.11
+// versie: 1.68.0
 // auteur: André Rijkeboer
-// datum:  17-03-2019
+// datum:  29-05-2019
 // omschrijving: ophalen van de stroom en energie gegevens van de panelen en de inverter (1 dag)
 
 include('config.php');
@@ -60,13 +60,13 @@ while ($row = mysqli_fetch_assoc($result)) {
 			$diff['op_id']  = $i;
 			$diff['ts'] = $row['timestamp'] * 1000;
 			$diff['temperature'] = $row['temperature']*2;
-			$diff['p1_current_power_prd'] = sprintf("%.3f", $row['vermogen']);
+			$diff['cp'] = sprintf("%.3f", $row['vermogen']);
 
 			if ($paneel[$i]['uptime'] > $row['uptime']) {
 				$paneel[$i]['verschil'] = $paneel[$i]['energie'];
 			}
-			$diff['p1_volume_prd'] = sprintf("%.3f", $row['energie'] + $paneel[$i]['verschil']);
-			$paneel[$i]['energie'] = $diff['p1_volume_prd'];
+			$diff['vp'] = sprintf("%.3f", $row['energie'] + $paneel[$i]['verschil']);
+			$paneel[$i]['energie'] = $diff['vp'];
 			$paneel[$i]['uptime'] = $row['uptime'];
 			//voeg het resultaat toe aan de total-array
 			array_push($total, $diff);
