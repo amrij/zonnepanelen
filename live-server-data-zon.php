@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.67.0
+// versie: 1.69.0
 // auteur: André Rijkeboer
-// datum:  17-04-2019
+// datum:  30-05-2019
 // omschrijving: ophalen van de tekstgegevens van het zonnepanelensysteem
 
 include('config.php');

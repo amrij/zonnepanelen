@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.6.3 aangepast door André Rijkeboer
+// versie: 1.69.0 aangepast door André Rijkeboer
 // auteur: Jos van der Zande based on model from André Rijkeboer
 //
-// datum:  18-05-2018 
+// datum:  30-05-2019 
 // omschrijving: ophalen van de P1 en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //

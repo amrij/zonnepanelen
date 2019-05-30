@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.5
+// versie: 1.69.0
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  12-04-2018
+// datum:  30-05-2019
 // omschrijving: ophalen van de P1meter informatie uit Domoticz en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-domoticz.php/period=c

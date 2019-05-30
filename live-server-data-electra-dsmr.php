@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.6
+// versie: 1.69.0
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  19-04-2018
+// datum:  30-05-2019
 // omschrijving: ophalen van de P1meter informatie uit DSMR server en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-dsmr.php/period=c
