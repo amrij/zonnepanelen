@@ -996,36 +996,46 @@ EOF
 			yve -= ve;
 			yvs -= vs;
 			if (PVGis[cm] > 0) {
-				PVGisd = " (" + waarde(0,0,PVGis[cm]/cdays) + ")";
-				PVGism = " (" + waarde(0,0,PVGis[cm]/cdays*cd) + ")";
+				PVGisd = waarde(0,0,PVGis[cm]/cdays);
+				PVGism = waarde(0,0,PVGis[cm]/cdays*cd);
 				tPVGis=0;
 				for (i=1; i<PVGis.length; i++) {
-					if (i == con_month) { <?php // add part contract month start ?>
+					if (i == con_month) {
+<?php					// add part contract month start ?>
 						if ( cm == con_month && cd >= con_day ){
 							var factor = (cd-con_day + 1)/cdays;
 						}else if( cm > con_month ){
-							var factor = (cdays-con_day + 1)/cdays;
+							var factor = (cdays - con_day + 1)/cdays;
 						}else{
-							var factor = (cdays-con_day + 1 + cd)/cdays;
+							var factor = (cdays - con_day + 1 + cd)/cdays;
 						}
 						tPVGis += PVGis[i]*factor;
+						continue;
 					}
-					if (i == cm && i !=con_month ) { <?php // add part current month?>
-						cdays = daysInMonth(cm, cy);
-						var factor = cd/cdays;
+					if (i == cm ) {
+<?php					// add part current month?>
+						var cmdays = daysInMonth(cm, cy);
+						var factor = cd/cmdays;
 						tPVGis += PVGis[i]*factor;
+						continue;
 					}
-					if (i != con_month && i != cm ) {
-						if (i > con_month && cm > con_month && i < cm) {<?php // add months after start contract when contract date is passd this year ?>
-							tPVGis += PVGis[i];
-						}
-
-						if (cy > con_start_year){ // add months between start and begin dit jaar
-							tPVGis += PVGis[i];
-						}
+					if (i > con_month && i < cm) {
+<?php					// add months after start contract till current date ?>
+						tPVGis += PVGis[i];
+						continue;
+					}
+					if (i > con_month && i > cm) {
+<?php					// add months after start contract till end of year ?>
+						tPVGis += PVGis[i];
+						continue;
+					}
+					if (cy > con_start_year && i < cm){
+<?php					// add months beginning this year till current month ?>
+						tPVGis += PVGis[i];
+						continue;
 					}
 				}
-				PVGisj = " (" + waarde(0,0,tPVGis) + ")";
+				PVGisj = waarde(0,0,tPVGis);
 			}
 	}
 	function update_map_fields() {
