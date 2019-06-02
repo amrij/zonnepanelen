@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.69.0
+// versie: 1.69.1
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  30-05-2019
+// datum:  1-06-2019
 // omschrijving: ophalen van de P1meter informatie uit Domoticz en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-domoticz.php/period=c
@@ -86,34 +86,32 @@ if ($period == 'c' ) {
 	$savedate=0;
 	// process all Domoticz data and sum for the requested period
 	// last year data
-	if( ($JSON_period == "day" && $limit > 364) || ($JSON_period == "month" && $limit > 11) ) {
-		$domo_data_py = $domo_rest['resultprev'];
-		foreach($domo_data_py as $item) {
-			$compdate = date($JSON_SUM,strtotime($item['d']));
-			$compdate2 = date("Y-m-d",strtotime($item['d']));
-			if($compdate>=$checkdates && $compdate2<=$checkdatee){
-				if($savedate!=$compdate) {
-					if ($savedate!=0) {
-						$domorec['d']= $td;
-						$domorec['v1']= $tv1;
-						$domorec['v2']= $tv2;
-						$domorec['r1']= $tr1;
-						$domorec['r2']= $tr2;
-						array_push($domodata, $domorec);
-						$td = $item['d'];
-					}
-					$savedate=$compdate;
+	$domo_data_py = $domo_rest['resultprev'];
+	foreach($domo_data_py as $item) {
+		$compdate = date($JSON_SUM,strtotime($item['d']));
+		$compdate2 = date("Y-m-d",strtotime($item['d']));
+		if($compdate>=$checkdates && $compdate2<=$checkdatee){
+			if($savedate!=$compdate) {
+				if ($savedate!=0) {
+					$domorec['d']= $td;
+					$domorec['v1']= $tv1;
+					$domorec['v2']= $tv2;
+					$domorec['r1']= $tr1;
+					$domorec['r2']= $tr2;
+					array_push($domodata, $domorec);
 					$td = $item['d'];
-					$tv1 = $item['v'];
-					$tv2 = $item['v2'];
-					$tr1 = $item['r1'];
-					$tr2 = $item['r2'];
-				} else {
-					$tv1 += $item['v'];
-					$tv2 += $item['v2'];
-					$tr1 += $item['r1'];
-					$tr2 += $item['r2'];
 				}
+				$savedate=$compdate;
+				$td = $item['d'];
+				$tv1 = $item['v'];
+				$tv2 = $item['v2'];
+				$tr1 = $item['r1'];
+				$tr2 = $item['r2'];
+			} else {
+				$tv1 += $item['v'];
+				$tv2 += $item['v2'];
+				$tr1 += $item['r1'];
+				$tr2 += $item['r2'];
 			}
 		}
 	}
