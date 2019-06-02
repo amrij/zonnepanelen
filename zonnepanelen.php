@@ -1000,12 +1000,18 @@ EOF
 				for (i=1; i<PVGis.length; i++) {
 					if (i == con_month) {
 <?php					// add part contract month start ?>
-						if ( cm == con_month && cd >= con_day ){
+						var factor = 1;
+						if( cm == con_month && cd >= con_day ){
+<?php						// current month is contract month and we are after startdate of new contract ?>
+<?php						// Add the days from start day contract till current day ?>
 							var factor = (cd-con_day + 1)/cdays;
-						}else if( cm > con_month ){
-							var factor = (cdays - con_day + 1)/cdays;
+						}else if( cm == con_month && cd < con_day ){
+<?php						// current month is contract month and we are before startdate of new contract ?>
+<?php						// Add remainder of the month days (for last year) and the days between 1 and current day for this year ?>
+							var factor = (cdays-(con_day-cd-1))/cdays;
 						}else{
-							var factor = (cdays - con_day + 1 + cd)/cdays;
+<?php						// We are after contract start date so need to add the remainder of the contractmonth ?>
+							var factor = (cdays - con_day + 1)/cdays;
 						}
 						tPVGis += PVGis[i]*factor;
 						continue;
@@ -1022,7 +1028,7 @@ EOF
 						tPVGis += PVGis[i];
 						continue;
 					}
-					if (i > con_month && i > cm) {
+					if (i > con_month && i > cm && cy > con_start_year) {
 <?php					// add months after start contract till end of year ?>
 						tPVGis += PVGis[i];
 						continue;
