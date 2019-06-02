@@ -543,6 +543,10 @@ EOF
 	var op_id = [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][1], "',";} ?>];
 	var rpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo "'", $op_id[$i][2], "',";} ?>];
 	var vpan =  [0,<?php for ($i=1; $i<=$aantal; $i++){ echo $op_id[$i][4], ",";} ?>];
+	var tverm = 0;
+	for (i=1; i<=aantal; i++) {
+		tverm += vpan[i];
+	}
 	var PVGtxt = '<?php echo $PVGtxt; ?>';
 	var PVGis = [0<?php for ($i=0; $i<=11; $i++){ echo ",", $PVGis[$i];} ?>];
 	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
@@ -596,7 +600,7 @@ EOF
 	var con_day = con_start_date.getDate();
 	var con_month = con_start_date.getMonth()+1;
 	var con_start_year = con_start_date.getFullYear();
-	var cdays = daysInMonth(con_month, cy);
+	var cdays = daysInMonth(con_month, con_start_year);
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 
@@ -741,22 +745,23 @@ EOF
 				document.getElementById("so_text").className = "green_text";
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				document.getElementById("sola_text").innerHTML =
-						"<table width=100% class=data-table>"+
-						"<tr><td colspan=2 style=\"font-size:smaller\">"+inv1Data[0]["IT"].substr(11,10)+"</td></tr>" +
-						"<tr><td colspan=2><b><u>Solar vandaag</u></b></td></tr>"+
+						"<table width=100% class=data-table>" +
+						"<tr><td colspan=2 style=\"font-size:smaller\">" + inv1Data[0]["IT"].substr(11,10) + "</td></tr>" +
+						"<tr><td colspan=2><b><u>Solar vandaag</u></b></td></tr>" +
 						((P1 == 1) ? (
-							"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
-							"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(s_p1CounterDelivToday))+" kWh</td></tr>"+
+							"<tr><td>verbruik:</td><td>" + waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(s_p1CounterDelivToday)) + " kWh</td></tr>" +
+							"<tr><td>retour:</td><td>" + waarde(0,3,parseFloat(s_p1CounterDelivToday)) + " kWh</td></tr>" +
 							"<tr><td></td><td>----------</td></tr>"
 							) : "" ) +
-						"<tr><td class=green_text>productie:</td><td class=green_text>"+waarde(0,3,inv1Data[0]["IE"])+" kWh</td></tr></table>";
+						"<tr><td class=green_text>productie:</td><td class=green_text>" + waarde(0,3,inv1Data[0]["IE"]) + " kWh</td></tr>" +
+						"<tr><td>efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + " Wh/Wp</td></tr></table>";
 				document.getElementById("inverter_text").innerHTML =
 						"<table width=100% class=data-table>"+
-						"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>"+
-						"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>"+
-						"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td></tr>"+
-						"<tr><td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"])+" / "+waarde(0,1,inv1Data[0]["ITMIN"])+" / "+waarde(0,1,inv1Data[0]["ITMAX"])+" °C</td></tr>"+
-						"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"])+"</td></tr></table>";
+						"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>" +
+						"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>" +
+						"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td></tr>" +
+						"<tr><td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"]) + " / "+waarde(0,1,inv1Data[0]["ITMIN"]) + " / "+waarde(0,1,inv1Data[0]["ITMAX"]) + " °C</td></tr>" +
+						"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"]) + "</td></tr></table>";
 			}
 		}else{
 			s_lasttimestamp = inv1Data[0]["IT"];
@@ -770,11 +775,6 @@ EOF
 					"<tr><td>Tmax:</td><td colspan=3>" + waarde(0,1,inv1Data[0]["ITMAX"]) + " °C</td></tr></table>";
 			document.getElementById("arrow_PRD").className = "";
 		}
-		var tverm = 0;
-		for (i=1; i<=aantal; i++) {
-			tverm += vpan[i];
-		}
-
 		if (inverter == 1) {
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
 					"<table class=qtiptable>" +
@@ -784,7 +784,6 @@ EOF
 					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active"] + "</td><td>W</td></tr>" +
 					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
 					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
-					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"</table>");
 		} else {
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
@@ -796,7 +795,6 @@ EOF
 					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active1"] + "</td><td>" + inv1Data[0]["p_active2"] + "</td><td>"+inv1Data[0]["p_active3"] + "</td><td>W</td></tr>" +
 					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
 					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
-					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["IE"]*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"</table>");
 		}
 		update_map_fields();
@@ -1123,9 +1121,18 @@ EOF
 			document.getElementById("inverter_1").setAttribute("data-tcontent",
 					curtext +
 					"<tr id='i'><td colspan=3>&nbsp;</td></tr>" +
-					"<tr><td>Vandaag:</td><td>" + waarde(0,2,SolarProdToday) + PVGisd + "</td><td>kWh</td></tr>" +
-					"<tr><td>Maand:</td><td>" + waarde(0,1,mse + msv) + PVGism + "</td><td>kWh</td></tr>" +
-					"<tr><td>" + contract_datum + ":</td><td>" + waarde(0,0,yse + ysv + se + sv) + PVGisj + "</td><td>kWh</td></tr>" +
+					"<tr><td colspan=3 style=\"text-align:center\"><b>Vandaag</b></td></tr>" +
+					"<tr><td>Solar</td><td>" + waarde(0,2,SolarProdToday) + "</td><td>kWh</td></tr>" +
+					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGisd + '</td><td>kWh</td></tr>'}` +
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
+					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
+					"<tr><td>Solar</td><td>" + waarde(0,1,mse + msv) + "</td><td>kWh</td></tr>" +
+					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGism + '</td><td>kWh</td></tr>'}` +
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,1,((mse + msv)*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
+					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Totaal vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
+					"<tr><td>Solar</td><td>" + waarde(0,0,yse + ysv + se + sv) + "</td><td>kWh</td></tr>" +
+					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + waarde(0,0,PVGisj) + '</td><td>kWh</td></tr>'}` +
+					"<tr><td>Efficiëntie:</td><td>" + waarde(0,0,((yse + ysv + se + sv)*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"</table>");
 
 			if (datum1 >= tomorrow) {
@@ -1151,7 +1158,8 @@ EOF
 						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+datev+"</b></td></tr>" +
 						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>"+contract_datum+"</u></td></tr>" +
 						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv + se + sv)+"</td></tr>"+
-						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/cdays)+'</td><td>'+waarde(0,0,PVGis[cm]/cdays*cd)+ '</td><td>'+waarde(0,0,tPVGis)+'</td></tr>'}` +
+						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/cdays)+'</td><td>'+waarde(0,0,PVGis[cm]/cdays*cd)+ '</td><td>'+PVGisj+'</td></tr>'}` +
+						"<tr><td colspan=2>Efficiëntie:</td><td>"+waarde(0,1,(SolarProdToday*1000/tverm))+"</td><td>"+waarde(0,0,((mse + msv)*1000/tverm))+"</td><td>"+waarde(0,0,((yse + ysv + se + sv)*1000/tverm))+"</td></tr>"+
 						"<tr><td colspan=5><br><u>Huis verbruik</u></td></tr>" +
 						"<tr><td colspan=2>solar:</td><td>"+waarde(0,0,sv)+"</td><td>"+waarde(0,0,msv)+"</td><td>"+waarde(0,0,ysv + sv)+"</td></tr>"+
 						"<tr><td colspan=2>net:</td><td>"+waarde(0,0,ve)+"</td><td>"+waarde(0,0,mve)+"</td><td>"+waarde(0,0,yve + ve)+"</td></tr>"+
@@ -1219,7 +1227,7 @@ EOF
 			$.ajax({
 				url: urlPower,//url of data source
 				type: 'GET',
-				data: { "date" : datum, "limit" : limit }, 
+				data: { "date" : datum, "limit" : limit },
 				success: function(data) {
 					var series = power_chart.series[0];
 					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
@@ -2225,12 +2233,16 @@ EOF
 						if (this.points[0].series.chart.renderTo.id == "monthgraph") {
 							if ( sPVG > 0) {
 								if ( sPVGm > 0) {
-									s += '<b>'+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + sPVGm + '</b> kWh<br/>';
+									s += ''+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + sPVGm + ' kWh<br/>';
 								}
-								s += '<b>'+PVGtxt+' maand&nbsp;: ' + sPVG + '</b> kWh<br/>';
+								s += ''+PVGtxt+' maand&nbsp;: ' + sPVG + ' kWh<br/>';
 							}
+							s += 'Efficiëntie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat((sVS+sRE)*1000/tverm,0) + ' Wh/Wp<br/>';
 						} else {
-								s += '<b>'+PVGtxt+' dag gem.: ' + sPVG + '</b> kWh<br/>';
+							if ( sPVG > 0) {
+								s += ''+PVGtxt+' dag gem.: ' + sPVG + ' kWh<br/>';
+							}
+							s += 'Efficiëntie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat((sVS+sRE)*1000/tverm,1) + ' Wh/Wp<br/>';
 						}
 						s += '----------------------<br/>';
 						s += '<?php echo $ElecLeverancier?> verbruik: ' + Highcharts.numberFormat(sVE,1) + ' kWh<br/>';
