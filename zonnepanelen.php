@@ -600,7 +600,7 @@ EOF
 	var con_day = con_start_date.getDate();
 	var con_month = con_start_date.getMonth()+1;
 	var con_start_year = con_start_date.getFullYear();
-	var cdays = daysInMonth(con_month, con_start_year);
+	var cdays = daysInMonth(maand, jaar);
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 
