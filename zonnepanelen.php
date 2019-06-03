@@ -1342,7 +1342,7 @@ EOF
 					borderRadius: 5,
 					alignTicks:true,
 					spacingBottom: 0,
-					zoomType: 'none',
+					zoomType: 'x',
 					events: {load: requestDataPaneel}
 				},
 				title: { text: null },
@@ -1471,7 +1471,7 @@ EOF
 					borderRadius: 5,
 					alignTicks:true,
 					spacingBottom: 0,
-					zoomType: 'none',
+					zoomType: 'x',
 					//only needed once as I show both graphs and they use same data -> paneel_chartv
 					//events: {load: requestDataPaneel}
 				},
@@ -1601,7 +1601,7 @@ EOF
 					borderRadius: 5,
 					alignTicks:true,
 					spacingBottom: 0,
-					zoomType: 'none',
+					zoomType: 'x',
 					events: {load: requestDataInverter},
 					spacingRight: 5
 				},
@@ -1748,7 +1748,7 @@ EOF
 					borderRadius: 5,
 					alignTicks:true,
 					spacingBottom: 0,
-					zoomType: 'none',
+					zoomType: 'x',
 					spacingRight: 5,
 				},
 				title: { text: null },
