@@ -151,30 +151,31 @@ omschrijving: hoofdprogramma
 		$week[5] = "Vrijdag";
 		$week[6] = "Zaterdag";
 		$week[7] = "Zondag";
-		$date = array_key_exists('date', $_GET) ? $_GET['date'] : "";
+		$reportDate = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 		$ds = array_key_exists('ds', $_GET) ? $_GET['ds'] : "";
 		setlocale(LC_ALL, 'nl_NL');
-		if ($date == '') { $date = date("d-m-Y H:i:s", time()); }
+		if ($reportDate == '') { $reportDate = date("d-m-Y H:i:s", time()); }
 		$InvDays = (isset($InvDays) ? $InvDays : '14');
 		for ($i=0; $i<=$InvDays; $i++){
-			$productie[$i] = $week[date("N", strtotime($date)-$i*86400)] . date(" d-m-Y", strtotime($date)-$i*86400);
+			$productie[$i] = $week[date("N", strtotime($reportDate)-$i*86400)] . date(" d-m-Y", strtotime($reportDate)-$i*86400);
 		}
-		$today = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
-		$winter = date("I",$today)-1;
-		$jaar = date("Y",$today);
-		$maand = date("m",$today);
-		$dag = date("d",$today);
-		$datum1 = (new DateTime("today " . date("Y-m-d 00:00:00", time())))->getTimestamp();
-		$datumz = date("d-m-Y H:i:s",$today);
-		$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($date))))->getTimestamp();
-		$date3 = date("Y-m-d", time());
-		$datev = date("d-m-Y", strtotime($date));
-		$a = strptime($date, '%d-%m-%Y %H:%M:%S');
-		if ($a['tm_year']+1900 < 2000) { $a = strptime($date, '%Y-%m-%d'); }
+		$reportDT = new DateTime("today " . date("Y-m-d 00:00:00", strtotime($reportDate)));
+		$reportStamp = $reportDT->getTimestamp();
+		$reportWinterOffset = date("I",$reportStamp)-1;
+		$reportJaar = date("Y",$reportStamp);
+		$reportMaand = date("m",$reportStamp);
+		$reportDag = date("d",$reportStamp);
+		$currentDayStartStamp = (new DateTime("today " . date("Y-m-d 00:00:00", time())))->getTimestamp();
+		$reportDateStr = date("d-m-Y H:i:s",$reportStamp);
+		$reportEndStamp = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($reportDate))))->getTimestamp();
+		$currentDayYMD = date("Y-m-d", time());
+		$reportDayDMY = date("d-m-Y", strtotime($reportDate));
+		$a = strptime($reportDate, '%d-%m-%Y %H:%M:%S');
+		if ($a['tm_year']+1900 < 2000) { $a = strptime($reportDate, '%Y-%m-%d'); }
 		$a = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
-		$date2 = strftime('%Y-%m-%d', $a);
-		$datum = $today/86400;
-		$timezone = date('Z',strtotime($date))/3600;
+		$reportDateYMD = strftime('%Y-%m-%d', $a);
+		$datum = $reportStamp/86400;
+		$timezone = date('Z',strtotime($reportDate))/3600;
 		$localtime = 0; //Time (pas local midnight)
 		$sunrise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0);
 		$solar_noon_s = iteratie($datum,$lat,$long,$timezone,$localtime,1);
@@ -188,11 +189,11 @@ omschrijving: hoofdprogramma
 		$con_date_fields = explode("-", $contract_datum,2);
 		$con_d = intval($con_date_fields[0]) == 0 ? 1 : intval($con_date_fields[0]) ;
 		$con_m = intval($con_date_fields[1]) == 0 ? 1 : intval($con_date_fields[1]) ;
-		$con_s_y = $jaar;
-		$con_e_y = $jaar + 1;
-		if($con_m > $maand || ($con_m == $maand && $con_d > $dag)) {
-			$con_s_y = $jaar -1;
-			$con_e_y = $jaar;
+		$con_s_y = $reportJaar;
+		$con_e_y = $reportJaar + 1;
+		if($con_m > $reportMaand || ($con_m == $reportMaand && $con_d > $reportDag)) {
+			$con_s_y = $reportJaar -1;
+			$con_e_y = $reportJaar;
 		}
 		$contract_datum_start = sprintf("%04d-%02d-%02d", $con_s_y, $con_m, $con_d);
 		$contract_datum_end = sprintf("%04d-%02d-%02d", $con_e_y, $con_m, $con_d);
@@ -261,8 +262,8 @@ omschrijving: hoofdprogramma
 					plotBands: [\n";
 			for ($i = 0; $i < 25; $i += 2) { print "			{
 					color: '#ebfbff',
-					from: Date.UTC(jaar, maand , dag, u[" . $i . "]-winter),
-					to: Date.UTC(jaar, maand, dag, u[" . ($i+1) . "]-winter),
+					from: Date.UTC(reportJaar, reportMaand , reportDag, u[" . $i . "]-reportWinterOffset),
+					to: Date.UTC(reportJaar, reportMaand, reportDag, u[" . ($i+1) . "]-reportWinterOffset),
 				},\n";
 			}
 			print "],\n";
@@ -516,21 +517,21 @@ EOF
 	}
 
 	var ds = '<?php echo $ds ?>';
-	var datum = '<?php echo $date ?>';
-	var datumz = '<?php echo $datumz ?>';
-	var datum1 = '<?php echo $datum1 ?>';
-	var tomorrow = '<?php echo $tomorrow ?>';
-	var date2 = "<?php echo $date2 ?>";
-	var date3 = "<?php echo $date3 ?>";
-	var datev = "<?php echo $datev ?>";
-	var winter = '<?php echo $winter?>';
-	var jaar = '<?php echo $jaar?>';
-	var maand = '<?php echo $maand?>';
+	var reportDate = '<?php echo $reportDate ?>';
+	var reportDateStr = '<?php echo $reportDateStr ?>';
+	var currentDayStartStamp = '<?php echo $currentDayStartStamp ?>';
+	var reportEndStamp = '<?php echo $reportEndStamp ?>';
+	var reportDateYMD = "<?php echo $reportDateYMD ?>";
+	var currentDayYMD = "<?php echo $currentDayYMD ?>";
+	var reportDayDMY = "<?php echo $reportDayDMY ?>";
+	var reportWinterOffset = '<?php echo $reportWinterOffset?>';
+	var reportJaar = '<?php echo $reportJaar?>';
+	var reportMaand = '<?php echo $reportMaand?>';
+	var reportDag = '<?php echo $reportDag?>';
 	var sunrise = '<?php echo $sunrise ?>';
 	var solar_noon = '<?php echo $solar_noon ?>';
 	var sunset = '<?php echo $sunset ?>';
 	var daglengte = '<?php echo $daglengte ?>';
-	var dag = '<?php echo $dag?>';
 	var begin = '<?php echo $begin?>';
 	var vermogen = '<?php echo $vermogen?>';
 	var inverter = '<?php echo $inverter?>';
@@ -591,7 +592,7 @@ EOF
 	var PVGism = "";
 	var PVGisj = "";
 	var starty = 0;
-	var cdate = new Date(date2);
+	var cdate = new Date(reportDateYMD);
 	var cd = cdate.getDate();
 	var cm = cdate.getMonth()+1;
 	var cy = cdate.getFullYear();
@@ -602,6 +603,7 @@ EOF
 	var con_month = con_start_date.getMonth()+1;
 	var con_start_year = con_start_date.getFullYear();
 	var con_days = daysInMonth(con_month, con_start_year);
+
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 
@@ -609,10 +611,10 @@ EOF
 		zonmaan();
 		paneel();
 		if (P1 == 1){ draw_p1_chart();}
-		if (datum1 < tomorrow) {
+		if (currentDayStartStamp < reportEndStamp) {
 			setInterval(function() {
 				var now = new Date();
-				if (ds == '' && tomorrow < now/1000) {
+				if (ds == '' && reportEndStamp < now/1000) {
 					window.location = window.location.pathname;
 					return false;
 				}
@@ -721,11 +723,13 @@ EOF
 			url: "live-server-data-zon.php",
 			dataType: "json",
 			type: 'GET',
-			data: { "date" : datum },
+			data: { "date" : reportDate },
 			async: false,
 		}).responseText;
+
 		inv1Data = eval(inv1Data)
 		SolarProdToday = inv1Data[0]["IE"];
+
 		if (p1CounterToday == 0) {
 			if (P1 == 1){
 				p1_update()
@@ -733,8 +737,9 @@ EOF
 			s_p1CounterToday = p1CounterToday;
 			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
-		if (inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = datumz;}
-		if (datum1 < tomorrow) {
+
+		if (inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = reportDateStr;}
+		if (currentDayStartStamp < reportEndStamp) {
 			var now = new Date();
 			var tnow = new Date("1970-01-01 " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
 			var tlast = new Date("1970-01-01 " + inv1Data[0]["IT"].substring(11));
@@ -843,7 +848,7 @@ EOF
 			url: "<?php echo $DataURL?>?period=c",
 			dataType: "json",
 			type: 'GET',
-			data: { "date" : datumz },
+			data: { "date" : reportDateStr },
 			success: function(data) {
 				p1data = eval(data);
 				if (p1data[0]["ServerTime"].length > 6){
@@ -857,7 +862,7 @@ EOF
 					p1CounterDelivToday = (typeof p1CounterDelivToday === 'undefined') ? 0 : parseFloat(p1CounterDelivToday);
 					p1Usage = (typeof p1Usage === 'undefined') ? 0 : parseFloat(p1Usage);
 					p1UsageDeliv = (typeof p1UsageDeliv === 'undefined') ? 0 : parseFloat(p1UsageDeliv);
-					if (datum1 < tomorrow) {
+					if (currentDayStartStamp < reportEndStamp) {
 						if (p1CounterToday == 0) {
 							document.getElementById("arrow_RETURN").className = "";
 							document.getElementById("p1_text").className = "red_text";
@@ -872,7 +877,7 @@ EOF
 							document.getElementById("p1_text").innerHTML = p1Usage + " Watt";
 						}
 					}
-					if (datum1 < tomorrow) {
+					if (currentDayStartStamp < reportEndStamp) {
 						var diff = p1CounterToday - p1CounterDelivToday;
 						var cdiff = "red_text";
 						if (diff < 0) {
@@ -995,7 +1000,7 @@ EOF
 			yve -= ve;
 			yvs -= vs;
 			if (PVGis[cm] > 0) {
-				PVGisd = waarde(0,0,PVGis[cm]/cdays);
+				PVGisd = waarde(0,2,PVGis[cm]/cdays);
 				PVGism = waarde(0,0,PVGis[cm]/cdays*cd);
 				tPVGis=0;
 				for (i=1; i<PVGis.length; i++) {
@@ -1077,7 +1082,7 @@ EOF
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
 				if ( cP1Huis == 0 || cP1Huis < SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) {
-					if (datum1 < tomorrow) {
+					if (currentDayStartStamp < reportEndStamp) {
 						document.getElementById("p1_huis").innerHTML = waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday)+" kWh";
 					}
 					document.getElementById("huis_1").setAttribute("data-tcontent",
@@ -1142,7 +1147,7 @@ EOF
 					"<tr><td>Efficiëntie:</td><td>" + waarde(0,0,((yse + ysv + se + sv)*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"</table>");
 
-			if (datum1 >= tomorrow) {
+			if (currentDayStartStamp >= reportEndStamp) {
 				var ddiff = ve - se;
 				var mdiff = mve - mse;
 				var ydiff = yve - yse + ve - se;
@@ -1162,7 +1167,7 @@ EOF
 					ydiff = ydiff * -1;
 				}
 				document.getElementById("sum_text").innerHTML = "<table width=100% class=data-table>"+
-						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+datev+"</b></td></tr>" +
+						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+reportDayDMY+"</b></td></tr>" +
 						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>"+contract_datum+"</u></td></tr>" +
 						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv + se + sv)+"</td></tr>"+
 						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/cdays)+'</td><td>'+waarde(0,0,PVGis[cm]/cdays*cd)+ '</td><td>'+PVGisj+'</td></tr>'}` +
@@ -1181,29 +1186,29 @@ EOF
 	}
 
 	function zonmaan(){
-		if (date2 >= date3){
+		if (reportDateYMD >= currentDayYMD){
 			document.getElementById("NextDay").disabled = true;
 			document.getElementById("Today").disabled = true;
 		}else{
 			document.getElementById("NextDay").disabled = false;
 			document.getElementById("Today").disabled = false;
 		}
-		if (date2 <= begin){
+		if (reportDateYMD <= begin){
 			document.getElementById("PrevDay").disabled = true;
 		}
-		if (datum1 < tomorrow) {
-			datumz = "";
+		if (currentDayStartStamp < reportEndStamp) {
+			reportDateStr = "";
 		}
 		var inv4Data = $.ajax({
 			url: "maanfase.php",
 			dataType: "json",
 			type: 'GET',
-			data: { "date" : datumz.replace("00:00:00", `${(new Date()).getHours()}:00:00`) },
+			data: { "date" : reportDateStr.replace("00:00:00", `${(new Date()).getHours()}:00:00`) },
 			async: false,
 		}).responseText;
 		inv4Data = eval(inv4Data)
-		date3 = inv4Data[0]["date3"];
-		datum1 = inv4Data[0]["datum1"];
+		currentDayYMD = inv4Data[0]["date3"];
+		currentDayStartStamp = inv4Data[0]["datum1"];
 		document.getElementById("box_panel_vermogen").style.display = "none"
 		document.getElementById("box_panel_energy").style.display = "none"
 		document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
@@ -1234,7 +1239,7 @@ EOF
 			$.ajax({
 				url: urlPower,//url of data source
 				type: 'GET',
-				data: { "date" : datum, "limit" : limit },
+				data: { "date" : reportDate, "limit" : limit },
 				success: function(data) {
 					var series = power_chart.series[0];
 					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
@@ -1245,7 +1250,7 @@ EOF
 					}
 					power_chart.redraw();
 					limit = 'c';
-					setTimeout(requestDataPower, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
+					setTimeout(requestDataPower, ((currentDayStartStamp < reportEndStamp) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
 					setTimeout(requestDataPower, 1000*10);
@@ -1258,10 +1263,10 @@ EOF
 			$.ajax({
 				url: urlPaneel,//url of data source
 				type: 'GET',
-				data: { "date" : datum }, //optional
+				data: { "date" : reportDate }, //optional
 				success: function(data) {
 					data_p = eval(data);
-					setTimeout(requestDataPaneel, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
+					setTimeout(requestDataPaneel, ((currentDayStartStamp < reportEndStamp) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
 					setTimeout(requestDataPaneel, 1000*10);
@@ -1274,11 +1279,11 @@ EOF
 			$.ajax({
 				url: urlInverter,//url of data source
 				type: 'GET',
-				data: { "date" : datum }, //optional
+				data: { "date" : reportDate }, //optional
 				success: function(data) {
 					data_i = eval(data);
 					UpdateDataInverter()
-					setTimeout(requestDataInverter, ((datum1 < tomorrow) ? 60 : 86400) * 1000);
+					setTimeout(requestDataInverter, ((currentDayStartStamp < reportEndStamp) ? 60 : 86400) * 1000);
 				},
 				error : function(xhr, textStatus, errorThrown ) {
 					setTimeout(requestDataInverter, 1000*10);
@@ -1608,7 +1613,7 @@ EOF
 				},
 				title: { text: null },
 				subtitle: {
-					text: "Energie op <?php echo $datev . " en " . $InvDays;?> voorafgaande dagen",
+					text: "Energie op " + reportDayDMY + " en " + InvDays + " voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
@@ -1754,7 +1759,7 @@ EOF
 				},
 				title: { text: null },
 				subtitle: {
-					text: "Vermogen op <?php echo $datev . " en " . $InvDays;?> voorafgaande dagen",
+					text: "Vermogen op " + reportDayDMY + " en " + InvDays + " voorafgaande dagen",
 					align: 'left',
 					x: 20,
 					y: 20,
@@ -1919,7 +1924,7 @@ EOF
 					},
 					title: { text: null },
 					subtitle: {
-						text: "Vermogen en energie op <?php echo $datev;?>",
+					text: "Vermogen en energie op " . reportDayDMY,
 						align: 'left',
 						x: 90,
 						y: 20,
@@ -2052,19 +2057,19 @@ EOF
 	});
 
 	function calcdate(date) {
-		var day = date.getDate();
-		day = (day < 10 ? "0" : "") + String(day);
-		var month = date.getMonth()+1;
-		month = (month < 10 ? "0" : "") + String(month);
-		var year = date.getFullYear();
-		var datum = String(year) + "-" + month + "-" + day;
-		toonDatum(datum);
+		var showDay = date.getDate();
+		showDay = (showDay < 10 ? "0" : "") + String(showDay);
+		var showMonth = date.getMonth()+1;
+		showMonth = (showMonth < 10 ? "0" : "") + String(showMonth);
+		var showYear = date.getFullYear();
+		var showDatum = String(showYear) + "-" + showMonth + "-" + showDay;
+		toonDatum(showDatum);
 		event.stopPropagation();
 	}
 
  	$('#multiShowPicker').calendarsPicker({
 		pickerClass: 'noPrevNext', maxDate: +0, minDate: begin,
-		dateFormat: 'yyyy-mm-dd', defaultDate: date2, selectDefaultDate: true,
+		dateFormat: 'yyyy-mm-dd', defaultDate: reportDateYMD, selectDefaultDate: true,
 		renderer: $.calendarsPicker.weekOfYearRenderer,
 		firstDay: 1, showOtherMonths: true, rangeSelect: false, showOnFocus: true,
 		onShow: $.calendarsPicker.multipleEvents(
@@ -2404,7 +2409,7 @@ EOF
 	}
 
 	function updateP1graphs(ichart,gtype, periods) {
-		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods+"&date="+datumz;
+		var url='<?php echo $DataURL?>?period='+gtype+'&aantal='+periods+"&date="+reportDateStr;
 		$.getJSON(url,
 			function(data1){
 				var series = [], domoData= data1.result;
@@ -2440,7 +2445,7 @@ EOF
 			var sv = vs;
 			datatableverbruikElecNet.push([cdate, ve]);
 
-			var datesol = new Date(date2);
+			var datesol = new Date(reportDateYMD);
 			var dsol = datesol.getDate();
 			var msol = datesol.getMonth()+1;
 			var ysol = datesol.getFullYear();
