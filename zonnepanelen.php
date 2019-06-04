@@ -595,12 +595,13 @@ EOF
 	var cd = cdate.getDate();
 	var cm = cdate.getMonth()+1;
 	var cy = cdate.getFullYear();
+	var cdays = daysInMonth(cm, cy);
 	var con_start_date = new Date(contract_start_date);
 	var con_end_date = new Date(contract_end_date);
 	var con_day = con_start_date.getDate();
 	var con_month = con_start_date.getMonth()+1;
 	var con_start_year = con_start_date.getFullYear();
-	var cdays = daysInMonth(con_month, con_start_year);
+	var con_days = daysInMonth(con_month, con_start_year);
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 
@@ -1004,14 +1005,14 @@ EOF
 						if( cm == con_month && cd >= con_day ){
 <?php						// current month is contract month and we are after startdate of new contract ?>
 <?php						// Add the days from start day contract till current day ?>
-							var factor = (cd-con_day + 1)/cdays;
+							var factor = (cd-con_day + 1)/con_days;
 						}else if( cm == con_month && cd < con_day ){
 <?php						// current month is contract month and we are before startdate of new contract ?>
 <?php						// Add remainder of the month days (for last year) and the days between 1 and current day for this year ?>
-							var factor = (cdays-(con_day-cd-1))/cdays;
+							var factor = (con_days-(con_day-cd-1))/con_days;
 						}else{
-<?php						// We are after contract start date so need to add the remainder of the contractmonth ?>
-							var factor = (cdays - con_day + 1)/cdays;
+<?php						// We are after contract start date so need to add the remainder of the contract start month ?>
+							var factor = (con_days - con_day + 1)/con_days;
 						}
 						tPVGis += PVGis[i]*factor;
 						continue;
