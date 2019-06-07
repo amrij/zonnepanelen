@@ -497,25 +497,6 @@ EOF
 		}
 	})
 
-	function toonDatum(datum) {
-		var now = new Date();
-		var yy = now.getFullYear();
-		var mm = now.getMonth()+1;
-		var dd = now.getDate();
-		mm = "0"+mm;
-		mm = mm.slice(-2);
-		dd = "0"+dd;
-		dd = dd.slice(-2);
-		var tdatum = yy + "-" + mm + "-" + dd;
-		url = window.location.pathname;
-		if(tdatum!=datum) {
-			url = url + '?date=';
-			url = url + datum;
-			url = url + ' 00:00:00&ds=1';
-		}
-		window.location.replace(url);//do something after you receive the result
-	}
-
 	var ds = '<?php echo $ds ?>';
 	var reportDate = '<?php echo $reportDate ?>';
 	var reportDateStr = '<?php echo $reportDateStr ?>';
@@ -2055,6 +2036,25 @@ EOF
 			}
 		});
 	});
+
+	function toonDatum(datum) {
+		var now = new Date();
+		var yy = now.getFullYear();
+		var mm = now.getMonth()+1;
+		var dd = now.getDate();
+		mm = "0"+mm;
+		mm = mm.slice(-2);
+		dd = "0"+dd;
+		dd = dd.slice(-2);
+		var tdatum = yy + "-" + mm + "-" + dd;
+		url = window.location.pathname;
+		if(tdatum!=datum) {
+			url = url + '?date=';
+			url = url + datum;
+			url = url + ' 00:00:00&ds=1';
+		}
+		window.location.replace(url);//do something after you receive the result
+	}
 
 	function calcdate(date) {
 		var showDay = date.getDate();
