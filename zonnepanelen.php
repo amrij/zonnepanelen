@@ -983,46 +983,32 @@ EOF
 				PVGism = waarde(0,1,PVGis[cm]/cdays*cd);
 				tPVGis=0;
 				for (i=1; i<PVGis.length; i++) {
+					var factor = 1;
 					if (i == con_month) {
 <?php					// add part contract month start ?>
-						var factor = 1;
 						if( cm == con_month && cd >= con_day ){
 <?php						// current month is contract month and we are after startdate of new contract ?>
 <?php						// Add the days from start day contract till current day ?>
-							var factor = (cd-con_day + 1)/con_days;
+							factor = (cd-con_day + 1)/con_days;
 						}else if( cm == con_month && cd < con_day ){
 <?php						// current month is contract month and we are before startdate of new contract ?>
 <?php						// Add remainder of the month days (for last year) and the days between 1 and current day for this year ?>
-							var factor = (con_days-(con_day-cd-1))/con_days;
+							factor = (con_days-(con_day-cd-1))/con_days;
 						}else{
 <?php						// We are after contract start date so need to add the remainder of the contract start month ?>
-							var factor = (con_days - con_day + 1)/con_days;
+							factor = (con_days - con_day + 1)/con_days;
 						}
-						tPVGis += PVGis[i]*factor;
-						continue;
 					}
-					if (i == cm ) {
+					else if (i == cm ) {
 <?php					// add part current month?>
 						var cmdays = daysInMonth(cm, cy);
-						var factor = cd/cmdays;
-						tPVGis += PVGis[i]*factor;
-						continue;
+						factor = cd/cmdays;
 					}
-					if (i > con_month && i < cm) {
-<?php					// add months after start contract till current date ?>
-						tPVGis += PVGis[i];
-						continue;
+					else if ((cy == con_start_year && (i < con_month || i > cm)) ||
+						(cy >  con_start_year && (i < con_month && i > cm))) {
+						factor = 0;
 					}
-					if (i > con_month && i > cm && cy > con_start_year) {
-<?php					// add months after start contract till end of year ?>
-						tPVGis += PVGis[i];
-						continue;
-					}
-					if (cy > con_start_year && i < cm){
-<?php					// add months beginning this year till current month ?>
-						tPVGis += PVGis[i];
-						continue;
-					}
+					tPVGis += PVGis[i]*factor;
 				}
 				PVGisj = waarde(0,0,tPVGis);
 			}
