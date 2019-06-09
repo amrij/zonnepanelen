@@ -932,7 +932,6 @@ EOF
 			PVGisj = "";
 			$.each(ychart.series[2].data, function(i, point) {
 				var pdate = new Date(point.x);
-				var pd = pdate.getDate();
 				var pm = pdate.getMonth()+1;
 				var py = pdate.getFullYear();
 				<?php // Get days diff with contract start and end date ?>
