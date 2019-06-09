@@ -939,9 +939,8 @@ EOF
 				var dd_end = datediff(con_end_date,pdate);
 				if(con_start_year == py && con_month == pm) {
 					<?php // we are in the start month of the contract so get only the data for those remaining days of the month ?>
-					var pdays = daysInMonth(con_month, py);
-					var endmonth = py + "-" + pm + "-" + pdays;
-					var maantal = pdays - con_day + 1;
+					var endmonth = con_start_year + "-" + con_month + "-" + con_days;
+					var maantal = con_days - con_day + 1;
 					var url='<?php echo $DataURL?>?period=d&aantal='+maantal+"&date="+endmonth;
 					var datam1 = $.ajax({
 						url: '<?php echo $DataURL?>',
