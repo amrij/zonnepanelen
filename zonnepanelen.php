@@ -162,9 +162,9 @@ omschrijving: hoofdprogramma
 		$reportDT = new DateTime("today " . date("Y-m-d 00:00:00", strtotime($reportDate)));
 		$reportStamp = $reportDT->getTimestamp();
 		$reportWinterOffset = date("I",$reportStamp)-1;
-		$reportJaar = date("Y",$reportStamp);
-		$reportMaand = date("m",$reportStamp);
-		$reportDag = date("d",$reportStamp);
+		$reportJaar = date("Y",$reportStamp)*1;
+		$reportMaand = date("m",$reportStamp)*1;
+		$reportDag = date("d",$reportStamp)*1;
 		$currentDayStartStamp = (new DateTime("today " . date("Y-m-d 00:00:00", time())))->getTimestamp();
 		$reportDateStr = date("d-m-Y H:i:s",$reportStamp);
 		$reportEndStamp = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($reportDate))))->getTimestamp();
@@ -573,11 +573,7 @@ EOF
 	var PVGism = "";
 	var PVGisj = "";
 	var starty = 0;
-	var cdate = new Date(reportDateYMD);
-	var cd = cdate.getDate();
-	var cm = cdate.getMonth()+1;
-	var cy = cdate.getFullYear();
-	var cdays = daysInMonth(cm, cy);
+	var reportMonthDays = daysInMonth(reportMaand, reportJaar);
 	var con_start_date = new Date(contract_start_date);
 	var con_end_date = new Date(contract_end_date);
 	var con_day = con_start_date.getDate();
@@ -951,7 +947,7 @@ EOF
 					}).responseText;
 					datam1 = eval(datam1)
 					if (typeof datam1 != 'undefined') {
-						if (cm == con_month && cd >= con_day) { maantal -= (cdays - cd);}
+						if (reportMaand == con_month && reportDag >= con_day) { maantal = reportDag - con_day + 1;}
 						for (y = 0; y < maantal; y++) {
 							var prod = parseFloat(datam1[y]['prod']);  //Solar productie
 							var v1 = parseFloat(datam1[y]['v1']);      // verbruik hoog
@@ -971,41 +967,39 @@ EOF
 						yve += ychart.series[2].data[i].y;
 						yvs += ychart.series[3].data[i].y;
 				}
-
 			});
 
 			yse -= se;
 			ysv -= sv;
 			yve -= ve;
 			yvs -= vs;
-			if (PVGis[cm] > 0) {
-				PVGisd = waarde(0,2,PVGis[cm]/cdays);
-				PVGism = waarde(0,1,PVGis[cm]/cdays*cd);
+			if (PVGis[reportMaand] > 0) {
+				PVGisd = waarde(0,2,PVGis[reportMaand]/reportMonthDays);
+				PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*reportDag);
 				tPVGis=0;
 				for (i=1; i<PVGis.length; i++) {
 					var factor = 1;
 					if (i == con_month) {
 <?php					// add part contract month start ?>
-						if( cm == con_month && cd >= con_day ){
+						if (reportMaand == con_month && reportDag >= con_day) {
 <?php						// current month is contract month and we are after startdate of new contract ?>
 <?php						// Add the days from start day contract till current day ?>
-							factor = (cd-con_day + 1)/con_days;
-						}else if( cm == con_month && cd < con_day ){
+							factor = (reportDag-con_day + 1)/con_days;
+						}else if (reportMaand == con_month && reportDag < con_day) {
 <?php						// current month is contract month and we are before startdate of new contract ?>
 <?php						// Add remainder of the month days (for last year) and the days between 1 and current day for this year ?>
-							factor = (con_days-(con_day-cd-1))/con_days;
+							factor = (con_days-(con_day-reportDag-1))/con_days;
 						}else{
 <?php						// We are after contract start date so need to add the remainder of the contract start month ?>
 							factor = (con_days - con_day + 1)/con_days;
 						}
 					}
-					else if (i == cm ) {
+					else if (i == reportMaand) {
 <?php					// add part current month?>
-						var cmdays = daysInMonth(cm, cy);
-						factor = cd/cmdays;
+						factor = reportDag/reportMonthDays;
 					}
-					else if ((cy == con_start_year && (i < con_month || i > cm)) ||
-						(cy >  con_start_year && (i < con_month && i > cm))) {
+					else if ((reportJaar == con_start_year && (i < con_month || i > reportMaand)) ||
+						 (reportJaar >  con_start_year && (i < con_month && i > reportMaand))) {
 						factor = 0;
 					}
 					tPVGis += PVGis[i]*factor;
@@ -1028,8 +1022,8 @@ EOF
 				var pd = pdate.getDate();
 				var pm = pdate.getMonth()+1;
 				var py = pdate.getFullYear();
-				if(cy == py && cm == pm && cd >= pd) {
-					if (cd == pd) {
+				if (reportJaar == py && reportMaand == pm && reportDag >= pd) {
+					if (reportDag == pd) {
 						se += wchart.series[0].data[i].y;
 						sv += wchart.series[1].data[i].y;
 						ve += wchart.series[2].data[i].y;
@@ -1100,15 +1094,15 @@ EOF
 					"<tr id='i'><td colspan=3>&nbsp;</td></tr>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><b>Vandaag</b></td></tr>" +
 					"<tr><td>Solar</td><td>" + waarde(0,2,SolarProdToday) + "</td><td>kWh</td></tr>" +
-					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGisd + '</td><td>kWh</td></tr>'}` +
+					(PVGis[reportMaand] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGisd + '</td><td>kWh</td></tr>') +
 					"<tr><td>Efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
 					"<tr><td>Solar</td><td>" + waarde(0,1,mse + msv) + "</td><td>kWh</td></tr>" +
-					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGism + '</td><td>kWh</td></tr>'}` +
+					(PVGis[reportMaand] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGism + '</td><td>kWh</td></tr>') +
 					"<tr><td>Efficiëntie:</td><td>" + waarde(0,1,((mse + msv)*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Totaal vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
 					"<tr><td>Solar</td><td>" + waarde(0,0,yse + ysv + se + sv) + "</td><td>kWh</td></tr>" +
-					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + waarde(0,0,PVGisj) + '</td><td>kWh</td></tr>'}` +
+					(PVGis[reportMaand] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + waarde(0,0,PVGisj) + '</td><td>kWh</td></tr>') +
 					"<tr><td>Efficiëntie:</td><td>" + waarde(0,0,((yse + ysv + se + sv)*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"</table>");
 
@@ -1135,7 +1129,7 @@ EOF
 						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+reportDayDMY+"</b></td></tr>" +
 						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>"+contract_datum+"</u></td></tr>" +
 						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv + se + sv)+"</td></tr>"+
-						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/cdays)+'</td><td>'+waarde(0,0,PVGis[cm]/cdays*cd)+ '</td><td>'+PVGisj+'</td></tr>'}` +
+						(PVGis[reportMaand] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGisd)+'</td><td>'+waarde(0,0,PVGism)+ '</td><td>'+PVGisj+'</td></tr>') +
 						"<tr><td colspan=2>Efficiëntie:</td><td>"+waarde(0,1,(SolarProdToday*1000/tverm))+"</td><td>"+waarde(0,0,((mse + msv)*1000/tverm))+"</td><td>"+waarde(0,0,((yse + ysv + se + sv)*1000/tverm))+"</td></tr>"+
 						"<tr><td colspan=5><br><u>Huis verbruik</u></td></tr>" +
 						"<tr><td colspan=2>solar:</td><td>"+waarde(0,0,sv)+"</td><td>"+waarde(0,0,msv)+"</td><td>"+waarde(0,0,ysv + sv)+"</td></tr>"+
