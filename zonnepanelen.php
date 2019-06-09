@@ -980,7 +980,7 @@ EOF
 			yvs -= vs;
 			if (PVGis[cm] > 0) {
 				PVGisd = waarde(0,2,PVGis[cm]/cdays);
-				PVGism = waarde(0,0,PVGis[cm]/cdays*cd);
+				PVGism = waarde(0,1,PVGis[cm]/cdays*cd);
 				tPVGis=0;
 				for (i=1; i<PVGis.length; i++) {
 					if (i == con_month) {
@@ -2245,12 +2245,12 @@ EOF
 								if ( sPVGm > 0) {
 									s += ''+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + sPVGm + ' kWh<br/>';
 								}
-								s += ''+PVGtxt+' maand&nbsp;: ' + sPVG + ' kWh<br/>';
+								s += ''+PVGtxt+' maand&nbsp;: ' + waarde(0,1,sPVG) + ' kWh<br/>';
 							}
 							s += 'Efficiëntie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat((sVS+sRE)*1000/tverm,0) + ' Wh/Wp<br/>';
 						} else {
 							if ( sPVG > 0) {
-								s += ''+PVGtxt+' dag gem.: ' + sPVG + ' kWh<br/>';
+								s += ''+PVGtxt+' dag gem.: ' + waarde(0,1,sPVG) + ' kWh<br/>';
 							}
 							s += 'Efficiëntie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat((sVS+sRE)*1000/tverm,1) + ' Wh/Wp<br/>';
 						}
@@ -2454,7 +2454,7 @@ EOF
 			if (PVGis[dm] > 0) {
 				if (chart.renderTo.id == "monthgraph") {
 					if ( dm == msol && dy == ysol) {
-						datatableSolarPVGis.push([cdate, parseInt(PVGis[dm]/dayssol*dsol)]);
+						datatableSolarPVGis.push([cdate, parseFloat(PVGis[dm]/dayssol*dsol)]);
 						if (chart.renderTo.id == "monthgraph") {
 							datatableSolarPVGis.push([cdate, PVGis[dm]]);
 						}
@@ -2462,7 +2462,7 @@ EOF
 						datatableSolarPVGis.push([cdate, PVGis[dm]]);
 					}
 				} else {
-					datatableSolarPVGis.push([cdate, parseInt(PVGis[dm]/daysInMonth(dm,dy))]);
+					datatableSolarPVGis.push([cdate, parseFloat(PVGis[dm]/daysInMonth(dm,dy))]);
 				}
 			}
 			datatableverbruikSolar.push([cdate, vs]);
