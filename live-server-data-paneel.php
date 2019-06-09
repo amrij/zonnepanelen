@@ -59,7 +59,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 			$diff['serie']  = 0;
 			$diff['op_id']  = $i;
 			$diff['ts'] = $row['timestamp'] * 1000;
-			$diff['temperature'] = $row['temperature']*2;
+			$diff['temp'] = $row['temperature']*2;
 			$diff['cp'] = sprintf("%.3f", $row['vermogen']);
 
 			if ($paneel[$i]['uptime'] > $row['uptime']) {
