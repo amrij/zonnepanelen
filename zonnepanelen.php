@@ -975,31 +975,31 @@ EOF
 			yvs -= vs;
 			if (PVGis[reportMaand] > 0) {
 				PVGisd = waarde(0,2,PVGis[reportMaand]/reportMonthDays);
-				PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*reportDag);
-				tPVGis=0;
+				PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*(reportMaand == con_month ? reportDag-con_day + 1 : reportDag));
+				tPVGis = 0;
 				for (i=1; i<PVGis.length; i++) {
-					var factor = 1;
-					if (i == con_month) {
-<?php					// add part contract month start ?>
-						if (reportMaand == con_month && reportDag >= con_day) {
-<?php						// current month is contract month and we are after startdate of new contract ?>
-<?php						// Add the days from start day contract till current day ?>
-							factor = (reportDag-con_day + 1)/con_days;
-						}else if (reportMaand == con_month && reportDag < con_day) {
-<?php						// current month is contract month and we are before startdate of new contract ?>
-<?php						// Add remainder of the month days (for last year) and the days between 1 and current day for this year ?>
-							factor = (con_days-(con_day-reportDag-1))/con_days;
-						}else{
-<?php						// We are after contract start date so need to add the remainder of the contract start month ?>
+					var factor = 1; <?php // Assume each month PVGis needs to be added ?>
+					if (i == con_month) { <?php // contract month corner case ?>
+						if (reportMaand == con_month) { <?php // special case if also in reportMonth ?>
+							if (reportDag >= con_day) { <?php // Only add the days between contract start and reportDay ?>
+								factor = (reportDag - con_day + 1)/con_days;
+							}
+							else if (reportDag < con_day) { <?php // reportDay is in year after contract start ?>
+								<?php // Add days from beginning of month to reportDag, and days from contract startday to end of month ?>
+								factor = (reportDag + (con_days - con_day + 1))/con_days;
+							}
+						}
+						else { <?php // Add days from contract start day to end of month ?>
 							factor = (con_days - con_day + 1)/con_days;
 						}
 					}
-					else if (i == reportMaand) {
-<?php					// add part current month?>
+					else if (i == reportMaand) { <?php // reportMonth corner case ?>
+						<?php // for reportMonth only add from beginning of month to reportDag?>
 						factor = reportDag/reportMonthDays;
 					}
 					else if ((reportJaar == con_start_year && (i < con_month || i > reportMaand)) ||
 						 (reportJaar >  con_start_year && (i < con_month && i > reportMaand))) {
+						<?php // out of bounds when outside contract date and report date, nothing to add ?>
 						factor = 0;
 					}
 					tPVGis += PVGis[i]*factor;
