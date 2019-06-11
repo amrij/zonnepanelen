@@ -2223,7 +2223,7 @@ EOF
 						if (this.points[0].series.chart.renderTo.id == "monthgraph") {
 							if ( sPVG > 0) {
 								if ( sPVGm > 0) {
-									s += ''+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + sPVGm + ' kWh<br/>';
+									s += ''+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + waarde(0,1,sPVGm) + ' kWh<br/>';
 								}
 								s += ''+PVGtxt+' maand&nbsp;: ' + waarde(0,1,sPVG) + ' kWh<br/>';
 							}
