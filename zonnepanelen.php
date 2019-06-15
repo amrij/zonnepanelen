@@ -162,9 +162,9 @@ omschrijving: hoofdprogramma
 		$reportDT = new DateTime("today " . date("Y-m-d 00:00:00", strtotime($reportDate)));
 		$reportStamp = $reportDT->getTimestamp();
 		$reportWinterOffset = date("I",$reportStamp)-1;
-		$reportJaar = date("Y",$reportStamp);
-		$reportMaand = date("m",$reportStamp);
-		$reportDag = date("d",$reportStamp);
+		$reportJaar = date("Y",$reportStamp)*1;
+		$reportMaand = date("m",$reportStamp)*1;
+		$reportDag = date("d",$reportStamp)*1;
 		$currentDayStartStamp = (new DateTime("today " . date("Y-m-d 00:00:00", time())))->getTimestamp();
 		$reportDateStr = date("d-m-Y H:i:s",$reportStamp);
 		$reportEndStamp = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($reportDate))))->getTimestamp();
@@ -573,11 +573,7 @@ EOF
 	var PVGism = "";
 	var PVGisj = "";
 	var starty = 0;
-	var cdate = new Date(reportDateYMD);
-	var cd = cdate.getDate();
-	var cm = cdate.getMonth()+1;
-	var cy = cdate.getFullYear();
-	var cdays = daysInMonth(cm, cy);
+	var reportMonthDays = daysInMonth(reportMaand, reportJaar);
 	var con_start_date = new Date(contract_start_date);
 	var con_end_date = new Date(contract_end_date);
 	var con_day = con_start_date.getDate();
@@ -611,12 +607,12 @@ EOF
 	}
 
 	var paneelGraph = {
-			'Vermogen':     { 'metric': 'cp', 					'tekst': 'Vermogen',    'unit': 'W' },
-			'Energie':      { 'metric': 'vp',        			'tekst': 'Energie',     'unit': 'Wh' },
-			'Temperatuur':  { 'metric': 'temperature',          'tekst': 'Temperatuur', 'unit': '°C' },
-			'V_in':         { 'metric': 'vin',                  'tekst': 'Spanning In', 'unit': 'V' },
-			'V_out':        { 'metric': 'vout',                 'tekst': 'Spanning Uit','unit': 'V' },
-			'I_in':         { 'metric': 'iin',                  'tekst': 'Stroom In',   'unit': 'A' }
+			'Vermogen':     { 'metric': 'cp',   'tekst': 'Vermogen',     'unit': 'W' },
+			'Energie':      { 'metric': 'vp',   'tekst': 'Energie',      'unit': 'Wh' },
+			'Temperatuur':  { 'metric': 'temp', 'tekst': 'Temperatuur',  'unit': '°C' },
+			'V_in':         { 'metric': 'vin',  'tekst': 'Spanning In',  'unit': 'V' },
+			'V_out':        { 'metric': 'vout', 'tekst': 'Spanning Uit', 'unit': 'V' },
+			'I_in':         { 'metric': 'iin',  'tekst': 'Stroom In',    'unit': 'A' }
 		};
 
 	function paneelFillSeries(metric, id, ichart) {
@@ -932,7 +928,6 @@ EOF
 			PVGisj = "";
 			$.each(ychart.series[2].data, function(i, point) {
 				var pdate = new Date(point.x);
-				var pd = pdate.getDate();
 				var pm = pdate.getMonth()+1;
 				var py = pdate.getFullYear();
 				<?php // Get days diff with contract start and end date ?>
@@ -940,9 +935,8 @@ EOF
 				var dd_end = datediff(con_end_date,pdate);
 				if(con_start_year == py && con_month == pm) {
 					<?php // we are in the start month of the contract so get only the data for those remaining days of the month ?>
-					var pdays = daysInMonth(con_month, py);
-					var endmonth = py + "-" + pm + "-" + pdays;
-					var maantal = pdays - con_day + 1;
+					var endmonth = con_start_year + "-" + con_month + "-" + con_days;
+					var maantal = con_days - con_day + 1;
 					var url='<?php echo $DataURL?>?period=d&aantal='+maantal+"&date="+endmonth;
 					var datam1 = $.ajax({
 						url: '<?php echo $DataURL?>',
@@ -953,7 +947,7 @@ EOF
 					}).responseText;
 					datam1 = eval(datam1)
 					if (typeof datam1 != 'undefined') {
-						if (cm == con_month && cd >= con_day) { maantal -= (cdays - cd);}
+						if (reportMaand == con_month && reportDag >= con_day) { maantal = reportDag - con_day + 1;}
 						for (y = 0; y < maantal; y++) {
 							var prod = parseFloat(datam1[y]['prod']);  //Solar productie
 							var v1 = parseFloat(datam1[y]['v1']);      // verbruik hoog
@@ -973,58 +967,42 @@ EOF
 						yve += ychart.series[2].data[i].y;
 						yvs += ychart.series[3].data[i].y;
 				}
-
 			});
 
 			yse -= se;
 			ysv -= sv;
 			yve -= ve;
 			yvs -= vs;
-			if (PVGis[cm] > 0) {
-				PVGisd = waarde(0,2,PVGis[cm]/cdays);
-				PVGism = waarde(0,0,PVGis[cm]/cdays*cd);
-				tPVGis=0;
+			if (PVGis[reportMaand] > 0) {
+				PVGisd = waarde(0,2,PVGis[reportMaand]/reportMonthDays);
+				PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*(reportMaand == con_month ? reportDag-con_day + 1 : reportDag));
+				tPVGis = 0;
 				for (i=1; i<PVGis.length; i++) {
-					if (i == con_month) {
-<?php					// add part contract month start ?>
-						var factor = 1;
-						if( cm == con_month && cd >= con_day ){
-<?php						// current month is contract month and we are after startdate of new contract ?>
-<?php						// Add the days from start day contract till current day ?>
-							var factor = (cd-con_day + 1)/con_days;
-						}else if( cm == con_month && cd < con_day ){
-<?php						// current month is contract month and we are before startdate of new contract ?>
-<?php						// Add remainder of the month days (for last year) and the days between 1 and current day for this year ?>
-							var factor = (con_days-(con_day-cd-1))/con_days;
-						}else{
-<?php						// We are after contract start date so need to add the remainder of the contract start month ?>
-							var factor = (con_days - con_day + 1)/con_days;
+					var factor = 1; <?php // Assume each month PVGis needs to be added ?>
+					if (i == con_month) { <?php // contract month corner case ?>
+						if (reportMaand == con_month) { <?php // special case if also in reportMonth ?>
+							if (reportDag >= con_day) { <?php // Only add the days between contract start and reportDay ?>
+								factor = (reportDag - con_day + 1)/con_days;
+							}
+							else if (reportDag < con_day) { <?php // reportDay is in year after contract start ?>
+								<?php // Add days from beginning of month to reportDag, and days from contract startday to end of month ?>
+								factor = (reportDag + (con_days - con_day + 1))/con_days;
+							}
 						}
-						tPVGis += PVGis[i]*factor;
-						continue;
+						else { <?php // Add days from contract start day to end of month ?>
+							factor = (con_days - con_day + 1)/con_days;
+						}
 					}
-					if (i == cm ) {
-<?php					// add part current month?>
-						var cmdays = daysInMonth(cm, cy);
-						var factor = cd/cmdays;
-						tPVGis += PVGis[i]*factor;
-						continue;
+					else if (i == reportMaand) { <?php // reportMonth corner case ?>
+						<?php // for reportMonth only add from beginning of month to reportDag?>
+						factor = reportDag/reportMonthDays;
 					}
-					if (i > con_month && i < cm) {
-<?php					// add months after start contract till current date ?>
-						tPVGis += PVGis[i];
-						continue;
+					else if ((reportJaar == con_start_year && (i < con_month || i > reportMaand)) ||
+						 (reportJaar >  con_start_year && (i < con_month && i > reportMaand))) {
+						<?php // out of bounds when outside contract date and report date, nothing to add ?>
+						factor = 0;
 					}
-					if (i > con_month && i > cm && cy > con_start_year) {
-<?php					// add months after start contract till end of year ?>
-						tPVGis += PVGis[i];
-						continue;
-					}
-					if (cy > con_start_year && i < cm){
-<?php					// add months beginning this year till current month ?>
-						tPVGis += PVGis[i];
-						continue;
-					}
+					tPVGis += PVGis[i]*factor;
 				}
 				PVGisj = waarde(0,0,tPVGis);
 			}
@@ -1044,8 +1022,8 @@ EOF
 				var pd = pdate.getDate();
 				var pm = pdate.getMonth()+1;
 				var py = pdate.getFullYear();
-				if(cy == py && cm == pm && cd >= pd) {
-					if (cd == pd) {
+				if (reportJaar == py && reportMaand == pm && reportDag >= pd) {
+					if (reportDag == pd) {
 						se += wchart.series[0].data[i].y;
 						sv += wchart.series[1].data[i].y;
 						ve += wchart.series[2].data[i].y;
@@ -1116,15 +1094,15 @@ EOF
 					"<tr id='i'><td colspan=3>&nbsp;</td></tr>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><b>Vandaag</b></td></tr>" +
 					"<tr><td>Solar</td><td>" + waarde(0,2,SolarProdToday) + "</td><td>kWh</td></tr>" +
-					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGisd + '</td><td>kWh</td></tr>'}` +
+					(PVGis[reportMaand] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGisd + '</td><td>kWh</td></tr>') +
 					"<tr><td>Efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
 					"<tr><td>Solar</td><td>" + waarde(0,1,mse + msv) + "</td><td>kWh</td></tr>" +
-					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGism + '</td><td>kWh</td></tr>'}` +
+					(PVGis[reportMaand] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + PVGism + '</td><td>kWh</td></tr>') +
 					"<tr><td>Efficiëntie:</td><td>" + waarde(0,1,((mse + msv)*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"<tr><td colspan=3 style=\"text-align:center\"><br><b>Totaal vanaf " + contract_datum + "-" + con_start_year + "</b></td></tr>" +
 					"<tr><td>Solar</td><td>" + waarde(0,0,yse + ysv + se + sv) + "</td><td>kWh</td></tr>" +
-					`${PVGis[cm] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + waarde(0,0,PVGisj) + '</td><td>kWh</td></tr>'}` +
+					(PVGis[reportMaand] == 0 ? '' : '<tr><td>'+PVGtxt+':</td><td>' + waarde(0,0,PVGisj) + '</td><td>kWh</td></tr>') +
 					"<tr><td>Efficiëntie:</td><td>" + waarde(0,0,((yse + ysv + se + sv)*1000/tverm)) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 					"</table>");
 
@@ -1151,7 +1129,7 @@ EOF
 						"<tr><td colspan=5><b>&nbsp;&nbsp;&nbsp;Totaal overzicht "+reportDayDMY+"</b></td></tr>" +
 						"<tr><td colspan=2></td><td><u>Dag</u></td><td><u>MTD</u></td><td><u>"+contract_datum+"</u></td></tr>" +
 						"<tr><td colspan=2><u>Solar prod:</u></td><td>"+waarde(0,0,SolarProdToday)+"</td><td>"+waarde(0,0,mse + msv)+"</td><td>"+waarde(0,0,yse + ysv + se + sv)+"</td></tr>"+
-						`${PVGis[cm] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGis[cm]/cdays)+'</td><td>'+waarde(0,0,PVGis[cm]/cdays*cd)+ '</td><td>'+PVGisj+'</td></tr>'}` +
+						(PVGis[reportMaand] == 0 ? '' : '<tr><td colspan=2>'+PVGtxt+':</td><td>'+waarde(0,0,PVGisd)+'</td><td>'+waarde(0,0,PVGism)+ '</td><td>'+PVGisj+'</td></tr>') +
 						"<tr><td colspan=2>Efficiëntie:</td><td>"+waarde(0,1,(SolarProdToday*1000/tverm))+"</td><td>"+waarde(0,0,((mse + msv)*1000/tverm))+"</td><td>"+waarde(0,0,((yse + ysv + se + sv)*1000/tverm))+"</td></tr>"+
 						"<tr><td colspan=5><br><u>Huis verbruik</u></td></tr>" +
 						"<tr><td colspan=2>solar:</td><td>"+waarde(0,0,sv)+"</td><td>"+waarde(0,0,msv)+"</td><td>"+waarde(0,0,ysv + sv)+"</td></tr>"+
@@ -2245,14 +2223,14 @@ EOF
 						if (this.points[0].series.chart.renderTo.id == "monthgraph") {
 							if ( sPVG > 0) {
 								if ( sPVGm > 0) {
-									s += ''+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + sPVGm + ' kWh<br/>';
+									s += ''+PVGtxt+' MTD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + waarde(0,1,sPVGm) + ' kWh<br/>';
 								}
-								s += ''+PVGtxt+' maand&nbsp;: ' + sPVG + ' kWh<br/>';
+								s += ''+PVGtxt+' maand&nbsp;: ' + waarde(0,1,sPVG) + ' kWh<br/>';
 							}
 							s += 'Efficiëntie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat((sVS+sRE)*1000/tverm,0) + ' Wh/Wp<br/>';
 						} else {
 							if ( sPVG > 0) {
-								s += ''+PVGtxt+' dag gem.: ' + sPVG + ' kWh<br/>';
+								s += ''+PVGtxt+' dag gem.: ' + waarde(0,1,sPVG) + ' kWh<br/>';
 							}
 							s += 'Efficiëntie&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + Highcharts.numberFormat((sVS+sRE)*1000/tverm,1) + ' Wh/Wp<br/>';
 						}
@@ -2456,7 +2434,7 @@ EOF
 			if (PVGis[dm] > 0) {
 				if (chart.renderTo.id == "monthgraph") {
 					if ( dm == msol && dy == ysol) {
-						datatableSolarPVGis.push([cdate, parseInt(PVGis[dm]/dayssol*dsol)]);
+						datatableSolarPVGis.push([cdate, parseFloat(PVGis[dm]/dayssol*dsol)]);
 						if (chart.renderTo.id == "monthgraph") {
 							datatableSolarPVGis.push([cdate, PVGis[dm]]);
 						}
@@ -2464,7 +2442,7 @@ EOF
 						datatableSolarPVGis.push([cdate, PVGis[dm]]);
 					}
 				} else {
-					datatableSolarPVGis.push([cdate, parseInt(PVGis[dm]/daysInMonth(dm,dy))]);
+					datatableSolarPVGis.push([cdate, parseFloat(PVGis[dm]/daysInMonth(dm,dy))]);
 				}
 			}
 			datatableverbruikSolar.push([cdate, vs]);
