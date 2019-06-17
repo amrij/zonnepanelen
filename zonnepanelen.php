@@ -729,12 +729,10 @@ EOF
 				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
 				document.getElementById("sola_text").innerHTML =
 						"<table width=100% class=data-table>" +
-						"<tr><td colspan=2 style=\"font-size:smaller\">" + inv1Data[0]["IT"].substr(11,10) + "</td></tr>" +
-						"<tr><td colspan=2><b><u>Solar vandaag</u></b></td></tr>" +
+						"<tr><td><b><u>Solar vandaag</u></b></td><td style=\"font-size:smaller\">" + inv1Data[0]["IT"].substr(11,10) + "</td></tr>" +
 						((P1 == 1) ? (
 							"<tr><td>verbruik:</td><td>" + waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(s_p1CounterDelivToday)) + " kWh</td></tr>" +
-							"<tr><td>retour:</td><td>" + waarde(0,3,parseFloat(s_p1CounterDelivToday)) + " kWh</td></tr>" +
-							"<tr><td></td><td>----------</td></tr>"
+							"<tr><td>retour:</td><td><u>" + waarde(0,3,parseFloat(s_p1CounterDelivToday)) + " kWh</u></td></tr>"
 							) : "" ) +
 						"<tr><td class=green_text>productie:</td><td class=green_text>" + waarde(0,3,inv1Data[0]["IE"]) + " kWh</td></tr>" +
 						"<tr><td>efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + " Wh/Wp</td></tr></table>";
@@ -862,11 +860,9 @@ EOF
 							diff = -diff;
 						}
 						document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-								"<tr><td colspan=2 style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
-								"<tr><td colspan=2><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td></tr>" +
+								"<tr><td><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td><td style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
 								"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
-								"<tr><td>retour:</td><td>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</td></tr>" +
-								"<tr><td></td><td>----------</td></tr>"+
+								"<tr><td>retour:</td><td><u>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</u></td></tr>" +
 								"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
 								"</table>";
 						if (pse+psv+pve+pvs > 0) {
