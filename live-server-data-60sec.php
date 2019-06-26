@@ -25,7 +25,7 @@
 
 # ophalen algemene gegevens
 include('config.php');
-$mysqli = new mysqli($host, 'p1', 'janklaassen', 'p1', $port);
+$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 
 # ophale datum gegevens
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
