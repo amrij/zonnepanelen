@@ -37,6 +37,7 @@ omschrijving: hoofdprogramma
 	<script type="text/javascript" src="js/data.js"></script>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/Moonrise.js"></script>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
 	<link rel="stylesheet" href="css/jquery.calendars.picker.css" id="theme">
@@ -177,12 +178,24 @@ omschrijving: hoofdprogramma
 		$datum = $reportStamp/86400;
 		$timezone = date('Z',strtotime($reportDate))/3600;
 		$localtime = 0; //Time (pas local midnight)
-		$sunrise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0);
-		$solar_noon_s = iteratie($datum,$lat,$long,$timezone,$localtime,1);
-		$sunset_s = iteratie($datum,$lat,$long,$timezone,$localtime,2);
+		$sunrise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0,-.833);
+		$solar_noon_s = iteratie($datum,$lat,$long,$timezone,$localtime,1,0);
+		$sunset_s = iteratie($datum,$lat,$long,$timezone,$localtime,2,-.833);
+		$goldenrise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0,+6);
+		$goldenset_s = iteratie($datum,$lat,$long,$timezone,$localtime,2,+6);
+		$bleurise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0,-6);
+		$bleuset_s = iteratie($datum,$lat,$long,$timezone,$localtime,2,-6);
+		$nauticalrise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0,-12);
+		$nauticalset_s = iteratie($datum,$lat,$long,$timezone,$localtime,2,-12);
 		$sunrise = date("H:i:s",($datum+$sunrise_s)*86400);
 		$solar_noon = date("H:i:s",($datum+$solar_noon_s)*86400);
 		$sunset = date("H:i:s",($datum+$sunset_s)*86400);
+		$goldenrise = date("H:i:s",($datum+$goldenrise_s)*86400);
+		$goldenset = date("H:i:s",($datum+$goldenset_s)*86400);
+		$bleurise = date("H:i:s",($datum+$bleurise_s)*86400);
+		$bleuset = date("H:i:s",($datum+$bleuset_s)*86400);
+		$nauticalrise = date("H:i:s",($datum+$nauticalrise_s)*86400);
+		$nauticalset = date("H:i:s",($datum+$nauticalset_s)*86400);
 		$daglengte = date("H:i:s",($datum+$sunset_s-$sunrise_s)*86400);
 		// bereken contract Start en Eind datum tbv jaar totalen
 		$contract_datum = empty($contract_datum) ? "01-01" : $contract_datum ;
@@ -414,7 +427,7 @@ EOF
 }
 
 ?>
-			<div Class="box_Zonnepanelen" id="box_Zonnepanelen">
+		<div Class="box_Zonnepanelen" id="box_Zonnepanelen">
 <?php
 	for ($i=1; $i<=$aantal; $i++){
 		echo '				<div class="box_Zonnepaneel_'.$i.'" id="box_Zonnepaneel_'.$i.'">'."\n";
@@ -433,23 +446,28 @@ EOF
 ?>
 		</div>
 		<div Class='box_sunrise' id='box_sunrise'>
-			<img src="./img/zon/sunrise.gif"                  style="top:   .1%; left:  3%; z-index: 10; width: 32%; height: 25%; position: absolute;" />
-			<div class='sunrise_text' id='sunrise_text'       style="top: 10.1%; left: 40%; z-index: 10; width: 40%; height:  9%; line-height: 1.0em; position: absolute;"></div>
+			<div class="astr" id="astro">
+				<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#astro"/>
+			</div>
+			<map name="astro" style="z-index: 40;">
+				<area id="astro_1" data-ttitle="Astronomische gegevens" shape="rect" coords="0,0,252,252" title="">
+			</map>
+			<img src="./img/zon/sunrise.gif"                  style="top:   .1%; left:  3%; z-index: -10; width: 32%; height: 25%; position: absolute;" />
+			<div class='sunrise_text' id='sunrise_text'       style="top: 10.1%; left: 40%; z-index: -10; width: 40%; height:  9%; line-height: 1.0em; position: absolute;"></div>
 
-			<img src="./img/zon/solar_noon.gif"               style="top: 25.1%; left:  3%; z-index: 10; width: 32%; height: 25%; position: absolute;" />
-			<div class='solar_noon_text' id='solar_noon_text' style="top: 35.1%; left: 40%; z-index: 10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
+			<img src="./img/zon/solar_noon.gif"               style="top: 25.1%; left:  3%; z-index: -10; width: 32%; height: 25%; position: absolute;" />
+			<div class='solar_noon_text' id='solar_noon_text' style="top: 35.1%; left: 40%; z-index: -10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 
-			<img src="./img/zon/sunset.gif"                   style="top: 50.1%; left:  3%; z-index: 10; width: 32%; height: 25%; position: absolute;" />
-			<div class='sunset_text' id='sunset_text'         style="top: 60.1%; left: 40%; z-index: 10; width: 50%; height: 9%; line-height: 1.0em; position: absolute;"></div>
+			<img src="./img/zon/sunset.gif"                   style="top: 50.1%; left:  3%; z-index: -10; width: 32%; height: 25%; position: absolute;" />
+			<div class='sunset_text' id='sunset_text'         style="top: 60.1%; left: 40%; z-index: -10; width: 50%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 
-			<img src="./img/zon/daglengte.gif"                style="top: 75.1%; left:  3%; z-index: 10; width: 32%; height: 25%; position: absolute;" />
-			<div class='daglengte_text' id='daglengte_text'   style="top: 85.1%; left: 40%; z-index: 10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
+			<img src="./img/zon/daglengte.gif"                style="top: 75.1%; left:  3%; z-index: -10; width: 32%; height: 25%; position: absolute;" />
+			<div class='daglengte_text' id='daglengte_text'   style="top: 85.1%; left: 40%; z-index: -10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 		</div>
 		<div Class='box_moonphase' id='box_moonphase'>
-			<img src="./img/maan/maan_th_mask1.gif"           style="top:  0.0%; left:  7%; z-index: 20; height: 100%; position: absolute;" />
-			<img class="maan_th" id="maan_th" src=""          style="top:  0.6%; left:  7%; z-index: 10; height: 100%; position: absolute;" />
-			<div class='fase_text' id='fase_text'             style="top: 22.0%; left: 40%; z-index: 10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
-			<div class='verlicht_text' id='verlicht_text'     style="top: 55.0%; left: 40%; z-index: 10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
+			<img class="maan_th" id="maan_th" src=""          style="top:  0.6%; left:  7%; z-index: -10; height: 100%; position: absolute;" />
+			<div class='fase_text' id='fase_text'             style="top: 22.0%; left: 40%; z-index: -10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
+			<div class='verlicht_text' id='verlicht_text'     style="top: 55.0%; left: 40%; z-index: -10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
 		</div>
 	</div>
 </body>
@@ -512,7 +530,19 @@ EOF
 	var sunrise = '<?php echo $sunrise ?>';
 	var solar_noon = '<?php echo $solar_noon ?>';
 	var sunset = '<?php echo $sunset ?>';
+	var goldenrise = '<?php echo $goldenrise ?>';
+	var goldenset = '<?php echo $goldenset ?>';
+	var bleurise = '<?php echo $bleurise ?>';
+	var bleuset = '<?php echo $bleuset ?>';
+	var nauticalrise = '<?php echo $nauticalrise ?>';
+	var nauticalset = '<?php echo $nauticalset ?>';
 	var daglengte = '<?php echo $daglengte ?>';
+	var lat = '<?php echo $lat ?>';
+	var lon = '<?php echo $long ?>';
+	var moondate = new Date(reportDateYMD);
+	var zone = Math.round(moondate.getTimezoneOffset() / 60);
+	var maanrise = moonRiseSet(lat, lon, moondate, zone, "r");
+	var maanset = moonRiseSet(lat, lon, moondate, zone, "s");
 	var begin = '<?php echo $begin?>';
 	var vermogen = '<?php echo $vermogen?>';
 	var inverter = '<?php echo $inverter?>';
@@ -580,14 +610,183 @@ EOF
 	var con_month = con_start_date.getMonth()+1;
 	var con_start_year = con_start_date.getFullYear();
 	var con_days = daysInMonth(con_month, con_start_year);
+	var period_60sec = "s";
 
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
 
+	var maart = "";
+	var juni = "";
+	var september = "";
+	var december = "";
+	var firstTime = true;	// Initialization flag
+	function writeN( n, str ) { 
+		switch( n ) {
+			case 1: maart = stringToTimestamp(str); break;
+			case 2: juni = stringToTimestamp(str); break;
+			case 3: september = stringToTimestamp(str); break;
+			case 4: december = stringToTimestamp(str); break;
+		}
+	}
+	function calc(year) {
+		//Main Calculations started here
+		for( var i=1; i<=4; i++ ) { // Loop over 4 events: 1=AE, 2=SS, 3-VE, 4=WS
+			calcEquiSol( i, year ); // This routine calculates and displays a single event
+		}
+	} // End calc
+	calc(reportJaar);
+
+	function stringToTimestamp(s) {
+	  var t = s.match(/[\d\w]+/g);
+	  var months = {jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',
+					jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+	  function pad(n){return (n<10?'0':'') + +n;}
+	  var hrs = t[4];
+
+	  return t[3] + '-' + months[t[1].toLowerCase()] + '-' + pad(t[2]) + ' ' +
+			 pad(t[4]) + ':' + pad(t[5]) + ':' + pad(t[6]);
+	}
+
+	function calcEquiSol( i, year ) {
+		var k = i - 1;
+		var str;
+		var JDE0 = calcInitial( k, year);	// Initial estimate of date of event
+		var T = ( JDE0 - 2451545.0) / 36525;
+		var W = 35999.373*T - 2.47;
+		var dL = 1 + 0.0334*COS(W) + 0.0007*COS(2*W);
+		var S = periodic24( T );
+		var JDE = JDE0 + ( (0.00001*S) / dL ); 	// This is the answer in Julian Emphemeris Days
+		var TDT = fromJDtoUTC( JDE );				// Convert Julian Days to TDT in a Date Object
+		var UTC = fromTDTtoUTC( TDT );				// Correct TDT to UTC, both as Date Objects
+		str = UTC.toString()    + "\n"; //Convert to Local time string
+		writeN( i, str );	// Output date & time of event in Local Time
+	} // End calcEquiSol
+
+	//-----Calcualte an initial guess as the JD of the Equinox or Solstice of a Given Year
+	// Meeus Astronmical Algorithms Chapter 27
+	function calcInitial( k, year ) { // Valid for years 1000 to 3000
+		var JDE0=0, Y=(year-2000)/1000;
+		switch( k ) {
+		  case 0: JDE0 = 2451623.80984 + 365242.37404*Y + 0.05169*POW2(Y) - 0.00411*POW3(Y) - 0.00057*POW4(Y); break;
+		  case 1: JDE0 = 2451716.56767 + 365241.62603*Y + 0.00325*POW2(Y) + 0.00888*POW3(Y) - 0.00030*POW4(Y); break;
+		  case 2: JDE0 = 2451810.21715 + 365242.01767*Y - 0.11575*POW2(Y) + 0.00337*POW3(Y) + 0.00078*POW4(Y); break;
+		  case 3: JDE0 = 2451900.05952 + 365242.74049*Y - 0.06223*POW2(Y) - 0.00823*POW3(Y) + 0.00032*POW4(Y); break;
+		}
+		return JDE0;
+	} // End calcInitial
+
+	//-----Calculate 24 Periodic Terms----------------------------------------------------
+	// Meeus Astronmical Algorithms Chapter 27
+	function periodic24( T ) {
+		var A = new Array(485,203,199,182,156,136,77,74,70,58,52,50,45,44,29,18,17,16,14,12,12,12,9,8);
+		var B = new Array(324.96,337.23,342.08,27.85,73.14,171.52,222.54,296.72,243.58,119.81,297.17,21.02,
+				247.54,325.15,60.93,155.12,288.79,198.04,199.76,95.39,287.11,320.81,227.73,15.45);
+		var C = new Array(1934.136,32964.467,20.186,445267.112,45036.886,22518.443,
+				65928.934,3034.906,9037.513,33718.147,150.678,2281.226,
+				29929.562,31555.956,4443.417,67555.328,4562.452,62894.029,
+				31436.921,14577.848,31931.756,34777.259,1222.114,16859.074);
+		var S = 0;
+		for( var i=0; i<24; i++ ) { S += A[i]*COS( B[i] + (C[i]*T) ); }
+		return S;
+	} 
+
+	//-----Correct TDT to UTC----------------------------------------------------------------
+	function fromTDTtoUTC( tobj ) {
+	// from Meeus Astronmical Algroithms Chapter 10
+		// Correction lookup table has entry for every even year between TBLfirst and TBLlast
+		var TBLfirst = 1620, TBLlast = 2002;	// Range of years in lookup table
+		var TBL = new Array(					// Corrections in Seconds
+			/*1620*/ 121,112,103, 95, 88,  82, 77, 72, 68, 63,  60, 56, 53, 51, 48,  46, 44, 42, 40, 38,
+			/*1660*/  35, 33, 31, 29, 26,  24, 22, 20, 18, 16,  14, 12, 11, 10,  9,   8,  7,  7,  7,  7,
+			/*1700*/   7,  7,  8,  8,  9,   9,  9,  9,  9, 10,  10, 10, 10, 10, 10,  10, 10, 11, 11, 11,
+			/*1740*/  11, 11, 12, 12, 12,  12, 13, 13, 13, 14,  14, 14, 14, 15, 15,  15, 15, 15, 16, 16,
+			/*1780*/  16, 16, 16, 16, 16,  16, 15, 15, 14, 13,  
+			/*1800*/ 13.1, 12.5, 12.2, 12.0, 12.0,  12.0, 12.0, 12.0, 12.0, 11.9,  11.6, 11.0, 10.2,  9.2,  8.2,
+			/*1830*/  7.1,  6.2,  5.6,  5.4,  5.3,   5.4,  5.6,  5.9,  6.2,  6.5,   6.8,  7.1,  7.3,  7.5,  7.6,
+			/*1860*/  7.7,  7.3,  6.2,  5.2,  2.7,   1.4, -1.2, -2.8, -3.8, -4.8,  -5.5, -5.3, -5.6, -5.7, -5.9,
+			/*1890*/ -6.0, -6.3, -6.5, -6.2, -4.7,  -2.8, -0.1,  2.6,  5.3,  7.7,  10.4, 13.3, 16.0, 18.2, 20.2,
+			/*1920*/ 21.1, 22.4, 23.5, 23.8, 24.3,  24.0, 23.9, 23.9, 23.7, 24.0,  24.3, 25.3, 26.2, 27.3, 28.2,
+			/*1950*/ 29.1, 30.0, 30.7, 31.4, 32.2,  33.1, 34.0, 35.0, 36.5, 38.3,  40.2, 42.2, 44.5, 46.5, 48.5,
+			/*1980*/ 50.5, 52.5, 53.8, 54.9, 55.8,  56.9, 58.3, 60.0, 61.6, 63.0,  63.8, 64.3); /*2002 last entry*/
+			// Values for Delta T for 2000 thru 2002 from NASA
+		var deltaT = 0; // deltaT = TDT - UTC (in Seconds)
+		var Year = tobj.getUTCFullYear();
+		var t = (Year - 2000) / 100;	// Centuries from the epoch 2000.0
+		
+		if ( Year >= TBLfirst && Year <= TBLlast ) { // Find correction in table
+			if (Year%2) { // Odd year - interpolate
+				deltaT = ( TBL[(Year-TBLfirst-1)/2] + TBL[(Year-TBLfirst+1)/2] ) / 2;
+			} else { // Even year - direct table lookup
+				deltaT = TBL[(Year-TBLfirst)/2];
+			}
+		} else if( Year < 948) { 
+			deltaT = 2177 + 497*t + 44.1*POW2(t);
+		} else if( Year >=948) {
+			deltaT =  102 + 102*t + 25.3*POW2(t);
+			if (Year>=2000 && Year <=2100) { // Special correction to avoid discontinurity in 2000
+				deltaT += 0.37 * ( Year - 2100 );
+			}
+		} else { alert("Error: TDT to UTC correction not computed"); }
+		return( new Date( tobj.getTime() - (deltaT*1000) ) ); // JavaScript native time is in milliseonds
+	} // End fromTDTtoUTC
+
+	//-----Julian Date to UTC Date Object----------------------------------------------------
+	// Meeus Astronmical Algorithms Chapter 7 
+	function fromJDtoUTC( JD ){
+		// JD = Julian Date, possible with fractional days
+		// Output is a JavaScript UTC Date Object
+		var A, alpha;
+		var Z = INT( JD + 0.5 ); // Integer JD's
+		var F = (JD + 0.5) - Z;	 // Fractional JD's
+		if (Z < 2299161) { A = Z; }
+		else {
+			alpha = INT( (Z-1867216.25) / 36524.25 );
+			A = Z + 1 + alpha - INT( alpha / 4 );
+		}
+		var B = A + 1524;
+		var C = INT( (B-122.1) / 365.25 );
+		var D = INT( 365.25*C );
+		var E = INT( ( B-D )/30.6001 );
+		var DT = B - D - INT(30.6001*E) + F;	// Day of Month with decimals for time
+		var Mon = E - (E<13.5?1:13);			// Month Number
+		var Yr  = C - (Mon>2.5?4716:4715);		// Year    
+		var Day = INT( DT ); 					// Day of Month without decimals for time
+		var H = 24*(DT - Day);					// Hours and fractional hours 
+		var Hr = INT( H ); 						// Integer Hours
+		var M = 60*(H - Hr);					// Minutes and fractional minutes
+		var Min = INT( M );						// Integer Minutes
+		var Sec = INT( 60*(M-Min) );			// Integer Seconds (Milliseconds discarded)
+		//Create and set a JavaScript Date Object and return it
+		var theDate = new Date(0);
+		theDate.setUTCFullYear(Yr, Mon-1, Day);
+		theDate.setUTCHours(Hr, Min, Sec);
+		return( theDate );
+	} //End fromJDtoUTC
+	//-----Utility Funtions------------------------------------------------------------
+	function INT ( n ) { return Math.floor(n); }	// Emulates BASIC's INT Funtion
+	function POW2( n ) { return Math.pow(n,2); }	// Square a number
+	function POW3( n ) { return Math.pow(n,3); }	// Cube a number
+	function POW4( n ) { return Math.pow(n,4); }	// Number to the 4th power
+	function COS( deg ) { 						// Cosine function with degrees as input
+		return Math.cos( deg * Math.PI/180  );
+	}
+
 	function drawChart() {
-		zonmaan();
-		paneel();
 		if (P1 == 1){ draw_p1_chart();}
+		if (p1CounterToday == 0) {
+			if (P1 == 1){
+					p1_update()
+			}
+			s_p1CounterToday = p1CounterToday;
+			s_p1CounterDelivToday = p1CounterDelivToday;
+		}
+		requestData60sec();
+		document.getElementById("box_panel_vermogen").style.display = "none"
+		document.getElementById("box_panel_energy").style.display = "none"
+		document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
+		document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
+		document.getElementById("sunset_text").innerHTML = sunset+" uur";
+		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
 		if (currentDayStartStamp < reportEndStamp) {
 			setInterval(function() {
 				var now = new Date();
@@ -595,13 +794,9 @@ EOF
 					window.location = window.location.pathname;
 					return false;
 				}
-				if (P1 == 1){p1_update();}
 			}, 10000);
 			setInterval(function() {
-				zonmaan();
-			}, 600000);
-			setInterval(function() {
-				paneel();
+				requestData60sec();
 			}, 60000);
 		}
 	}
@@ -693,129 +888,6 @@ EOF
 		if (d > 0 && p+1+d < s.length) { s=s.slice(0,p+1+d);}
 		if (n==0) { s="-"+s;}
 		return s;
-	}
-
-	function paneel(){
-		var inv1Data = $.ajax({
-			url: "live-server-data-zon.php",
-			dataType: "json",
-			type: 'GET',
-			data: { "date" : reportDate },
-			async: false,
-		}).responseText;
-
-		inv1Data = eval(inv1Data)
-		SolarProdToday = inv1Data[0]["IE"];
-
-		if (p1CounterToday == 0) {
-			if (P1 == 1){
-				p1_update()
-			}
-			s_p1CounterToday = p1CounterToday;
-			s_p1CounterDelivToday = p1CounterDelivToday;
-		}
-
-		if (inv1Data[0]["IT"] == null) {inv1Data[0]["IT"] = reportDateStr;}
-		if (currentDayStartStamp < reportEndStamp) {
-			var now = new Date();
-			var tnow = new Date("1970-01-01 " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
-			var tlast = new Date("1970-01-01 " + inv1Data[0]["IT"].substring(11));
-			if ((s_lasttimestamp != inv1Data[0]["IT"] || inv1Data[0]["MODE"] != "MPPT") || tnow - tlast > 600000) {
-				s_p1CounterDelivToday = p1CounterDelivToday;
-				s_p1CounterToday = p1CounterToday;
-				s_lasttimestamp = (inv1Data[0]["MODE"] == "MPPT") ? inv1Data[0]["IT"] : "";
-				document.getElementById("arrow_PRD").className = (inv1Data[0]["IVACT"] != 0) ? "arrow_right_green" : "";
-				document.getElementById("so_text").className = "green_text";
-				document.getElementById("so_text").innerHTML = inv1Data[0]["IVACT"]+ " Watt";
-				document.getElementById("sola_text").innerHTML =
-						"<table width=100% class=data-table>" +
-						"<tr><td><b><u>Solar vandaag</u></b></td><td style=\"font-size:smaller\">" + inv1Data[0]["IT"].substr(11,10) + "</td></tr>" +
-						((P1 == 1) ? (
-							"<tr><td>verbruik:</td><td>" + waarde(0,3,parseFloat(inv1Data[0]["IE"])-parseFloat(s_p1CounterDelivToday)) + " kWh</td></tr>" +
-							"<tr><td>retour:</td><td><u>" + waarde(0,3,parseFloat(s_p1CounterDelivToday)) + " kWh</u></td></tr>"
-							) : "" ) +
-						"<tr><td class=green_text>productie:</td><td class=green_text>" + waarde(0,3,inv1Data[0]["IE"]) + " kWh</td></tr>" +
-						"<tr><td>efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + " Wh/Wp</td></tr></table>";
-				document.getElementById("inverter_text").innerHTML =
-						"<table width=100% class=data-table>"+
-						"<tr><td>Date:</td><td colspan=3>"+inv1Data[0]["IT"]+"</td></tr>" +
-						"<tr><td>Mode:</td><td colspan=3>"+inv1Data[0]["MODE"]+"</td></tr>" +
-						"<tr><td>MaxP:</td><td colspan=3>"+inv1Data[0]["IVMAX"]+" W</td></tr>" +
-						"<tr><td>Temp:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["ITACT"]) + " / "+waarde(0,1,inv1Data[0]["ITMIN"]) + " / "+waarde(0,1,inv1Data[0]["ITMAX"]) + " °C</td></tr>" +
-						"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,inv1Data[0]["v_dc"]) + "</td></tr></table>";
-			}
-		}else{
-			s_lasttimestamp = inv1Data[0]["IT"];
-			document.getElementById("inverter_text").innerHTML =
-					"<table width=100% class=data-table>" +
-					"<tr><td><b>Inverter:</b></td><td colspan=3>" + naam + "</td></tr>" +
-					"<tr><td>Date</td><td colspan=3>" + inv1Data[0]["IT"] + "</td></tr>" +
-					"<tr><td class=green_text>Energie</td><td colspan=3 class=green_text>" + waarde(0,3,inv1Data[0]["IE"]) + " kWh</td></tr>" +
-					"<tr><td>MaxP</td><td colspan=3>" + inv1Data[0]["IVMAX"] + " W</td></tr>" +
-					"<tr><td>Tmin:</td><td colspan=3>" + waarde(0,1,inv1Data[0]["ITMIN"]) + " °C</td></tr>" +
-					"<tr><td>Tmax:</td><td colspan=3>" + waarde(0,1,inv1Data[0]["ITMAX"]) + " °C</td></tr></table>";
-			document.getElementById("arrow_PRD").className = "";
-		}
-		if (inverter == 1) {
-			document.getElementById("inverter_1").setAttribute("data-tcontent",
-					"<table class=qtiptable>" +
-					"<tr><td>S AC:</td><td>" + inv1Data[0]["i_ac"]+ "</td><td>A</td></tr>" +
-					"<tr><td>V AC:</td><td>" + inv1Data[0]["v_ac"] + "</td><td>V</td></tr>" +
-					"<tr><td>Freq:</td><td>" + inv1Data[0]["frequency"]+ "</td><td>Hz</td></tr>" +
-					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active"] + "</td><td>W</td></tr>" +
-					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
-					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
-					"</table>");
-		} else {
-			document.getElementById("inverter_1").setAttribute("data-tcontent",
-					"<table class=qtiptable>" +
-					"<tr><td></td><td>L1</td><td>L2</td><td>L3</td></tr>" +
-					"<tr><td>S AC:</td><td>" + inv1Data[0]["i_ac1"] + "</td><td>" + inv1Data[0]["i_ac2"] + "</td><td>" + inv1Data[0]["i_ac3"] + "</td><td>A</td></tr>" +
-					"<tr><td>V AC:</td><td>" + inv1Data[0]["v_ac1"] + "</td><td>" + inv1Data[0]["v_ac2"] + "</td><td>" + inv1Data[0]["v_ac3"] + "</td><td>V</td></tr>" +
-					"<tr><td>Freq:</td><td>" + inv1Data[0]["frequency1"]+"</td><td>" + inv1Data[0]["frequency2"] + "</td><td>" + inv1Data[0]["frequency3"] + "</td><td>Hz</td></tr>" +
-					"<tr><td>Pactive:</td><td>" + inv1Data[0]["p_active1"] + "</td><td>" + inv1Data[0]["p_active2"] + "</td><td>"+inv1Data[0]["p_active3"] + "</td><td>W</td></tr>" +
-					"<tr><td>V DC:</td><td>" + waarde(0,1,inv1Data[0]["v_dc"]) + "</td><td>V</td></tr>" +
-					"<tr><td>P(act):</td><td>" + inv1Data[0]["IVACT"] + "</td><td>W</td></tr>" +
-					"</table>");
-		}
-		update_map_fields();
-
-		for (var i=1; i<=aantal; i++){
-			if (vermogen == 1){
-				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i])+ " Wh";
-				var t = (inv1Data[0]["IVACT"] != 0) ? "E" : "VM";
-				document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,inv1Data[0][t+i]) + " W";
-			} else {
-				document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,inv1Data[0]["O"+i]);
-				document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
-			}
-			document.getElementById("tool_paneel_"+i).setAttribute("data-tcontent",
-					"<table class=qtiptable>" +
-					"<tr><td colspan=3 style=\"text-align:center\"><b>" + inv1Data[0]["TM"+i] + "</b><br></td></tr>" +
-					"<tr><td>Optimizer SN:</td><td colspan=2>" + op_sn[i] + "</td></tr>" +
-					"<tr><td>Paneel SN:</td><td colspan=2>" + pn_sn[i] + "</td></tr>" +
-					"<tr><td>Energie:</td><td>" + inv1Data[0]["O"+i] + "</td><td>Wh</td></tr>" +
-					"<tr><td>Vermogen (act.):</td><td>" + inv1Data[0]["E"+i] + "</td><td>W</td></tr>" +
-					"<tr><td>Vermogen (max.):</td><td>" + inv1Data[0]["VM"+i] + "</td><td>W</td></tr>" +
-					"<tr><td>Vermogen (max.):</td><td>" + inv1Data[0]["VMT"+i].substring(0,5) + "</td><td>Tijd</td></tr>" +
-					"<tr><td>Stroom in:</td><td>" + inv1Data[0]["S"+i] + "</td><td>A</td></tr>" +
-					"<tr><td>Spanning in:</td><td>" + inv1Data[0]["VI"+i] + "</td><td>V</td></tr>" +
-					"<tr><td>Spanning uit:</td><td>" + inv1Data[0]["VU"+i] + "</td><td>V</td></tr>" +
-					"<tr><td>Temperatuur:</td><td>" + inv1Data[0]["T"+i] + "</td><td>°C</td></tr>" +
-					"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(inv1Data[0]["O"+i]/vpan[i])) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
-					"</table>");
-			if      ( inv1Data[0]["C"+i] == 0)  { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#000000"; }
-			else if ( inv1Data[0]["C"+i] < 0.1) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#080f16"; }
-			else if ( inv1Data[0]["C"+i] < 0.2) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#101e2d"; }
-			else if ( inv1Data[0]["C"+i] < 0.3) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#182e44"; }
-			else if ( inv1Data[0]["C"+i] < 0.4) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#203d5a"; }
-			else if ( inv1Data[0]["C"+i] < 0.5) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#294d71"; }
-			else if ( inv1Data[0]["C"+i] < 0.6) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#315c88"; }
-			else if ( inv1Data[0]["C"+i] < 0.7) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#396b9e"; }
-			else if ( inv1Data[0]["C"+i] < 0.8) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#417bb5"; }
-			else if ( inv1Data[0]["C"+i] < 0.9) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#498acc"; }
-			else                                { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#529ae3"; }
-		}
 	}
 
 	function p1_update(){
@@ -1031,8 +1103,7 @@ EOF
 					mvs += wchart.series[3].data[i].y;
 				}
 			});
-			if (starty == 0 ){ update_jaar();}
-			starty = 1;
+			if (starty == 0 ){starty = 1; update_jaar();}
 			document.getElementById("p1_huis").className = "red_text";
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
@@ -1164,17 +1235,219 @@ EOF
 		inv4Data = eval(inv4Data)
 		currentDayYMD = inv4Data[0]["date3"];
 		currentDayStartStamp = inv4Data[0]["datum1"];
-		document.getElementById("box_panel_vermogen").style.display = "none"
-		document.getElementById("box_panel_energy").style.display = "none"
-		document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
-		document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
-		document.getElementById("sunset_text").innerHTML = sunset+" uur";
-		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
 		document.getElementById("maan_th").src = inv4Data[0]["filenaam"];
 		document.getElementById("fase_text").innerHTML = inv4Data[0]["phase_naam"];
 		document.getElementById("verlicht_text").innerHTML = inv4Data[0]["illumination"]+'% Verlicht';
 	}
 
+	function requestData60sec() {
+		$.ajax({
+			url: 'live-server-data-60sec.php', //url of data source
+			type: 'GET',
+			data: { "date" : reportDate, "period" : period_60sec }, //optional
+			success: function(data) {
+				data = eval(data);
+				data_i = [];
+				var y_i = 0;
+				data_p = [];
+				var y_p = 0;
+				if (P1 == 0 ){
+					var series = power_chart.series[0];
+					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+				}
+				for(var iy = 0; iy < data.length; iy++){
+					switch ( data[iy]['ty']){
+						case "in": // invertergegevens
+							data_i[y_i] = data[iy];
+							y_i = y_i + 1;
+							break;
+						case "pa": // paneelgegevens
+							data_p[y_p] = data[iy];
+							y_p = y_p + 1;
+							break;
+						case "ip": // inverter en paneel tekst
+							SolarProdToday = data[iy]["IE"];
+
+							if (data[iy]["IT"] == null) {data[iy]["IT"] = reportDateStr;}
+							if (currentDayStartStamp < reportEndStamp) {
+								var now = new Date();
+								var tnow = new Date("1970-01-01 " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
+								var tlast = new Date("1970-01-01 " + data[iy]["IT"].substring(11));
+								if ((s_lasttimestamp != data[iy]["IT"] || data[iy]["MODE"] != "MPPT") || tnow - tlast > 600000) {
+									s_p1CounterDelivToday = p1CounterDelivToday;
+									s_p1CounterToday = p1CounterToday;
+									s_lasttimestamp = (data[iy]["MODE"] == "MPPT") ? data[iy]["IT"] : "";
+									document.getElementById("arrow_PRD").className = (data[iy]["IVACT"] != 0) ? "arrow_right_green" : "";
+									document.getElementById("so_text").className = "green_text";
+									document.getElementById("so_text").innerHTML = data[iy]["IVACT"]+ " Watt";
+									document.getElementById("sola_text").innerHTML =
+											"<table width=100% class=data-table>" +
+											"<tr><td><b><u>Solar vandaag</u></b></td><td style=\"font-size:smaller\">" + data[iy]["IT"].substr(11,10) + "</td></tr>" +
+											((P1 == 1) ? (
+												"<tr><td>verbruik:</td><td>" + waarde(0,3,parseFloat(data[iy]["IE"])-parseFloat(s_p1CounterDelivToday)) + " kWh</td></tr>" +
+												"<tr><td>retour:</td><td><u>" + waarde(0,3,parseFloat(s_p1CounterDelivToday)) + " kWh</u></td></tr>"
+												) : "" ) +
+											"<tr><td class=green_text>productie:</td><td class=green_text>" + waarde(0,3,data[iy]["IE"]) + " kWh</td></tr>" +
+											"<tr><td>efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + " Wh/Wp</td></tr></table>";
+									document.getElementById("inverter_text").innerHTML =
+											"<table width=100% class=data-table>"+
+											"<tr><td>Date:</td><td colspan=3>"+data[iy]["IT"]+"</td></tr>" +
+											"<tr><td>Mode:</td><td colspan=3>"+data[iy]["MODE"]+"</td></tr>" +
+											"<tr><td>MaxP:</td><td colspan=3>"+data[iy]["IVMAX"]+" W</td></tr>" +
+											"<tr><td>Temp:</td><td colspan=3>"+waarde(0,1,data[iy]["ITACT"]) + " / "+waarde(0,1,data[iy]["ITMIN"]) + " / "+waarde(0,1,data[iy]["ITMAX"]) + " °C</td></tr>" +
+											"<tr><td>v_dc:</td><td colspan=3>"+waarde(0,1,data[iy]["v_dc"]) + "</td></tr></table>";
+								}
+							}else{
+								s_lasttimestamp = data[iy]["IT"];
+								document.getElementById("inverter_text").innerHTML =
+										"<table width=100% class=data-table>" +
+										"<tr><td><b>Inverter:</b></td><td colspan=3>" + naam + "</td></tr>" +
+										"<tr><td>Date</td><td colspan=3>" + data[iy]["IT"] + "</td></tr>" +
+										"<tr><td class=green_text>Energie</td><td colspan=3 class=green_text>" + waarde(0,3,data[iy]["IE"]) + " kWh</td></tr>" +
+										"<tr><td>MaxP</td><td colspan=3>" + data[iy]["IVMAX"] + " W</td></tr>" +
+										"<tr><td>Tmin:</td><td colspan=3>" + waarde(0,1,data[iy]["ITMIN"]) + " °C</td></tr>" +
+										"<tr><td>Tmax:</td><td colspan=3>" + waarde(0,1,data[iy]["ITMAX"]) + " °C</td></tr></table>";
+								document.getElementById("arrow_PRD").className = "";
+							}
+							if (inverter == 1) {
+								document.getElementById("inverter_1").setAttribute("data-tcontent",
+										"<table class=qtiptable>" +
+										"<tr><td>S AC:</td><td>" + data[iy]["i_ac"]+ "</td><td>A</td></tr>" +
+										"<tr><td>V AC:</td><td>" + data[iy]["v_ac"] + "</td><td>V</td></tr>" +
+										"<tr><td>Freq:</td><td>" + data[iy]["frequency"]+ "</td><td>Hz</td></tr>" +
+										"<tr><td>Pactive:</td><td>" + data[iy]["p_active"] + "</td><td>W</td></tr>" +
+										"<tr><td>V DC:</td><td>" + waarde(0,1,data[iy]["v_dc"]) + "</td><td>V</td></tr>" +
+										"<tr><td>P(act):</td><td>" + data[iy]["IVACT"] + "</td><td>W</td></tr>" +
+										"</table>");
+							} else {
+								document.getElementById("inverter_1").setAttribute("data-tcontent",
+										"<table class=qtiptable>" +
+										"<tr><td></td><td>L1</td><td>L2</td><td>L3</td></tr>" +
+										"<tr><td>S AC:</td><td>" + data[iy]["i_ac1"] + "</td><td>" + data[iy]["i_ac2"] + "</td><td>" + data[iy]["i_ac3"] + "</td><td>A</td></tr>" +
+										"<tr><td>V AC:</td><td>" + data[iy]["v_ac1"] + "</td><td>" + data[iy]["v_ac2"] + "</td><td>" + data[iy]["v_ac3"] + "</td><td>V</td></tr>" +
+										"<tr><td>Freq:</td><td>" + data[iy]["frequency1"]+"</td><td>" + data[iy]["frequency2"] + "</td><td>" + data[iy]["frequency3"] + "</td><td>Hz</td></tr>" +
+										"<tr><td>Pactive:</td><td>" + data[iy]["p_active1"] + "</td><td>" + data[iy]["p_active2"] + "</td><td>"+data[iy]["p_active3"] + "</td><td>W</td></tr>" +
+										"<tr><td>V DC:</td><td>" + waarde(0,1,data[iy]["v_dc"]) + "</td><td>V</td></tr>" +
+										"<tr><td>P(act):</td><td>" + data[iy]["IVACT"] + "</td><td>W</td></tr>" +
+										"</table>");
+							}
+							update_map_fields();
+
+							for (var i=1; i<=aantal; i++){
+								if (vermogen == 1){
+									document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,data[iy]["O"+i])+ " Wh";
+									var t = (data[iy]["IVACT"] != 0) ? "E" : "VM";
+									document.getElementById("text_paneel_W_"+i+"a").innerHTML = waarde(0,0,data[iy][t+i]) + " W";
+								} else {
+									document.getElementById("text_paneel_W_"+i).innerHTML = waarde(0,0,data[iy]["O"+i]);
+									document.getElementById("text_paneel_W_"+i+"a").innerHTML = "Wh";
+								}
+								document.getElementById("tool_paneel_"+i).setAttribute("data-tcontent",
+										"<table class=qtiptable>" +
+										"<tr><td colspan=3 style=\"text-align:center\"><b>" + data[iy]["TM"+i] + "</b><br></td></tr>" +
+										"<tr><td>Optimizer SN:</td><td colspan=2>" + op_sn[i] + "</td></tr>" +
+										"<tr><td>Paneel SN:</td><td colspan=2>" + pn_sn[i] + "</td></tr>" +
+										"<tr><td>Energie:</td><td>" + data[iy]["O"+i] + "</td><td>Wh</td></tr>" +
+										"<tr><td>Vermogen (act.):</td><td>" + data[iy]["E"+i] + "</td><td>W</td></tr>" +
+										"<tr><td>Vermogen (max.):</td><td>" + data[iy]["VM"+i] + "</td><td>W</td></tr>" +
+										"<tr><td>Vermogen (max.):</td><td>" + data[iy]["VMT"+i].substring(0,5) + "</td><td>Tijd</td></tr>" +
+										"<tr><td>Stroom in:</td><td>" + data[iy]["S"+i] + "</td><td>A</td></tr>" +
+										"<tr><td>Spanning in:</td><td>" + data[iy]["VI"+i] + "</td><td>V</td></tr>" +
+										"<tr><td>Spanning uit:</td><td>" + data[iy]["VU"+i] + "</td><td>V</td></tr>" +
+										"<tr><td>Temperatuur:</td><td>" + data[iy]["T"+i] + "</td><td>°C</td></tr>" +
+										"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(data[iy]["O"+i]/vpan[i])) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
+										"</table>");
+								if ( data[iy]["C"+i] == 0) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#000000"; }
+								switch (Math.round(data[iy]["C"+i]*10,0)) {
+									case 0: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#080f16"; break;
+									case 1: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#101e2d"; break;
+									case 2: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#182e44"; break;
+									case 3: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#203d5a"; break;
+									case 4: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#294d71"; break;
+									case 5: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#315c88"; break;
+									case 6: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#396b9e"; break;
+									case 7: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#417bb5"; break;
+									case 8: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#498acc"; break;
+									default: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#529ae3"; break;
+								}
+							}
+							break;
+						case "po": // power
+							if (P1 == 0){
+								power_chart.series[0].addPoint([data[iy]['ts'],data[iy]['vp']*1], false, shift);
+								power_chart.series[1].addPoint([data[iy]['ts'],data[iy]['cp']*1], false, shift);
+							}
+							break;
+						case "mf": // maanfase
+							if (reportDateYMD >= currentDayYMD){
+								document.getElementById("NextDay").disabled = true;
+								document.getElementById("Today").disabled = true;
+							}else{
+								document.getElementById("NextDay").disabled = false;
+								document.getElementById("Today").disabled = false;
+							}
+							if (reportDateYMD <= begin){
+								document.getElementById("PrevDay").disabled = true;
+							}
+							if (currentDayStartStamp < reportEndStamp) {
+								reportDateStr = "";
+							}
+							currentDayYMD = data[iy]["d3"];
+							currentDayStartStamp = data[iy]["d1"];
+							document.getElementById("maan_th").src = data[iy]["fn"];
+							document.getElementById("fase_text").innerHTML = data[iy]["pm"];
+							document.getElementById("verlicht_text").innerHTML = data[iy]["in"]+'% Verlicht';
+							document.getElementById("astro_1").setAttribute("data-tcontent",
+									"<table class=qtiptable><col width=\"300\"><col width=\"330\"><col width=\"20\">" +
+									"<tr><td colspan=3 style=\"text-align:center\"><b>" + data[iy]["d2"] + "</b></td></tr>" +
+									"<tr><td colspan=3 style=\"text-align:center\"><br><b>Zon</b></td></tr>" +
+									"<tr><td>Opkomst:</td><td>" + sunrise + "</td><td></td></tr>" +
+									"<tr><td>Middag:</td><td>" + solar_noon + "</td></tr>" +
+									"<tr><td>Ondergang:</td><td>" +sunset + "</td></tr>" +
+									"<tr><td>Daglengte:</td><td>" + daglengte + "</td></tr>" +
+									"<tr><td>Afstand:</td><td>" + data[iy]["sde"] + "</td><td style=\"text-align:left\">km</td></tr>" +
+									"<tr><td>Diameter:</td><td>" + data[iy]["sdr"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Morgen:</td><td></td><td></td></tr>" +
+									"<tr><td>Nautical:</td><td>" + nauticalrise + " - " + sunrise + "</td><td></td></tr>" +
+									"<tr><td>(Civil) Blauwe uur:</td><td>" + bleurise + " - " + sunrise + "</td><td></td></tr>" +
+									"<tr><td>Gouden uur:</td><td>" + sunrise + " - " + goldenrise + "</td><td></td></tr>" +
+									"<tr><td>Avond:</td><td></td><td></td></tr>" +
+									"<tr><td>Gouden uur:</td><td>" + goldenset + " - " + sunset + "</td><td></td></tr>" +
+									"<tr><td>(Civil) Blauwe uur:</td><td>" + sunset + " - " + bleuset + "</td><td></td></tr>" +
+									"<tr><td>Nautical:</td><td>" + sunset + " - " + nauticalset + "</td><td></td></tr>" +
+									"<tr><td>Mar equinox:</td><td>" + maart + "</td><td></td></tr>" +
+									"<tr><td>Jun zonnewende</td><td>" + juni + "</td><td></td></tr>" +
+									"<tr><td>Sep equinox:</td><td>" + september + "</td><td></td></tr>" +
+									"<tr><td>Dec zonnewende</td><td>" + december + "</td><td></td></tr>" +
+									"<tr><td colspan=3 style=\"text-align:center\"><b><br>Maan</b></td></tr>" +
+									"<tr><td>Opkomst:</td><td>" + maanrise + "</td><td></td></tr>" +
+									"<tr><td>Ondergaan:</td><td>" + maanset + "</td><td></td></tr>" +
+									"<tr><td>Ouderdom:</td><td>" + data[iy]["ae"] +" van "+ data[iy]["ta"] + "</td><td style=\"text-align:left\">dagen</td></tr>" +
+									"<tr><td>verlicht:</td><td>" + data[iy]["in"] + "</td><td style=\"text-align:left\">%</td></tr>" +
+									"<tr><td>Afstand:</td><td>" + data[iy]["de"] + "</td><td style=\"text-align:left\">km</td></tr>" +
+									"<tr><td>Diameter:</td><td>" + data[iy]["dr"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Fase:</td><td>" + data[iy]["pe"] + "</td><td style=\"text-align:left\">%</td></tr>" +
+									"<tr><td>Fase naam:</td><td>" + data[iy]["pm"] + "</td><td></td></tr>" +
+									"<tr><td>Nieuwe maan:</td><td>" + data[iy]["nm"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Eerste kwatier:</td><td>" + data[iy]["fq"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Volle maan:</td><td>" + data[iy]["fm"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Laaste kwartier:</td><td>" + data[iy]["lq"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Volg. nieuwe maan:</td><td>" + data[iy]["nnm"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Volg. eerste kwatier:</td><td>" + data[iy]["nfq"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Volg. volle maan:</td><td>" + data[iy]["nfm"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"<tr><td>Volg. laaste kwartier:</td><td>" + data[iy]["nlq"] + "</td><td style=\"text-align:left\"></td></tr>" +
+									"</table>");
+							break
+					}
+				}
+				UpdateDataInverter();
+				if (P1 == 0) {power_chart.redraw();}
+				period_60sec = "c";
+			},
+			cache: false
+		});
+	}
+	
 	$(function() {
 		Highcharts.setOptions({
 			global: { useUTC: false, },
@@ -1185,118 +1458,623 @@ EOF
 				shortMonths: ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
             },
 		})
-		var urlPower = 'live-server-data.php'
-		var urlPaneel = 'live-server-data-paneel.php'
-		var urlInverter = 'live-server-data-inverter.php'
-		var limit = 's'
+	});
 
-		function requestDataPower() {
-			$.ajax({
-				url: urlPower,//url of data source
-				type: 'GET',
-				data: { "date" : reportDate, "limit" : limit },
-				success: function(data) {
-					var series = power_chart.series[0];
-					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-					data = eval(data);
-					for(var i = 0; i < data.length; i++){
-						power_chart.series[0].addPoint([data[i]['ts'],data[i]['vp']*1], false, shift);
-						power_chart.series[1].addPoint([data[i]['ts'],data[i]['cp']*1], false, shift);
-					}
-					power_chart.redraw();
-					limit = 'c';
-					setTimeout(requestDataPower, ((currentDayStartStamp < reportEndStamp) ? 60 : 86400) * 1000);
-				},
-				error : function(xhr, textStatus, errorThrown ) {
-					setTimeout(requestDataPower, 1000*10);
-				},
-				cache: false
-			});
+	function simple_moving_averager(period) {
+		var nums = [];
+		return function(num) {
+			if (period <= 1)
+				return num;
+			nums.push(num);
+			if (nums.length > period)
+				nums.splice(0,1); // remove the first element of the array
+			var sum = 0;
+			for (var i in nums)
+				sum += nums[i];
+			var n = period;
+			if (nums.length < period)
+				n = nums.length;
+			return(sum/n);
 		}
-
-		function requestDataPaneel() {
-			$.ajax({
-				url: urlPaneel,//url of data source
-				type: 'GET',
-				data: { "date" : reportDate }, //optional
-				success: function(data) {
-					data_p = eval(data);
-					setTimeout(requestDataPaneel, ((currentDayStartStamp < reportEndStamp) ? 60 : 86400) * 1000);
-				},
-				error : function(xhr, textStatus, errorThrown ) {
-					setTimeout(requestDataPaneel, 1000*10);
-				},
-				cache: false
-			});
-		}
-
-		function requestDataInverter() {
-			$.ajax({
-				url: urlInverter,//url of data source
-				type: 'GET',
-				data: { "date" : reportDate }, //optional
-				success: function(data) {
-					data_i = eval(data);
-					UpdateDataInverter()
-					setTimeout(requestDataInverter, ((currentDayStartStamp < reportEndStamp) ? 60 : 86400) * 1000);
-				},
-				error : function(xhr, textStatus, errorThrown ) {
-					setTimeout(requestDataInverter, 1000*10);
-				},
-				cache: false
-			});
-		}
-
-		function simple_moving_averager(period) {
-			var nums = [];
-			return function(num) {
-				if (period <= 1)
-					return num;
-				nums.push(num);
-				if (nums.length > period)
-					nums.splice(0,1); // remove the first element of the array
-				var sum = 0;
-				for (var i in nums)
-					sum += nums[i];
-				var n = period;
-				if (nums.length < period)
-					n = nums.length;
-				return(sum/n);
+	}
+	function UpdateDataInverter() {
+		if(inverter_redraw == 1) {
+			var series = inverter_charte.series[0];
+			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+			for (var i=0; i<=InvDays; i++){
+				inverter_charte.series[i].setData([], false);
+				inverter_chartv.series[i].setData([], false);
 			}
-		}
-		function UpdateDataInverter() {
-			if(inverter_redraw == 1) {
-				var series = inverter_charte.series[0];
-				var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-				for (var i=0; i<=InvDays; i++){
-					inverter_charte.series[i].setData([], false);
-					inverter_chartv.series[i].setData([], false);
+			var s_serie = "x";
+			var sma = simple_moving_averager(gem_verm);
+			for(var i = 0; i < data_i.length; i++){
+				if (gem_verm > 1 && s_serie != InvDays-data_i[i]['serie']) {
+					s_serie = InvDays-data_i[i]['serie'];
+					sma = simple_moving_averager(gem_verm);
 				}
-				var s_serie = "x";
-				var sma = simple_moving_averager(gem_verm);
-				for(var i = 0; i < data_i.length; i++){
-					if (data_i[i]['op_id'] == "i"){
-						if (gem_verm > 1 && s_serie != InvDays-data_i[i]['serie']) {
-							s_serie = InvDays-data_i[i]['serie'];
-							sma = simple_moving_averager(gem_verm);
+				n_gem_pow = sma(parseFloat(data_i[i]['cp']));
+
+				inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['vp']*1], false, shift);
+				inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
+			}
+			inverter_charte.redraw();
+			inverter_chartv.redraw();
+		}
+	}
+
+	$(document).ready(function() {
+		paneel_chartv = new Highcharts.Chart({
+			chart: {
+				animation: false,
+				type: 'area',
+				renderTo: 'panel_vermogen',
+				spacingTop: 10,
+				borderColor: 'grey',
+				borderWidth: 1,
+				borderRadius: 5,
+				alignTicks:true,
+				spacingBottom: 0,
+				zoomType: 'x',
+			},
+			title: { text: null },
+			subtitle: {
+				text: "",
+				align: 'left',
+				x: 90,
+				y: 20,
+				style: {
+					font: 'Arial',
+					fontWeight: 'bold',
+				},
+				floating: true
+			},
+			xAxis: [{ <?php genxAxis(); ?> }],
+			yAxis: [{
+				title: { text: 'Vermogen (W)' },
+				showEmpty: true,
+				tickPositioner: function () {
+					var positions = [],
+					tick = Math.floor(0),
+					tickMax = Math.ceil(this.dataMax),
+					increment = Math.ceil((tickMax - tick) / 6);
+					if (this.dataMax == this.dataMin) {
+						increment = .5,
+						tickMax = tick + 3
+					}
+					if (this.dataMax !== null && this.dataMin !== null) {
+						for (i=0; i<=6; i += 1) {
+							positions.push(tick);
+							tick += increment;
 						}
-						n_gem_pow = sma(parseFloat(data_i[i]['cp']));
-
-						inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['vp']*1], false, shift);
-						inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
+					}
+					return positions;
+				}
+			}, {
+				title: { text: 'Energie (Wh)' },
+				tickPositioner: function () {
+					var positions = [],
+					tick = Math.floor(0),
+					tickMax = Math.ceil(this.dataMax),
+					increment = Math.ceil((tickMax - tick)/ 6);
+					if (this.dataMax == this.dataMin) {
+						increment = .5,
+						tickMax = tick + 3
+					}
+					if (this.dataMax !== null && this.dataMin !== null) {
+						for (i=0; i<=6; i += 1) {
+							positions.push(tick);
+							tick += increment;
+						}
+					}
+					return positions;
+				},
+				opposite: true
+			}],
+			legend: {
+				itemStyle: { fontWeight: 'Thin', },
+				layout: 'vertical',
+				align: 'left',
+				x: 10,
+				verticalAlign: 'top',
+				y: 20,
+				floating: true,
+			},
+			credits: { enabled: false },
+			tooltip: {
+				formatter: function () {
+					var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
+					$.each(this.points, function () {
+						if (this.series.name == 'Energie Productie') {
+							s += '<br/>' + this.series.name + ': ' +
+							this.y + ' kWh';
+						}
+						if (this.series.name == 'Stroom Productie') {
+							s += '<br/>' + this.series.name + ': ' +
+							this.y + ' W';
+						}
+					});
+					return s;
+				},
+				shared: true,
+				snap: 0,
+				crosshairs: [{
+					width: 1,
+					color: 'red',
+					zIndex: 3
+				}]
+			},
+			plotOptions: {
+				spline: {
+					lineWidth: 1,
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						states: { hover: { enabled: true } }
+					}
+				},
+				areaspline: {
+					lineWidth: 1,
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						states: { hover: { enabled: true } }
 					}
 				}
-				inverter_charte.redraw();
-				inverter_chartv.redraw();
-			}
-		}
+			},
+			exporting: {
+				enabled: false,
+				filename: 'power_chart',
+				url: 'export.php'
+			},
+			<?php panelenSeries($aantal, $kleur2, $kleurg); ?>
+		});
+	});
 
-		$(document).ready(function() {
-			paneel_chartv = new Highcharts.Chart({
+	$(document).ready(function() {
+		paneel_charte = new Highcharts.Chart({
+			chart: {
+				animation: false,
+				type: 'area',
+				renderTo: 'panel_energy',
+				spacingTop: 10,
+				borderColor: 'grey',
+				borderWidth: 1,
+				borderRadius: 5,
+				alignTicks:true,
+				spacingBottom: 0,
+				zoomType: 'x',
+			},
+			title: { text: null },
+			subtitle: {
+				text: "",
+				align: 'left',
+				x: 90,
+				y: 20,
+				style: {
+					font: 'Arial',
+					fontWeight: 'bold',
+				},
+				floating: true
+			},
+			xAxis: [{ <?php genxAxis(); ?> }],
+			yAxis: [{
+				title: { text: 'Vermogen(W)' },
+				showEmpty: false,
+				tickPositioner: function () {
+					var positions = [],
+					tick = Math.floor(0),
+					tickMax = Math.ceil(this.dataMax),
+					increment = Math.ceil((tickMax - tick) / 6);
+					if (this.dataMax == this.dataMin) {
+						increment = .5,
+						tickMax = tick + 3
+					}
+					if (this.dataMax !== null && this.dataMin !== null) {
+						for (i=0; i<=6; i += 1) {
+							positions.push(tick);
+							tick += increment;
+						}
+					}
+					return positions;
+				}
+			}, {
+				title: { text: 'Energie (Wh)' },
+				tickPositioner: function () {
+					var positions = [],
+					tick = Math.floor(0),
+					tickMax = Math.ceil(this.dataMax),
+					increment = Math.ceil((tickMax - tick)/ 6);
+					if (this.dataMax == this.dataMin) {
+						increment = .5,
+						tickMax = tick + 3
+					}
+					if (this.dataMax !== null && this.dataMin !== null) {
+						for (i=0; i<=6; i += 1) {
+							positions.push(tick);
+							tick += increment;
+						}
+					}
+					return positions;
+				},
+				opposite: true
+			}],
+			legend: {
+				itemStyle: { fontWeight: 'Thin', },
+				layout: 'vertical',
+				align: 'left',
+				x: 10,
+				verticalAlign: 'top',
+				y: 20,
+				floating: true,
+			},
+			credits: { enabled: false },
+			tooltip: {
+				formatter: function () {
+					var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
+					$.each(this.points, function () {
+						if (this.series.name == 'Energie Productie') {
+							s += '<br/>' + this.series.name + ': ' +
+							this.y + ' kWh';
+						}
+						if (this.series.name == 'Stroom Productie') {
+							s += '<br/>' + this.series.name + ': ' +
+							this.y + ' W';
+						}
+					});
+					return s;
+				},
+				shared: true,
+				snap: 0,
+				crosshairs: [{
+					width: 1,
+					color: 'red',
+					zIndex: 3
+				}]
+			},
+			plotOptions: {
+				spline: {
+					lineWidth: 1,
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						states: { hover: { enabled: true } }
+					}
+				},
+				areaspline: {
+					lineWidth: 1,
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						states: { hover: { enabled: true, } }
+					}
+				}
+			},
+			exporting: {
+				enabled: false,
+				filename: 'power_chart',
+				url: 'export.php'
+			},
+			<?php panelenSeries($aantal, $kleur2, $kleurg); ?>
+		});
+	});
+
+	$(document).ready(function() {
+		inverter_charte = new Highcharts.Chart({
+			chart: {
+				animation: false,
+				type: 'area',
+				renderTo: "chart_energy",
+				spacingTop: 10,
+				borderColor: 'grey',
+				borderWidth: 1,
+				borderRadius: 5,
+				alignTicks:true,
+				spacingBottom: 0,
+				zoomType: 'x',
+				spacingRight: 5
+			},
+			title: { text: null },
+			subtitle: {
+				text: "Energie op " + reportDayDMY + " en " + InvDays + " voorafgaande dagen",
+				align: 'left',
+				x: 20,
+				y: 20,
+				style: {
+					font: 'Arial',
+					fontWeight: 'bold',
+				},
+				floating: true
+			},
+			xAxis: [{ <?php genxAxis(); ?> }],
+			yAxis: [{
+				title: { text: 'Energie (kWh)' },
+				opposite: true,
+				tickPositioner: function () {
+					var positions = [],
+					tick = Math.floor(0),
+					tickMax = Math.ceil(this.dataMax),
+					increment = Math.ceil((tickMax - tick)/ 6);
+					if (this.dataMax == this.dataMin) {
+						increment = .5,
+						tickMax = tick + 3
+					}
+					if (this.dataMax !== null && this.dataMin !== null) {
+						for (i=0; i<=6; i += 1) {
+							positions.push(tick);
+							tick += increment;
+						}
+					}
+					return positions;
+				}
+			}],
+			legend: {
+				itemStyle: { fontWeight: 'Thin', },
+				layout: 'vertical',
+				align: 'left',
+				x: 10,
+				verticalAlign: 'top',
+				y: 20,
+				floating: true,
+			},
+			credits: { enabled: false },
+			tooltip: {
+				positioner: function () {
+					return { x: 10, y: 75 };
+				},
+				formatter: function () {
+					var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
+					var sortedPoints = this.points.sort(function(a, b){
+						return (b.y - a.y);
+					});
+					$.each(sortedPoints, function () {
+						for (i=0; i<=InvDays; i++){
+							if (this.series.name == productie[i]) {
+								this.point.series.options.marker.states.hover.enabled = false;
+								s += '<br>';
+								if (this.series.state == "hover") {
+									s += '<b>*</b>';
+									this.point.series.options.marker.states.hover.enabled = true;
+									this.point.series.options.marker.states.hover.lineColor = 'red';
+								}
+								if (i == InvDays) {s += "<b>";}
+								s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
+								if (i == InvDays) {s += "</b>";}
+							}
+						}
+					});
+					return s;
+				},
+				shared: true,
+				snap: 0,
+				crosshairs: [{
+					width: 1,
+					color: 'red',
+					zIndex: 20
+				}]
+			},
+			plotOptions: {
+				series: {
+					 events: {
+						mouseOver: function () {
+							if (this.index != this.chart.series.length-1) {
+								this.update({
+									color: '<?php echo $kleur2 ?>',
+									zIndex: 15,
+									fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
+									showInLegend: true,
+								})
+							}
+						},
+						mouseOut: function () {
+							if (this.index != this.chart.series.length-1) {
+								if (this.index != InvDays-1) {
+									this.update({
+										color: '<?php echo $kleurg ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									})
+								}else{
+									this.update({
+										color: '<?php echo $kleur1 ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									})
+								}
+							}
+						},
+					},
+				},
+				areaspline: {
+					lineWidth: 1,
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						states: { hover: { enabled: true } }
+					}
+				}
+			},
+			exporting: {
+				enabled: false,
+				filename: 'power_chart',
+				url: 'export.php'
+			},
+			<?php productieSeries($ingr, $kleur, $kleur1, $kleurg, $InvDays) ?>
+		});
+	});
+
+	$(document).ready(function() {
+		inverter_chartv = new Highcharts.Chart({
+			chart: {
+				animation: false,
+				type: 'area',
+				renderTo: "chart_vermogen",
+				spacingTop: 10,
+				borderColor: 'grey',
+				borderWidth: 1,
+				borderRadius: 5,
+				alignTicks:true,
+				spacingBottom: 0,
+				zoomType: 'x',
+				spacingRight: 5,
+			},
+			title: { text: null },
+			subtitle: {
+				text: "Vermogen op " + reportDayDMY + " en " + InvDays + " voorafgaande dagen",
+				align: 'left',
+				x: 20,
+				y: 20,
+				style: {
+					font: 'Arial',
+					fontWeight: 'bold',
+				},
+				floating: true
+			},
+			xAxis: [{ <?php genxAxis(); ?> }],
+			yAxis: [{
+				title: { text: (gem_verm > 1 ? gem_verm + ' punts gem.' : '') + ' Vermogen (W)' },
+				opposite: true,
+				tickPositioner: function () {
+					var positions = [],
+					tick = Math.floor(0),
+					tickMax = Math.ceil(this.dataMax),
+					increment = Math.ceil((tickMax - tick)/ 6);
+					if (this.dataMax == this.dataMin) {
+						increment = .5,
+						tickMax = tick + 3
+					}
+					if (this.dataMax !== null && this.dataMin !== null) {
+						for (i=0; i<=6; i += 1) {
+							positions.push(tick);
+							tick += increment;
+						}
+					}
+					return positions;
+				}
+			}],
+			legend: {
+				itemStyle: { fontWeight: 'Thin', },
+				layout: 'vertical',
+				align: 'left',
+				x: 10,
+				verticalAlign: 'top',
+				y: 20,
+				floating: true,
+			},
+			credits: { enabled: false },
+			tooltip: {
+				positioner: function () {
+					return { x: 10, y: 75 };
+				},
+				formatter: function () {
+					var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
+					var sortedPoints = this.points.sort(function(a, b){
+						return (b.y - a.y);
+					});
+					$.each(sortedPoints, function () {
+						for (i=0; i<= InvDays; i++){
+							if (this.series.name == productie[i]) {
+								this.point.series.options.marker.states.hover.enabled = false;
+								s += '<br>';
+								if (this.series.state == "hover") {
+									s += '<b>*</b>';
+									this.point.series.options.marker.states.hover.enabled = true;
+									this.point.series.options.marker.states.hover.lineColor = 'red';
+								}
+								if (i == InvDays) {s += "<b>";}
+								s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
+								if (i == InvDays) {s += "</b>";}
+							}
+						}
+					});
+					return s;
+				},
+				shared: true,
+				snap: 0,
+				crosshairs: [{
+					width: 1,
+					color: 'red',
+					zIndex: 3
+				}]
+			},
+			plotOptions: {
+				series: {
+					events: {
+						mouseOver: function () {
+							if (this.index != this.chart.series.length-1) {
+								this.update({
+									color: '<?php echo $kleur2 ?>',
+									zIndex: 15,
+									fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
+									showInLegend: true,
+								})
+							}
+						},
+						mouseOut: function () {
+							if (this.index != this.chart.series.length-1) {
+								if (this.index != InvDays-1) {
+									this.update({
+										color: '<?php echo $kleurg ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									})
+								}else{
+									this.update({
+										color: '<?php echo $kleur1 ?>',
+										zIndex: this.index,
+										fillOpacity: 0.0,
+										showInLegend: false,
+									})
+								}
+							}
+						},
+					},
+				},
+				areaspline: {
+					lineWidth: 1,
+					marker: {
+						enabled: false,
+						symbol: 'circle',
+						states: { hover: { enabled: true } }
+					}
+				},
+			},
+			exporting: {
+				enabled: (gem_verm == 1 ? false : true),
+				menuItemDefinitions: {
+					// Custom definition
+					btn1: {
+						onclick: function () {
+							gem_verm = 1;
+							inverter_chartv.yAxis[0].update({ title: { text: ' Vermogen (W)' }, });
+							UpdateDataInverter();
+						},
+						text: 'Momentopname'
+					},
+					// Custom definition
+					btn2: {
+						onclick: function () {
+							gem_verm = sgem_verm;
+							inverter_chartv.yAxis[0].update({ title: { text: gem_verm + ' punts gem. Vermogen (W)' }, });
+							UpdateDataInverter();
+						},
+						text: sgem_verm +' punts gemiddelde'
+					}
+				},
+				buttons: { contextButton: { menuItems: ['btn1', 'btn2'] } }
+			},
+			<?php productieSeries($ingr, $kleur, $kleur1, $kleurg, $InvDays) ?>
+		});
+	});
+
+	$(document).ready(function() {
+		if (P1 == "0"){
+			power_chart = new Highcharts.Chart({
 				chart: {
-					animation: false,
 					type: 'area',
-					renderTo: 'panel_vermogen',
+					renderTo: 'power_chart_body',
 					spacingTop: 10,
 					borderColor: 'grey',
 					borderWidth: 1,
@@ -1304,30 +2082,29 @@ EOF
 					alignTicks:true,
 					spacingBottom: 0,
 					zoomType: 'x',
-					events: {load: requestDataPaneel}
 				},
 				title: { text: null },
 				subtitle: {
-					text: "",
+				text: "Vermogen en energie op " . reportDayDMY,
 					align: 'left',
 					x: 90,
 					y: 20,
 					style: {
 						font: 'Arial',
 						fontWeight: 'bold',
+						fontSize: '.85vw'
 					},
 					floating: true
 				},
 				xAxis: [{ <?php genxAxis(); ?> }],
 				yAxis: [{
 					title: { text: 'Vermogen (W)' },
-					showEmpty: true,
 					tickPositioner: function () {
 						var positions = [],
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick) / 6);
-						if (this.dataMax == this.dataMin) {
+						if (this.dataMax == this.dataMin ) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1340,246 +2117,6 @@ EOF
 						return positions;
 					}
 				}, {
-					title: { text: 'Energie (Wh)' },
-					tickPositioner: function () {
-						var positions = [],
-						tick = Math.floor(0),
-						tickMax = Math.ceil(this.dataMax),
-						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax == this.dataMin) {
-							increment = .5,
-							tickMax = tick + 3
-						}
-						if (this.dataMax !== null && this.dataMin !== null) {
-							for (i=0; i<=6; i += 1) {
-								positions.push(tick);
-								tick += increment;
-							}
-						}
-						return positions;
-					},
-					opposite: true
-				}],
-				legend: {
-					itemStyle: { fontWeight: 'Thin', },
-					layout: 'vertical',
-					align: 'left',
-					x: 10,
-					verticalAlign: 'top',
-					y: 20,
-					floating: true,
-				},
-				credits: { enabled: false },
-				tooltip: {
-					formatter: function () {
-						var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
-						$.each(this.points, function () {
-							if (this.series.name == 'Energie Productie') {
-								s += '<br/>' + this.series.name + ': ' +
-								this.y + ' kWh';
-							}
-							if (this.series.name == 'Stroom Productie') {
-								s += '<br/>' + this.series.name + ': ' +
-								this.y + ' W';
-							}
-						});
-						return s;
-					},
-					shared: true,
-					snap: 0,
-					crosshairs: [{
-						width: 1,
-						color: 'red',
-						zIndex: 3
-					}]
-				},
-				plotOptions: {
-					spline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							symbol: 'circle',
-							states: { hover: { enabled: true } }
-						}
-					},
-					areaspline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							symbol: 'circle',
-							states: { hover: { enabled: true } }
-						}
-					}
-				},
-				exporting: {
-					enabled: false,
-					filename: 'power_chart',
-					url: 'export.php'
-				},
-				<?php panelenSeries($aantal, $kleur2, $kleurg); ?>
-			});
-		});
-
-		$(document).ready(function() {
-			paneel_charte = new Highcharts.Chart({
-				chart: {
-					animation: false,
-					type: 'area',
-					renderTo: 'panel_energy',
-					spacingTop: 10,
-					borderColor: 'grey',
-					borderWidth: 1,
-					borderRadius: 5,
-					alignTicks:true,
-					spacingBottom: 0,
-					zoomType: 'x',
-					//only needed once as I show both graphs and they use same data -> paneel_chartv
-					//events: {load: requestDataPaneel}
-				},
-				title: { text: null },
-				subtitle: {
-					text: "",
-					align: 'left',
-					x: 90,
-					y: 20,
-					style: {
-						font: 'Arial',
-						fontWeight: 'bold',
-					},
-					floating: true
-				},
-				xAxis: [{ <?php genxAxis(); ?> }],
-				yAxis: [{
-					title: { text: 'Vermogen(W)' },
-					showEmpty: false,
-					tickPositioner: function () {
-						var positions = [],
-						tick = Math.floor(0),
-						tickMax = Math.ceil(this.dataMax),
-						increment = Math.ceil((tickMax - tick) / 6);
-						if (this.dataMax == this.dataMin) {
-							increment = .5,
-							tickMax = tick + 3
-						}
-						if (this.dataMax !== null && this.dataMin !== null) {
-							for (i=0; i<=6; i += 1) {
-								positions.push(tick);
-								tick += increment;
-							}
-						}
-						return positions;
-					}
-				}, {
-					title: { text: 'Energie (Wh)' },
-					tickPositioner: function () {
-						var positions = [],
-						tick = Math.floor(0),
-						tickMax = Math.ceil(this.dataMax),
-						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax == this.dataMin) {
-							increment = .5,
-							tickMax = tick + 3
-						}
-						if (this.dataMax !== null && this.dataMin !== null) {
-							for (i=0; i<=6; i += 1) {
-								positions.push(tick);
-								tick += increment;
-							}
-						}
-						return positions;
-					},
-					opposite: true
-				}],
-				legend: {
-					itemStyle: { fontWeight: 'Thin', },
-					layout: 'vertical',
-					align: 'left',
-					x: 10,
-					verticalAlign: 'top',
-					y: 20,
-					floating: true,
-				},
-				credits: { enabled: false },
-				tooltip: {
-					formatter: function () {
-						var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
-						$.each(this.points, function () {
-							if (this.series.name == 'Energie Productie') {
-								s += '<br/>' + this.series.name + ': ' +
-								this.y + ' kWh';
-							}
-							if (this.series.name == 'Stroom Productie') {
-								s += '<br/>' + this.series.name + ': ' +
-								this.y + ' W';
-							}
-						});
-						return s;
-					},
-					shared: true,
-					snap: 0,
-					crosshairs: [{
-						width: 1,
-						color: 'red',
-						zIndex: 3
-					}]
-				},
-				plotOptions: {
-					spline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							symbol: 'circle',
-							states: { hover: { enabled: true } }
-						}
-					},
-					areaspline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							symbol: 'circle',
-							states: { hover: { enabled: true, } }
-						}
-					}
-				},
-				exporting: {
-					enabled: false,
-					filename: 'power_chart',
-					url: 'export.php'
-				},
-				<?php panelenSeries($aantal, $kleur2, $kleurg); ?>
-			});
-		});
-
-		$(document).ready(function() {
-			inverter_charte = new Highcharts.Chart({
-				chart: {
-					animation: false,
-					type: 'area',
-					renderTo: "chart_energy",
-					spacingTop: 10,
-					borderColor: 'grey',
-					borderWidth: 1,
-					borderRadius: 5,
-					alignTicks:true,
-					spacingBottom: 0,
-					zoomType: 'x',
-					events: {load: requestDataInverter},
-					spacingRight: 5
-				},
-				title: { text: null },
-				subtitle: {
-					text: "Energie op " + reportDayDMY + " en " + InvDays + " voorafgaande dagen",
-					align: 'left',
-					x: 20,
-					y: 20,
-					style: {
-						font: 'Arial',
-						fontWeight: 'bold',
-					},
-					floating: true
-				},
-				xAxis: [{ <?php genxAxis(); ?> }],
-				yAxis: [{
 					title: { text: 'Energie (kWh)' },
 					opposite: true,
 					tickPositioner: function () {
@@ -1587,7 +2124,7 @@ EOF
 						tick = Math.floor(0),
 						tickMax = Math.ceil(this.dataMax),
 						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax == this.dataMin) {
+						if (this.dataMax == this.dataMin ) {
 							increment = .5,
 							tickMax = tick + 3
 						}
@@ -1601,38 +2138,29 @@ EOF
 					}
 				}],
 				legend: {
-					itemStyle: { fontWeight: 'Thin', },
+					itemStyle: {
+						fontWeight: 'Thin',
+						fontSize: '.7vw'
+					},
 					layout: 'vertical',
 					align: 'left',
-					x: 10,
+					x: 80,
 					verticalAlign: 'top',
 					y: 20,
 					floating: true,
 				},
 				credits: { enabled: false },
 				tooltip: {
-					positioner: function () {
-						return { x: 10, y: 75 };
-					},
 					formatter: function () {
-						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
-						var sortedPoints = this.points.sort(function(a, b){
-							return (b.y - a.y);
-						});
-						$.each(sortedPoints, function () {
-							for (i=0; i<=InvDays; i++){
-								if (this.series.name == productie[i]) {
-									this.point.series.options.marker.states.hover.enabled = false;
-									s += '<br>';
-									if (this.series.state == "hover") {
-										s += '<b>*</b>';
-										this.point.series.options.marker.states.hover.enabled = true;
-										this.point.series.options.marker.states.hover.lineColor = 'red';
-									}
-									if (i == InvDays) {s += "<b>";}
-									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,2) + ' kWh';
-									if (i == InvDays) {s += "</b>";}
-								}
+						var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
+						$.each(this.points, function () {
+							if (this.series.name == 'Energie') {
+								s += '<br/>' + this.series.name + ': ' +
+								this.y + ' kWh';
+							}
+							if (this.series.name == 'Vermogen') {
+								s += '<br/>' + this.series.name + ': ' +
+								this.y + ' W';
 							}
 						});
 						return s;
@@ -1642,42 +2170,17 @@ EOF
 					crosshairs: [{
 						width: 1,
 						color: 'red',
-						zIndex: 20
+						zIndex: 3
 					}]
 				},
 				plotOptions: {
-					series: {
-						 events: {
-							mouseOver: function () {
-								if (this.index != this.chart.series.length-1) {
-									this.update({
-										color: '<?php echo $kleur2 ?>',
-										zIndex: 15,
-										fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
-										showInLegend: true,
-									})
-								}
-							},
-							mouseOut: function () {
-								if (this.index != this.chart.series.length-1) {
-									if (this.index != InvDays-1) {
-										this.update({
-											color: '<?php echo $kleurg ?>',
-											zIndex: this.index,
-											fillOpacity: 0.0,
-											showInLegend: false,
-										})
-									}else{
-										this.update({
-											color: '<?php echo $kleur1 ?>',
-											zIndex: this.index,
-											fillOpacity: 0.0,
-											showInLegend: false,
-										})
-									}
-								}
-							},
-						},
+					spline: {
+						lineWidth: 1,
+						marker: {
+							enabled: false,
+							symbol: 'circle',
+							states: { hover: { enabled: true } }
+						}
 					},
 					areaspline: {
 						lineWidth: 1,
@@ -1693,322 +2196,24 @@ EOF
 					filename: 'power_chart',
 					url: 'export.php'
 				},
-				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg, $InvDays) ?>
+				series: [{
+					name: 'Energie',
+					type: 'areaspline',
+					marker: { symbol: 'triangle' },
+					yAxis: 1,
+					lineWidth: 1,
+					color: 'rgba(204,255,153,1)',
+					pointWidth: 2,
+					data: []//this will be filled by requestData()
+				},{
+					name: 'Vermogen',
+					type: 'spline',
+					yAxis: 0,
+					color: '<?php echo $kleur ?>',
+					data: []//this will be filled by requestData()
+				}]
 			});
-		});
-
-		$(document).ready(function() {
-			inverter_chartv = new Highcharts.Chart({
-				chart: {
-					animation: false,
-					type: 'area',
-					renderTo: "chart_vermogen",
-					spacingTop: 10,
-					borderColor: 'grey',
-					borderWidth: 1,
-					borderRadius: 5,
-					alignTicks:true,
-					spacingBottom: 0,
-					zoomType: 'x',
-					spacingRight: 5,
-				},
-				title: { text: null },
-				subtitle: {
-					text: "Vermogen op " + reportDayDMY + " en " + InvDays + " voorafgaande dagen",
-					align: 'left',
-					x: 20,
-					y: 20,
-					style: {
-						font: 'Arial',
-						fontWeight: 'bold',
-					},
-					floating: true
-				},
-				xAxis: [{ <?php genxAxis(); ?> }],
-				yAxis: [{
-					title: { text: (gem_verm > 1 ? gem_verm + ' punts gem.' : '') + ' Vermogen (W)' },
-					opposite: true,
-					tickPositioner: function () {
-						var positions = [],
-						tick = Math.floor(0),
-						tickMax = Math.ceil(this.dataMax),
-						increment = Math.ceil((tickMax - tick)/ 6);
-						if (this.dataMax == this.dataMin) {
-							increment = .5,
-							tickMax = tick + 3
-						}
-						if (this.dataMax !== null && this.dataMin !== null) {
-							for (i=0; i<=6; i += 1) {
-								positions.push(tick);
-								tick += increment;
-							}
-						}
-						return positions;
-					}
-				}],
-				legend: {
-					itemStyle: { fontWeight: 'Thin', },
-					layout: 'vertical',
-					align: 'left',
-					x: 10,
-					verticalAlign: 'top',
-					y: 20,
-					floating: true,
-				},
-				credits: { enabled: false },
-				tooltip: {
-					positioner: function () {
-						return { x: 10, y: 75 };
-					},
-					formatter: function () {
-						var s = '-> <u><b>' + Highcharts.dateFormat(' %H:%M', this.x)+ '</b></u>';
-						var sortedPoints = this.points.sort(function(a, b){
-							return (b.y - a.y);
-						});
-						$.each(sortedPoints, function () {
-							for (i=0; i<= InvDays; i++){
-								if (this.series.name == productie[i]) {
-									this.point.series.options.marker.states.hover.enabled = false;
-									s += '<br>';
-									if (this.series.state == "hover") {
-										s += '<b>*</b>';
-										this.point.series.options.marker.states.hover.enabled = true;
-										this.point.series.options.marker.states.hover.lineColor = 'red';
-									}
-									if (i == InvDays) {s += "<b>";}
-									s += this.series.name.substr(this.series.name.length - 10, 5) + ': ' + Highcharts.numberFormat(this.y,0) + ' W';
-									if (i == InvDays) {s += "</b>";}
-								}
-							}
-						});
-						return s;
-					},
-					shared: true,
-					snap: 0,
-					crosshairs: [{
-						width: 1,
-						color: 'red',
-						zIndex: 3
-					}]
-				},
-				plotOptions: {
-					series: {
-						events: {
-							mouseOver: function () {
-								if (this.index != this.chart.series.length-1) {
-									this.update({
-										color: '<?php echo $kleur2 ?>',
-										zIndex: 15,
-										fillOpacity: <?php echo ($ingr ? "0.3" : "0.0" ); ?>,
-										showInLegend: true,
-									})
-								}
-							},
-							mouseOut: function () {
-								if (this.index != this.chart.series.length-1) {
-									if (this.index != InvDays-1) {
-										this.update({
-											color: '<?php echo $kleurg ?>',
-											zIndex: this.index,
-											fillOpacity: 0.0,
-											showInLegend: false,
-										})
-									}else{
-										this.update({
-											color: '<?php echo $kleur1 ?>',
-											zIndex: this.index,
-											fillOpacity: 0.0,
-											showInLegend: false,
-										})
-									}
-								}
-							},
-						},
-					},
-					areaspline: {
-						lineWidth: 1,
-						marker: {
-							enabled: false,
-							symbol: 'circle',
-							states: { hover: { enabled: true } }
-						}
-					},
-				},
-				exporting: {
-					enabled: (gem_verm == 1 ? false : true),
-					menuItemDefinitions: {
-						// Custom definition
-						btn1: {
-							onclick: function () {
-								gem_verm = 1;
-								inverter_chartv.yAxis[0].update({ title: { text: ' Vermogen (W)' }, });
-								UpdateDataInverter();
-							},
-							text: 'Momentopname'
-						},
-						// Custom definition
-						btn2: {
-							onclick: function () {
-								gem_verm = sgem_verm;
-								inverter_chartv.yAxis[0].update({ title: { text: gem_verm + ' punts gem. Vermogen (W)' }, });
-								UpdateDataInverter();
-							},
-							text: sgem_verm +' punts gemiddelde'
-						}
-					},
-					buttons: { contextButton: { menuItems: ['btn1', 'btn2'] } }
-				},
-				<?php productieSeries($ingr, $kleur, $kleur1, $kleurg, $InvDays) ?>
-			});
-		});
-
-		$(document).ready(function() {
-			if (P1 == "0"){
-				power_chart = new Highcharts.Chart({
-					chart: {
-						type: 'area',
-						renderTo: 'power_chart_body',
-						spacingTop: 10,
-						borderColor: 'grey',
-						borderWidth: 1,
-						borderRadius: 5,
-						alignTicks:true,
-						spacingBottom: 0,
-						zoomType: 'x',
-						events: {load: requestDataPower}
-					},
-					title: { text: null },
-					subtitle: {
-					text: "Vermogen en energie op " . reportDayDMY,
-						align: 'left',
-						x: 90,
-						y: 20,
-						style: {
-							font: 'Arial',
-							fontWeight: 'bold',
-							fontSize: '.85vw'
-						},
-						floating: true
-					},
-					xAxis: [{ <?php genxAxis(); ?> }],
-					yAxis: [{
-						title: { text: 'Vermogen (W)' },
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick) / 6);
-							if (this.dataMax == this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						}
-					}, {
-						title: { text: 'Energie (kWh)' },
-						opposite: true,
-						tickPositioner: function () {
-							var positions = [],
-							tick = Math.floor(0),
-							tickMax = Math.ceil(this.dataMax),
-							increment = Math.ceil((tickMax - tick)/ 6);
-							if (this.dataMax == this.dataMin ) {
-								increment = .5,
-								tickMax = tick + 3
-							}
-							if (this.dataMax !== null && this.dataMin !== null) {
-								for (i=0; i<=6; i += 1) {
-									positions.push(tick);
-									tick += increment;
-								}
-							}
-							return positions;
-						}
-					}],
-					legend: {
-						itemStyle: {
-							fontWeight: 'Thin',
-							fontSize: '.7vw'
-						},
-						layout: 'vertical',
-						align: 'left',
-						x: 80,
-						verticalAlign: 'top',
-						y: 20,
-						floating: true,
-					},
-					credits: { enabled: false },
-					tooltip: {
-						formatter: function () {
-							var s = '<b>' + Highcharts.dateFormat('%A %d-%m-%Y %H:%M:%S', this.x) + '</b>';
-							$.each(this.points, function () {
-								if (this.series.name == 'Energie') {
-									s += '<br/>' + this.series.name + ': ' +
-									this.y + ' kWh';
-								}
-								if (this.series.name == 'Vermogen') {
-									s += '<br/>' + this.series.name + ': ' +
-									this.y + ' W';
-								}
-							});
-							return s;
-						},
-						shared: true,
-						snap: 0,
-						crosshairs: [{
-							width: 1,
-							color: 'red',
-							zIndex: 3
-						}]
-					},
-					plotOptions: {
-						spline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								symbol: 'circle',
-								states: { hover: { enabled: true } }
-							}
-						},
-						areaspline: {
-							lineWidth: 1,
-							marker: {
-								enabled: false,
-								symbol: 'circle',
-								states: { hover: { enabled: true } }
-							}
-						}
-					},
-					exporting: {
-						enabled: false,
-						filename: 'power_chart',
-						url: 'export.php'
-					},
-					series: [{
-						name: 'Energie',
-						type: 'areaspline',
-						marker: { symbol: 'triangle' },
-						yAxis: 1,
-						lineWidth: 1,
-						color: 'rgba(204,255,153,1)',
-						pointWidth: 2,
-						data: []//this will be filled by requestData()
-					},{
-						name: 'Vermogen',
-						type: 'spline',
-						yAxis: 0,
-						color: '<?php echo $kleur ?>',
-						data: []//this will be filled by requestData()
-					}]
-				});
-			}
-		});
+		}
 	});
 
 	function toonDatum(datum) {
@@ -2391,7 +2596,7 @@ EOF
 					AddDataToUtilityChart(data1, ichart, 0);
 				}
 				ichart.redraw();
-				update_map_fields();
+//				update_map_fields();
 			}
 		);
 	}
