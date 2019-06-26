@@ -228,10 +228,10 @@ omschrijving: hoofdprogramma
 		$kleurVS = conv2rgba((isset($kleurVS) ? $kleurVS : 'rgba(65,105,225,0.6)'),(isset($OpacityVS) ? $OpacityVS : '0.6'));
 		$kleurS = conv2rgba((isset($kleurS) ? $kleurS : 'rgba(255,0,0,0.9)'),(isset($OpacityS) ? $OpacityS : '0.9'));
 		// start functions
-		function iteratie($datum,$lat,$long,$timezone,$localtime,$i) {
+		function iteratie($datum,$lat,$long,$timezone,$localtime,$i,$d) {
 			$epsilon = 0.000000000001;
 			do {
-				$st = $solar_noon_s = bereken($datum,$lat,$long,$timezone,$localtime,$i);
+				$st = $solar_noon_s = bereken($datum,$lat,$long,$timezone,$localtime,$i,$d);
 				$sv = $st - $localtime/24;
 				$localtime = $st*24;
 			}
@@ -239,7 +239,7 @@ omschrijving: hoofdprogramma
 			return $st;
 		}
 
-		function bereken($datum,$lat,$long,$timezone,$localtime,$i) {
+		function bereken($datum,$lat,$long,$timezone,$localtime,$i,$d) {
 			$julian_day = $datum + 2440587.5 + ($localtime-$timezone)/24; //Julian Day
 			$julian_cen =($julian_day-2451545)/36525; //Julian Century
 			$geom_mean_long_sun = ((280.46646+$julian_cen*(36000.76983 + $julian_cen*0.0003032))/360 - floor((280.46646+$julian_cen*(36000.76983 + $julian_cen*0.0003032))/360))*360; //Geom Mean Long Sun (deg)
@@ -253,7 +253,7 @@ omschrijving: hoofdprogramma
 			$sun_declin = rad2deg(asin(sin(deg2rad($obliq_corr))*sin(deg2rad($sun_app_long)))); //Sun Declin (deg)
 			$var_y = tan(deg2rad($obliq_corr/2))*tan(deg2rad($obliq_corr/2)); //var y
 			$eq_of_time = 4*rad2deg($var_y*sin(2*deg2rad($geom_mean_long_sun))-2*$eccent_earth_orbit*sin(deg2rad($geom_mean_anom_sun))+4*$eccent_earth_orbit*$var_y*sin(deg2rad($geom_mean_anom_sun))*cos(2*deg2rad($geom_mean_long_sun))-0.5*$var_y*$var_y*sin(4*deg2rad($geom_mean_long_sun))-1.25*$eccent_earth_orbit*$eccent_earth_orbit*sin(2*deg2rad($geom_mean_anom_sun))); //Eq of Time
-			$ha_sunrise = rad2deg(acos(cos(deg2rad(90.833))/(cos(deg2rad($lat))*cos(deg2rad($sun_declin)))-tan(deg2rad($lat))*tan(deg2rad($sun_declin)))); //HA Sunrise (deg)
+			$ha_sunrise = rad2deg(acos(cos(deg2rad(90-$d))/(cos(deg2rad($lat))*cos(deg2rad($sun_declin)))-tan(deg2rad($lat))*tan(deg2rad($sun_declin)))); //HA Sunrise (deg)
 			$solar_noon_a = (720-4*$long-$eq_of_time+$timezone*60)/1440; //Solar Noon
 			if ($i==0)        {$s = $solar_noon_a-$ha_sunrise*4/1440;} // Sunrise
 			else if ($i == 2) {$s = $solar_noon_a+$ha_sunrise*4/1440;} // Sunset
@@ -446,7 +446,7 @@ EOF
 ?>
 		</div>
 		<div Class='box_sunrise' id='box_sunrise'>
-			<div class="astr" id="astro">
+			<div class="astro" id="astro">
 				<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#astro"/>
 			</div>
 			<map name="astro" style="z-index: 40;">
@@ -1357,7 +1357,6 @@ EOF
 										"<tr><td>Temperatuur:</td><td>" + data[iy]["T"+i] + "</td><td>°C</td></tr>" +
 										"<tr><td>Efficiëntie:</td><td>" + waarde(0,3,(data[iy]["O"+i]/vpan[i])) + "</td><td style=\"font-size:smaller\">Wh/Wp</td></tr>" +
 										"</table>");
-								if ( data[iy]["C"+i] == 0) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#000000"; }
 								switch (Math.round(data[iy]["C"+i]*10,0)) {
 									case 0: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#080f16"; break;
 									case 1: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#101e2d"; break;
@@ -1370,6 +1369,7 @@ EOF
 									case 8: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#498acc"; break;
 									default: document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#529ae3"; break;
 								}
+								if ( data[iy]["C"+i] == 0) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#000000"; }
 							}
 							break;
 						case "po": // power
