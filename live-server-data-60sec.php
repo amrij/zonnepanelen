@@ -337,6 +337,7 @@ foreach ($mysqli->query(
 # berekenen maanfase #
 ######################
 
+$diff = array();
 $date3 = date("Y-m-d", time());
 $date2 = date('d-m-Y H:i:s', strtotime($d1));
 if (date('d-m-Y', strtotime($d1)) == date("d-m-Y", time())){$date2 = date("d-m-Y H:i:s", time());}
@@ -353,9 +354,9 @@ if ($a['tm_year']+1900 < 2000){
 $today    = (new DateTime("today " . $date2))->getTimestamp();
 
 include('MoonPhase.php'); // ophalen routines (Moon phase calculation class)
-$offset = date('Z',strtotime($date))/3600;    // verschil tussen GMT en locale tijd in uren
+$offset = date('Z',strtotime($date2))/3600;    // verschil tussen GMT en locale tijd in uren
 $zenith=90+280/600;
-$moon = new Solaris\MoonPhase(strtotime($date));
+$moon = new Solaris\MoonPhase(strtotime($date2));
 $diff['ty'] = 'mf';
 $diff['d3'] = $date3;
 $diff['d2'] = $date2;
@@ -373,7 +374,23 @@ $diff['nlq'] = date( 'd-m-Y H:i:s', $moon->next_last_quarter() );
 $diff['ta'] = round(($moon->next_new_moon() - $moon->new_moon())/86400,2);
 $diff['ae'] = round(($today - $moon->new_moon())/86400,2);
 $diff['pe'] = round($moon->phase(),4);
-$diff['pm'] = $moon->phase_name();
+if ($diff["pe"] > .975 || $diff["pe"] < .025 ){
+	$diff['pm'] = "Nieuwe maan"; 
+}elseif ($diff["pe"] >= .025 && $diff['pe'] <= .225){
+	$diff['pm'] = "Jonge maan"; 
+}elseif ($diff["pe"] > .225 && $diff['pe'] < .275){
+	$diff['pm'] = "Eerste kwartier"; 		
+}elseif ($diff["pe"] >= .275 && $diff['pe'] <= .475){
+	$diff['pm'] = "Wassende maan"; 		
+}elseif ($diff["pe"] > .475 && $diff['pe'] < .525){
+	$diff['pm'] = "Volle maan"; 		
+}elseif ($diff["pe"] >= .525 && $diff['pe'] <= 0.725){
+	$diff['pm'] = "Afnemende maan";
+}elseif ($diff["pe"] > .725 && $diff['pe'] < .775){
+	$diff['pm'] = "Laatste kwartier"; 		
+}elseif ($diff["pe"] >= .775 && $diff['pe'] < .975){
+	$diff['pm'] = "Asgrauwe maan"; 		
+}
 $diff['dr'] = floor($moon->diameter()*60). "'" . floor(($moon->diameter()*60 -floor($moon->diameter()*60))*60). "''";
 $diff['sdr'] = floor($moon->sundiameter()*60). "'" . floor(($moon->sundiameter()*60 -floor($moon->sundiameter()*60))*60). "''";
 $diff['in'] = round($moon->illumination()*100,0);

@@ -774,9 +774,7 @@ EOF
 	function drawChart() {
 		if (P1 == 1){ draw_p1_chart();}
 		if (p1CounterToday == 0) {
-			if (P1 == 1){
-					p1_update()
-			}
+			if (P1 == 1){p1_update();}
 			s_p1CounterToday = p1CounterToday;
 			s_p1CounterDelivToday = p1CounterDelivToday;
 		}
@@ -794,6 +792,7 @@ EOF
 					window.location = window.location.pathname;
 					return false;
 				}
+				if (P1 == 1){p1_update();}
 			}, 10000);
 			setInterval(function() {
 				requestData60sec();
