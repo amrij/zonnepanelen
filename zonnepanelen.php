@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.69.2
+versie: 1.70.0
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  15-06-2019
+datum:  28-06-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -1255,7 +1255,7 @@ EOF
 					var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
 				}
 				for(var iy = 0; iy < data.length; iy++){
-					switch ( data[iy]['ty']){
+					switch ( data[iy]['ca']){
 						case "in": // invertergegevens
 							data_i[y_i] = data[iy];
 							y_i = y_i + 1;
@@ -1371,13 +1371,13 @@ EOF
 								if ( data[iy]["C"+i] == 0) { document.getElementById("box_Zonnepaneel_"+i).style.backgroundColor = "#000000"; }
 							}
 							break;
-						case "po": // power
+						case "po": // powergrafiek
 							if (P1 == 0){
 								power_chart.series[0].addPoint([data[iy]['ts'],data[iy]['vp']*1], false, shift);
 								power_chart.series[1].addPoint([data[iy]['ts'],data[iy]['cp']*1], false, shift);
 							}
 							break;
-						case "mf": // maanfase
+						case "mf": // astronomische gegevens
 							if (reportDateYMD >= currentDayYMD){
 								document.getElementById("NextDay").disabled = true;
 								document.getElementById("Today").disabled = true;

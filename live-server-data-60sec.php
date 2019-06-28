@@ -18,13 +18,15 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.69.2
+// versie: 1.70.0
 // auteur: André Rijkeboer
-// datum:  15-06-2019
-// omschrijving: ophalen van de stroom en energie gegevens van de panelen en de inverter (1 dag)
+// datum:  28-06-2019
+// omschrijving: ophalen van de gegevens van de panelen, de inverter en van astronomische gegevens
 
 # ophalen algemene gegevens
 include('config.php');
+
+# openen van de database
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 
 # ophale datum gegevens
@@ -35,12 +37,13 @@ if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
 $period = array_key_exists('period', $_GET) ? $_GET['period'] : "s";
 $limit = $period == "s" ? "" : " limit 1";
 
-# reset $total voor overdracht gegevens naar homsystem.php
+# reset $total voor overdracht gegevens naar zonnepanelen.php
 $total = array();
 
-############
-# inverter #
-############
+####################
+# invertergegevens #
+# case "in":       #
+####################
 
 # bepaal de eerste dag van de data in de database
 $query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
@@ -48,7 +51,7 @@ $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
 
-# zet datum voor gegevens van inverter en panelen
+# zet datum gegevens
 $midnight = date("Y-m-d 00:00:00", strtotime($d1));
 $today    = (new DateTime("today " . $midnight))->getTimestamp();
 $tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
@@ -80,7 +83,7 @@ foreach ($mysqli->query(
 		$de_day_total = 0;
 	}
 	$de_day_total += $row["de_day"];
-	$diff['ty']  = "in";
+	$diff['ca']  = "in";
 	$diff['serie']  = $dag[1];
 	$diff['ts']    = ($today + date("H", $row['timestamp']) * 3600 + round(0.2 * date("i", $row['timestamp'])) * 5 * 60) * 1000;
 	$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
@@ -89,9 +92,10 @@ foreach ($mysqli->query(
 	array_push($total, $diff);
 }
 
-###########
-# panelen #
-###########
+##################
+# paneelgegevens #
+# case "pa":     #
+##################
 
 # reset difference array voor opslag in record van $total en paneel array voor paneelgegevens
 $diff = array();
@@ -117,7 +121,7 @@ $result = $mysqli->query($query);
 while ($row = mysqli_fetch_assoc($result)) {
 	for ($i = 1; $i <= $aantal; $i++) {
 		if ($row['optimizer'] == $op_id[$i][0]) {
-			$diff['ty']  = "pa";
+			$diff['ca']  = "pa";
 			$diff['serie']  = 0;
 			$diff['op_id']  = $i;
 			$diff['ts'] = $row['timestamp'] * 1000;
@@ -136,14 +140,15 @@ while ($row = mysqli_fetch_assoc($result)) {
 	}
 }
 
-###############
-# paneel data #
-###############
+############################
+# inverter en paneel tekst #
+# case "ip":               #
+############################
 
 # reset difference array voor opslag in record van $total en mode array voor invertergegevens
 $diff = array();
 
-$diff['ty'] = "ip";
+$diff['ca'] = "ip";
 # zet gegevens van de panelen op 0 voor het geval dat
 # midnight < begin of de sql query faalt
 for ($i = 1; $i <= $aantal; $i++) {
@@ -222,22 +227,20 @@ If ($midnight >= $begin) {
 		}
 	}
 
-#################
-# Inverter data #
-#################
-$mode = array();
 
-# zet mode status inverter
-$mode[0] = '';
-$mode[1] = 'OFF';
-$mode[2] = 'SLEEPING';
-$mode[3] = 'STARTING';
-$mode[4] = 'MPPT';
-$mode[5] = 'THROTTLED';
-$mode[6] = 'SHUTTING_DOWN';
-$mode[7] = '';
-$mode[8] = 'STANDBY';
-$mode[9] = '';
+
+	# zet mode status inverter
+	$mode = array();
+	$mode[0] = '';
+	$mode[1] = 'OFF';
+	$mode[2] = 'SLEEPING';
+	$mode[3] = 'STARTING';
+	$mode[4] = 'MPPT';
+	$mode[5] = 'THROTTLED';
+	$mode[6] = 'SHUTTING_DOWN';
+	$mode[7] = '';
+	$mode[8] = 'STANDBY';
+	$mode[9] = '';
 
 	# zet de juiste inverter type
 	$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
@@ -303,19 +306,18 @@ $mode[9] = '';
 # voeg het resultaat toe aan de total-array
 array_push($total, $diff);
 
-$midnight = date("Y-m-d 00:00:00", strtotime($d1));
-$today    = (new DateTime("today " . $midnight))->getTimestamp();
-$tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
+################
+# powergrafiek #
+# case "po":   #
+################
 
 $diff = array();
 
-// open MySQL database
-$mysqli = new mysqli($host, $user, $passwd, $db, $port);
-// enkel of drie fase inverter
+# enkel of drie fase inverter
 $table = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
 $cols  = $inverter == 1 ? 'p_active'           : '(p_active1+p_active2+p_active3) as p_active';
 
-// haal de gegevens op
+# haal de gegevens op
 $de_day_total = 0;
 foreach ($mysqli->query(
 		'SELECT timestamp, de_day, ' . $cols .
@@ -325,42 +327,35 @@ foreach ($mysqli->query(
 		$limit )
 		as $j => $row) {
 	$de_day_total += $row["de_day"];
-	$diff['ty']   = 'po';
+	$diff['ca']   = 'po';
 	$diff['ts']   = $row['timestamp'] * 1000;
 	$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
 	$diff['cp'] = $row['p_active'];
-	//voeg het resultaat toe aan de total-array
+	# voeg het resultaat toe aan de total-array
 	array_push($total, $diff);
 }
 
-######################
-# berekenen maanfase #
-######################
+##########################
+# astronomische gegevens #
+# case "mf":             #
+##########################
+
+# ophalen routines (Moon phase calculation class)
+include('MoonPhase.php'); 
 
 $diff = array();
+
+# zet datum gegevens
+$date1 = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", time()))))->getTimestamp();
+if (date('d-m-Y', strtotime($d1)) == date("d-m-Y", time())){$date2 = date("d-m-Y H:i:s", time());}else{$date2 = date('d-m-Y H:i:s', strtotime($d1));}
+$today    = strtotime($date2);
 $date3 = date("Y-m-d", time());
-$date2 = date('d-m-Y H:i:s', strtotime($d1));
-if (date('d-m-Y', strtotime($d1)) == date("d-m-Y", time())){$date2 = date("d-m-Y H:i:s", time());}
-$datum1 = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", time()))))->getTimestamp();
-$date = date('d-m-Y H:i:s', strtotime($d1));
-$a = strptime($date, '%d-%m-%Y %H:%M:%S');
-if ($a['tm_year']+1900 < 2000){
-	$dl = strlen($date);
-	$a = strptime(substr($date,4,$dl-35), '%b %d %Y %H:%M:%S');	
-	$d = mktime($a['tm_hour'],$a['tm_min'],$a['tm_sec'],$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
-	$date = strftime('%d-%m-%Y %H:%M:%S', $d);
-}
 
-$today    = (new DateTime("today " . $date2))->getTimestamp();
-
-include('MoonPhase.php'); // ophalen routines (Moon phase calculation class)
-$offset = date('Z',strtotime($date2))/3600;    // verschil tussen GMT en locale tijd in uren
-$zenith=90+280/600;
 $moon = new Solaris\MoonPhase(strtotime($date2));
-$diff['ty'] = 'mf';
-$diff['d3'] = $date3;
+$diff['ca'] = 'mf';
+$diff['d1'] = $date1;
 $diff['d2'] = $date2;
-$diff['d1'] = $datum1;
+$diff['d3'] = $date3;
 $diff['de'] = round( $moon->distance(), 0 );
 $diff['sde'] = round( $moon->sundistance(), 0 );
 $diff['nm'] = date( 'd-m-Y H:i:s', $moon->new_moon() );
@@ -396,7 +391,7 @@ $diff['sdr'] = floor($moon->sundiameter()*60). "'" . floor(($moon->sundiameter()
 $diff['in'] = round($moon->illumination()*100,0);
 $diff['fn'] = sprintf('./img/maan/phase_%003d.png',round($moon->phase()*360,0));
 
-//voeg het resultaat toe aan de total-array
+# voeg het resultaat toe aan de total-array
 array_push($total, $diff);
 
 # Sluit DB	
