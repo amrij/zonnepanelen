@@ -18,21 +18,23 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.68.0
-// auteur: André Rijkeboer
-// datum:  23-05-2019
+// versie: 1.70.0
+// auteurs:
+// André Rijkeboer
+// Jos van der Zande
+// datum:  29-06-2019
 // omschrijving: configuratie bestand
 
-// gegevens voor het openen van de database
-$host = '192.168.1.81'; // IP adres waar de database staat (standaard localhost of 127.0.0.1)
-$port = '3306'; // poort database (standaard 3306)
-$user = 'gebruiker'; // gebruiker
-$passwd = 'password'; // paswoord gebruiker
-$db = 'solaredge'; // database naam
+//#### Database
 
-// gegeven van de plaats waar de zonnepanelen staan
-$lat = 51.9515885; //Latitude North
-$long = 6.0045953; //Longitude East
+// gegevens voor het openen van de database
+$host = '192.168.1.81'; 	// IP adres waar de database staat (standaard localhost of 127.0.0.1)
+$port = '3306'; 			// poort database (standaard 3306)
+$user = 'gebruiker'; 		// gebruiker
+$passwd = 'password';		// paswoord gebruiker
+$db = 'solaredge'; 			// database naam
+
+//#### Zonnepanelen en Inverter
 
 // Achtergrond image (in de img directory)
 $zonnesysteem = "zonnesysteem.gif";
@@ -45,67 +47,31 @@ $InvDays = '14';		// aantal voorafgaande dagen in inverter grafieken
 // inverter en panelen grafiek
 // kleuren
 // Hex Code #RRGGBB: '#4169E1', '#0000FF' .... zie https://www.rapidtables.com/web/color/
-// transparantie: 0 = geheel doorzichtig, 0.5 is half doorzichtig, 1 = ondoorzichtig
-$kleur = '#4169E1';    // kleur royalbleu voor actuele dag
-$kleur1 = '#009900';   // kleur groen voor lijn voorafgaande dag inverter grafiek (grijs = '#d4d0d0')
-$kleur2 = '#009900';   // kleur groen voor lijn actueel paneel
-$kleurg = '#d4d0d0';   // kleur grijs voor lijn overige dagen / panelen
-$kleurSR = '#009900';  // kleur Solar Retour
-$OpacitySR = '0.7';      // Lijn transparantie
-$fillOpacitySR = '0.4';  // opvul transparantie
-$kleurSV = '#009900';  // kleur Solar Verbruik
-$OpacitySV = '0.4';      // Lijn transparantie
-$fillOpacitySV = '0.2';  // opvul transparantie
-$kleurVL = '#4169E1';  // kleur Verbruik Levering
-$OpacityVL = '0.8';      // Lijn transparantie
-$kleurVS = '#4169E1';  // kleur Verbruik Solar
-$OpacityVS = '0.6';      // Lijn transparantie
-$kleurS =  '#FF0000';  // kleur schatting opbrengst solar
-$OpacityS = '0.9';       // Lijn transparantie
-
-
-//#### Toegevoegd voor P1 ElectriciteitsMeter informatie van Domoticz
-//** P1 waarden aangeven
-$P1 = '0'; // 0 = nee, 1 = ja
-
-//** Algemene velden
-$ElecLeverancier = "Engie";                         // naam electra leverancier
-$ElecDagGraph = '60';                               // aantal dagen in grafiek
-$ElecMaandGraph = '13';                             // aantal maanden in grafiek
-// contract startdatum (dd-mm) energie leverancier tbv jaar totalen op de website.
-// 01-01 wordt gebruikt indien niet gespecificeerd om zo het huidige jaar totaal te geven
-$contract_datum = '01-01';    // dd-mm
-
-//** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
-$PVGtxt = "PVGis";                                  // Tekst waar de schatting vandaan komt bv: "PVGis"
-$PVGis = [0,0,0,0,0,0,0,0,0,0,0,0];                 // schatting opbrengst iedere maand voor de installatie
-
-//** velden voor ophalen P1 info van Domoticz server
-$domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
-$domoidx = "123";                                   // device IDX voor de Electriciteits P1 meter
-$DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
-
-//** velden voor Electra info van DSMR server(verwijder // om te activeren)
-// $dsmr_url='http://host-ip:8888';                     // URL voor DSMR inclusief
-// $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
-// $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
-
-//** velden voor Electra info van eigen database server(verwijder // om te activeren)
-// $DataURL = 'live-server-data-electra-p1_meter_table.php';     // URL voor ophalen electra&Converter data
-
-//#### einde aanpassing
+// transparantie (Opacity): 0 = geheel doorzichtig, 0.5 is half doorzichtig, 1 = ondoorzichtig
+$kleur = '#4169E1';		// kleur royalbleu voor actuele dag
+$kleur1 = '#009900';	// kleur groen voor lijn voorafgaande dag inverter grafiek (grijs = '#d4d0d0')
+$kleur2 = '#009900';	// kleur groen voor lijn actueel paneel
+$kleurg = '#d4d0d0';	// kleur grijs voor lijn overige dagen / panelen
+$kleurSR = '#009900';	// kleur Solar Retour
+$OpacitySR = '0.7';		// Lijn transparantie
+$fillOpacitySR = '0.4';	// opvul transparantie
+$kleurSV = '#009900';	// kleur Solar Verbruik
+$OpacitySV = '0.4';		// Lijn transparantie
+$fillOpacitySV = '0.2';	// opvul transparantie
+$kleurVL = '#4169E1';	// kleur Verbruik Levering
+$OpacityVL = '0.8';		// Lijn transparantie
+$kleurVS = '#4169E1';	// kleur Verbruik Solar
+$OpacityVS = '0.6';		// Lijn transparantie
+$kleurS =  '#FF0000';	// kleur schatting opbrengst solar
+$OpacityS = '0.9';		// Lijn transparantie
 
 // aangeven vermogen op het paneel
 $vermogen = '1'; // 0 = nee, 1 = ja
 
-// Sunrise and Moon box management
-// 0: moon and sunrise boxes are resize separately.
-// 1: clicking moon or sunrise will enlarge both of them
-$groupMoonSun = '1';
-
 // gegevens van het zonnepanelensysteem
-$inverter = '3'; // 1 voor enkel fase en 3 voor 3 fase inverter
-$naam = "SolarEdge SE7k"; //naam van de inverter
+$inverter = '3';			// 1 voor enkel fase en 3 voor 3 fase inverter
+$naam = "SolarEdge SE7k";	//naam van de inverter
+
 //optimizer id en positie paneel, de richting van de panelen Vertikaal = 0, Horizontaal = 1
 // het serienummer en het vermogen van het paneel
 //$op_id[id optimizer][inverter.string.paneelnummer][richting][id paneel][vermogen paneel]
@@ -134,4 +100,46 @@ $op_id[22] = ['20212166', '1.1.22',1,'DM5511503231281',265];
 $op_id[23] = ['20211F32', '1.1.23',1,'DM5511503231176',265];
 $op_id[24] = ['20211FD6', '1.1.24',1,'DM5511503231339',265];
 $aantal = count($op_id); // aantal zonnepanelen dat in database is opgenomen
+
+//#### P1 ElektriciteitsMeter
+
+//** P1 waarden aangeven
+$P1 = '0'; // 0 = nee, 1 = ja
+
+# Methode om de elektragegevens op te halen
+$methode = 1; # 1 = domoticz, 2 = DSMR, 3 = P1 database
+$DataURL = 'live-server-data-10sec.php'; 
+
+//** Algemene velden
+$ElecLeverancier = "Engie";                         // naam elektra leverancier
+$ElecDagGraph = '60';                               // aantal dagen in grafiek
+$ElecMaandGraph = '13';                             // aantal maanden in grafiek
+
+// contract startdatum (dd-mm) energie leverancier tbv jaar totalen op de website.
+// 01-01 wordt gebruikt indien niet gespecificeerd om zo het huidige jaar totaal te geven
+$contract_datum = '01-01';    // dd-mm
+
+//** velden die worden gebruikt om de PVGis schatting in de website te laten zien. Wordt alleen getoond als ze invult zijn.
+$PVGtxt = "PVGis";                                  // Tekst waar de schatting vandaan komt bv: "PVGis"
+$PVGis = [0,0,0,0,0,0,0,0,0,0,0,0];                 // schatting opbrengst iedere maand voor de installatie
+
+//** velden voor ophalen P1 info van Domoticz server
+$domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
+$domoidx = "123";                                   // device IDX voor de Elektriciteits P1 meter
+
+//** velden voor Electra info van DSMR server(verwijder // om te activeren)
+// $dsmr_url='http://host-ip:8888';                     // URL voor DSMR inclusief
+// $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
+
+//#### Astronomie
+
+// gegeven van de plaats waar de zonnepanelen staan
+$lat = 51.9515885; //Latitude North
+$long = 6.0045953; //Longitude East
+
+// Sunrise and Moon box management
+// 0: moon and sunrise boxes are resize separately.
+// 1: clicking moon or sunrise will enlarge both of them
+$groupMoonSun = '1';
+
 ?>
