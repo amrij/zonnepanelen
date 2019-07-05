@@ -37,13 +37,13 @@ if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
 $period = array_key_exists('period', $_GET) ? $_GET['period'] : "s";
 $limit = $period == "s" ? "" : " limit 1";
 
-# reset $total voor overdracht gegevens naar zonnepanelen.php
-$total = array();
+# zet datum gegevens
+$midnight = date("Y-m-d 00:00:00", strtotime($d1));
+$today    = (new DateTime("today " . $midnight))->getTimestamp();
+$tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
 
-####################
-# invertergegevens #
-# case "in":       #
-####################
+#zet de juiste inverter type
+$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
 
 # bepaal de eerste dag van de data in de database
 $query = "SELECT min(timestamp) as timestamp FROM telemetry_optimizers";
@@ -51,19 +51,19 @@ $result = $mysqli->query($query);
 $row = mysqli_fetch_assoc($result);
 $begin = gmdate("Y-m-d 00:00:00", $row['timestamp']);
 
-# zet datum gegevens
-$midnight = date("Y-m-d 00:00:00", strtotime($d1));
-$today    = (new DateTime("today " . $midnight))->getTimestamp();
-$tomorrow = (new DateTime("tomorrow " . $midnight))->getTimestamp();
+# reset $total voor overdracht gegevens naar zonnepanelen.php
+$total = array();
 
+####################
+# invertergegevens #
+# case "in":       #
+####################
 $dag = [gmdate("d", $today-($InvDays-1)*86400), $InvDays];
 $date_i = $today-$InvDays*86400;
 
 # zet de totale energie per dag op 0
 $de_day_total = 0;
 
-#zet de juiste inverter type
-$table   = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
 $sqlcols = $inverter == 1 ? 'v_ac, i_ac, v_dc, p_active'
 			  : '(v_ac1+v_ac2+v_ac3)/3 as v_ac, (i_ac1+i_ac2+i_ac3) as i_ac, v_dc, (p_active1+p_active2+p_active3) as p_active';
 
@@ -71,19 +71,18 @@ $sqlcols = $inverter == 1 ? 'v_ac, i_ac, v_dc, p_active'
 $diff = array();
 
 # haal de gegevens van de inverter op uit de database 
-foreach ($mysqli->query(
-		'SELECT timestamp, de_day, ' . $sqlcols .
-		' FROM ' . $table .
-		' WHERE e_day>0 AND timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow .
-		' ORDER BY timestamp')
-                as $j => $row) {
+$diff['ca']  = "in";
+$query = 'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, ' . $sqlcols .
+	' FROM ' . $table .
+	' WHERE e_day>0 AND timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow .
+	' ORDER BY timestamp';
+foreach ($mysqli->query($query) as $j => $row) {
 	while ($dag[0] != gmdate("d", $row['timestamp'])) {
 		$dag[1]--;
 		$dag[0] = gmdate("d", $today-($dag[1]-1)*86400);
 		$de_day_total = 0;
 	}
 	$de_day_total += $row["de_day"];
-	$diff['ca']  = "in";
 	$diff['serie']  = $dag[1];
 	$diff['ts']    = ($today + date("H", $row['timestamp']) * 3600 + round(0.2 * date("i", $row['timestamp'])) * 5 * 60) * 1000;
 	$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
@@ -111,17 +110,17 @@ for ($i = 1; $i <= $aantal; $i++) {
 
 # haal gegevens van de panelen op
 $query = sprintf("SELECT HEX(op_id) optimizer, timestamp, uptime, v_in*i_in*0.125*0.00625 as vermogen, e_day*0.25 as energie, temperature
-	          FROM telemetry_optimizers
-		  WHERE timestamp > %s AND timestamp <= %s
-	          ORDER BY timestamp;",
+		FROM telemetry_optimizers
+		WHERE timestamp > %s AND timestamp <= %s
+		ORDER BY timestamp;",
 		$today, $tomorrow);
 $result = $mysqli->query($query);
 
 # Zet de waarden bij het juiste paneel
+$diff['ca']  = "pa";
 while ($row = mysqli_fetch_assoc($result)) {
 	for ($i = 1; $i <= $aantal; $i++) {
 		if ($row['optimizer'] == $op_id[$i][0]) {
-			$diff['ca']  = "pa";
 			$diff['serie']  = 0;
 			$diff['op_id']  = $i;
 			$diff['ts'] = $row['timestamp'] * 1000;
@@ -243,7 +242,6 @@ If ($midnight >= $begin) {
 	$mode[9] = '';
 
 	# zet de juiste inverter type
-	$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
 	$cols = $inverter == 1 ? "p_active" : "p_active1+p_active2+p_active3";
 
 	# Verzamel min / max van de dag
@@ -314,11 +312,11 @@ array_push($total, $diff);
 $diff = array();
 
 # enkel of drie fase inverter
-$table = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
 $cols  = $inverter == 1 ? 'p_active'           : '(p_active1+p_active2+p_active3) as p_active';
 
 # haal de gegevens op
 $de_day_total = 0;
+$diff['ca']   = 'po';
 foreach ($mysqli->query(
 		'SELECT timestamp, de_day, ' . $cols .
 		' FROM ' . $table .
@@ -327,11 +325,10 @@ foreach ($mysqli->query(
 		$limit )
 		as $j => $row) {
 	$de_day_total += $row["de_day"];
-	$diff['ca']   = 'po';
 	$diff['ts']   = $row['timestamp'] * 1000;
 	$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
 	$diff['cp'] = $row['p_active'];
-	# voeg het resultaat toe aan de total-array
+	// voeg het resultaat toe aan de total-array
 	array_push($total, $diff);
 }
 
@@ -347,8 +344,12 @@ $diff = array();
 
 # zet datum gegevens
 $date1 = (new DateTime(sprintf("today %s",date("Y-m-d 00:00:00", time()))))->getTimestamp();
-if (date('d-m-Y', strtotime($d1)) == date("d-m-Y", time())){$date2 = date("d-m-Y H:i:s", time());}else{$date2 = date('d-m-Y H:i:s', strtotime($d1));}
-$today    = strtotime($date2);
+if (date('d-m-Y', strtotime($d1)) == date("d-m-Y", time())) {
+	$date2 = date("d-m-Y H:i:s", time());
+}else{
+	$date2 = date('d-m-Y H:i:s', strtotime($d1));
+}
+$today = strtotime($date2);
 $date3 = date("Y-m-d", time());
 
 $moon = new Solaris\MoonPhase(strtotime($date2));
@@ -369,23 +370,14 @@ $diff['nlq'] = date( 'd-m-Y H:i:s', $moon->next_last_quarter() );
 $diff['ta'] = round(($moon->next_new_moon() - $moon->new_moon())/86400,2);
 $diff['ae'] = round(($today - $moon->new_moon())/86400,2);
 $diff['pe'] = round($moon->phase(),4);
-if ($diff["pe"] > .975 || $diff["pe"] < .025 ){
-	$diff['pm'] = "Nieuwe maan"; 
-}elseif ($diff["pe"] >= .025 && $diff['pe'] <= .225){
-	$diff['pm'] = "Jonge maan"; 
-}elseif ($diff["pe"] > .225 && $diff['pe'] < .275){
-	$diff['pm'] = "Eerste kwartier"; 		
-}elseif ($diff["pe"] >= .275 && $diff['pe'] <= .475){
-	$diff['pm'] = "Wassende maan"; 		
-}elseif ($diff["pe"] > .475 && $diff['pe'] < .525){
-	$diff['pm'] = "Volle maan"; 		
-}elseif ($diff["pe"] >= .525 && $diff['pe'] <= 0.725){
-	$diff['pm'] = "Afnemende maan";
-}elseif ($diff["pe"] > .725 && $diff['pe'] < .775){
-	$diff['pm'] = "Laatste kwartier"; 		
-}elseif ($diff["pe"] >= .775 && $diff['pe'] < .975){
-	$diff['pm'] = "Asgrauwe maan"; 		
-}
+if     ($diff["pe"] >  .975 || $diff["pe"] <  .025) { $diff['pm'] = "Nieuwe maan"; }
+elseif ($diff["pe"] >= .025 && $diff['pe'] <= .225) { $diff['pm'] = "Jonge maan"; }
+elseif ($diff["pe"] >  .225 && $diff['pe'] <  .275) { $diff['pm'] = "Eerste kwartier"; }
+elseif ($diff["pe"] >= .275 && $diff['pe'] <= .475) { $diff['pm'] = "Wassende maan"; }
+elseif ($diff["pe"] >  .475 && $diff['pe'] <  .525) { $diff['pm'] = "Volle maan"; }
+elseif ($diff["pe"] >= .525 && $diff['pe'] <= .725) { $diff['pm'] = "Afnemende maan"; }
+elseif ($diff["pe"] >  .725 && $diff['pe'] <  .775) { $diff['pm'] = "Laatste kwartier"; }
+elseif ($diff["pe"] >= .775 && $diff['pe'] <  .975) { $diff['pm'] = "Asgrauwe maan"; }
 $diff['dr'] = floor($moon->diameter()*60). "'" . floor(($moon->diameter()*60 -floor($moon->diameter()*60))*60). "''";
 $diff['sdr'] = floor($moon->sundiameter()*60). "'" . floor(($moon->sundiameter()*60 -floor($moon->sundiameter()*60))*60). "''";
 $diff['in'] = round($moon->illumination()*100,0);
