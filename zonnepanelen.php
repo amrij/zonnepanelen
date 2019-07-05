@@ -1210,35 +1210,6 @@ EOF
 		}
 	}
 
-	function zonmaan(){
-		if (reportDateYMD >= currentDayYMD){
-			document.getElementById("NextDay").disabled = true;
-			document.getElementById("Today").disabled = true;
-		}else{
-			document.getElementById("NextDay").disabled = false;
-			document.getElementById("Today").disabled = false;
-		}
-		if (reportDateYMD <= begin){
-			document.getElementById("PrevDay").disabled = true;
-		}
-		if (currentDayStartStamp < reportEndStamp) {
-			reportDateStr = "";
-		}
-		var inv4Data = $.ajax({
-			url: "maanfase.php",
-			dataType: "json",
-			type: 'GET',
-			data: { "date" : reportDateStr.replace("00:00:00", `${(new Date()).getHours()}:00:00`) },
-			async: false,
-		}).responseText;
-		inv4Data = eval(inv4Data)
-		currentDayYMD = inv4Data[0]["date3"];
-		currentDayStartStamp = inv4Data[0]["datum1"];
-		document.getElementById("maan_th").src = inv4Data[0]["filenaam"];
-		document.getElementById("fase_text").innerHTML = inv4Data[0]["phase_naam"];
-		document.getElementById("verlicht_text").innerHTML = inv4Data[0]["illumination"]+'% Verlicht';
-	}
-
 	function requestData60sec() {
 		$.ajax({
 			url: 'live-server-data-60sec.php', //url of data source
