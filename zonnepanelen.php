@@ -264,7 +264,6 @@ omschrijving: hoofdprogramma
 		function genxAxis() {
 			print "
 					type: 'datetime',
-					pointstart: Date.UTC(1970,01,01),
 					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
 					title: { text: null },
 					startOnTick: true,
@@ -275,8 +274,8 @@ omschrijving: hoofdprogramma
 					plotBands: [\n";
 			for ($i = 0; $i < 25; $i += 2) { print "			{
 					color: '#ebfbff',
-					from: Date.UTC(reportJaar, reportMaand , reportDag, u[" . $i . "]-reportWinterOffset),
-					to: Date.UTC(reportJaar, reportMaand, reportDag, u[" . ($i+1) . "]-reportWinterOffset),
+					from: Date.UTC(reportJaar, reportMaand-1 , reportDag, " . $i . "-reportWinterOffset),
+					to: Date.UTC(reportJaar, reportMaand-1, reportDag, " . ($i+1) . "-reportWinterOffset),
 				},\n";
 			}
 			print "],\n";
@@ -561,7 +560,6 @@ EOF
 	}
 	var PVGtxt = '<?php echo $PVGtxt; ?>';
 	var PVGis = [0<?php for ($i=0; $i<=11; $i++){ echo ",", $PVGis[$i];} ?>];
-	var u = [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47];
 	var data_p = [];
 	var data_i = [];
 	var gem_verm = <?php echo (isset($Gem_Verm) ? $Gem_Verm : 1); ?>;
