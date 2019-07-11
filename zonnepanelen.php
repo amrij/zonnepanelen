@@ -801,7 +801,7 @@ EOF
 	var paneelGraph = {
 			'Vermogen':     { 'metric': 'cp',   'tekst': 'Vermogen',     'unit': 'W' },
 			'Energie':      { 'metric': 'vp',   'tekst': 'Energie',      'unit': 'Wh' },
-			'Temperatuur':  { 'metric': 'temp', 'tekst': 'Temperatuur',  'unit': '°C' },
+			'Temperatuur':  { 'metric': 't',    'tekst': 'Temperatuur',  'unit': '°C' },
 			'V_in':         { 'metric': 'vin',  'tekst': 'Spanning In',  'unit': 'V' },
 			'V_out':        { 'metric': 'vout', 'tekst': 'Spanning Uit', 'unit': 'V' },
 			'I_in':         { 'metric': 'iin',  'tekst': 'Stroom In',    'unit': 'A' }
