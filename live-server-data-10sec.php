@@ -101,22 +101,23 @@ $total = array();
 $diff = array();
 $table = $inverter == 1 ? 'telemetry_inverter' : 'telemetry_inverter_3phase';
 
+$date = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
+$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
+
+if ($period == 'm') {
+	$SQLdatefilter = '"%Y-%m"';
+	$JSON_SUM = "Y-m";
+	$JSON_period = "month";
+} else {
+	$SQLdatefilter = '"%Y-%m-%d"';
+	$JSON_SUM = "Y-m-d";
+	$JSON_period = "day";
+}
 
 switch ($methode){
 	case "1": // domoticz
 		if($limit == '') { $limit = '30'; }
-		if ($period == 'm') {
-			$SQLdatefilter = '"%Y-%m"';
-			$JSON_SUM = "Y-m";
-			$JSON_period = "month";
-		} else {
-			$SQLdatefilter = '"%Y-%m-%d"';
-			$JSON_SUM = "Y-m-d";
-			$JSON_period = "day";
-		}
 		
-		$date = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
-		$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 		$domodata = array();
 		$domorec = array();
 
@@ -233,10 +234,6 @@ switch ($methode){
 				' ORDER by oDate ;';
 			// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 			$inverter_data = $mysqli->query($query);
-			$thread_id = $mysqli->thread_id;
-			// Sluit DB
-			$mysqli->kill($thread_id);
-			$mysqli->close();
 
 
 			// ================================================================================
@@ -293,22 +290,14 @@ switch ($methode){
 		}
 		break;
 	case "2": // DSMR
-		if($period == '' || $period == 'd' ) {
-			$SQLdatefilter = '"%Y-%m-%d"';
-			$JSON_SUM = "Y-m-d";
-			$JSON_period = "day";
-			if($limit == '') { $limit = '30'; }
-			$periods = $limit-1;
-		} elseif ($period == 'm') {
-			$SQLdatefilter = '"%Y-%m"';
-			$JSON_SUM = "Y-m";
-			$JSON_period = "month";
+		} if ($period == 'm') {
 			if($limit == '') { $limit = '12'; }
 			$periods = $limit*31-1;
+		} else {
+			if($limit == '') { $limit = '30'; }
+			$periods = $limit-1;
 		}
 
-		$date = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
-		$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 		$today = new DateTime();
 		$dsmrdata = array();
 		$dsmrrec = array();
@@ -449,10 +438,6 @@ switch ($methode){
 				' ORDER by oDate ;';
 			// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 			$inverter_data = $mysqli->query($query);
-			$thread_id = $mysqli->thread_id;
-			// Sluit DB
-			$mysqli->kill($thread_id);
-			$mysqli->close();
 
 			// ================================================================================
 			// loop through the dates and merge the data from DSMR server and the Converter arrays
@@ -516,12 +501,8 @@ switch ($methode){
 		if ($limit == '') { $limit = '30'; }
 		if ($period == '') { $period = 'c'; }
 		if ($period == 'm') {
-			$datefilter = "%Y-%m";
-			$SQLdatefilter1 = 'Y-m';
 			$limitf = 31*$limit*86400;
 		} else {
-			$datefilter = "%Y-%m-%d";
-			$SQLdatefilter1 = 'Y-m-d';
 			$limitf =  $limit * 86400;
 		}
 
@@ -533,11 +514,9 @@ switch ($methode){
 			$limit -=1;
 		}
 		$d2 = time();
-		$date = (new DateTime("today " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 		$yesterday1 = gmdate("Y-m-d",(new DateTime("yesterday " . date("Y-m-d 12:00:00", time())))->getTimestamp());
 		$morgen = date("Y-m-d",(new DateTime("tomorrow " . date("Y-m-d 12:00:00", $time)))->getTimestamp());
 		$today = gmdate("Y-m-d H:i:s",(new DateTime("today " . date("Y-m-d 00:00:00", $time)))->getTimestamp());
-		$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 		$yesterday = (new DateTime("yesterday " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 
 		// controle of P1_Meter_overzicht bestaat
@@ -659,7 +638,6 @@ switch ($methode){
 				array_push($total, $diff);
 			}
 		}
- 
 		break;
 }
 
