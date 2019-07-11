@@ -30,7 +30,7 @@
 //~ ==========================================================================
 //~ De verwachte JSON output is voor "period=c"  (current data)   aantal= wordt niet gebruikt
 //~ [{
-//~  "ServerTime" : "2019-03-13 11:48:40",
+//~  "ts" : "2019-03-13 11:48:40",
 //~  "CounterDelivToday" : "1.349 kWh",
 //~  "CounterToday" : "3.893 kWh",
 //~  "Usage" : "167 Watt",
@@ -125,7 +125,7 @@ switch ($methode){
 			//Get current info for P1_ElectriciteitsMeter from domoticz
 			$response = file_get_contents('http://'.$domohost.'&/json.htm?type=devices&rid='.$domoidx);
 			$domo_rest = json_decode($response,true);
-			$diff['ServerTime'] = $domo_rest["ServerTime"];
+			$diff['ts'] = strtotime($domo_rest["ServerTime"]);
 			$diff['CounterDelivToday'] = $domo_rest["result"][0]['CounterDelivToday'];
 			$diff['CounterToday'] = $domo_rest["result"][0]['CounterToday'];
 			$diff['Usage'] = $domo_rest["result"][0]['Usage'];
@@ -333,7 +333,7 @@ switch ($methode){
 			));
 			$dsmr_restd = json_decode($response,true);
 
-			$diff['ServerTime'] = date("d-m-Y H:i:s",strtotime($dsmr_restc['timestamp']));
+			$diff['ts'] = strtotime($dsmr_restc['timestamp']);
 			$diff['CounterToday'] = round((floatval($dsmr_restd['electricity1'])+floatval($dsmr_restd['electricity2'])),3);
 			$diff['CounterDelivToday'] = round((floatval($dsmr_restd['electricity1_returned'])+floatval($dsmr_restd['electricity2_returned'])),3);
 			$diff['Usage'] = round(floatval($dsmr_restc['currently_delivered']),3);
@@ -600,19 +600,19 @@ switch ($methode){
 			// ***************************************************************************************************************
 			// Haal huidig energy verbruik/retour op van de P1_ElectriciteitsMeter .... ????
 			// ***************************************************************************************************************
-			$result = $mysqli->query("SELECT FROM_UNIXTIME(timestamp) as time, dv, dr, cv, cr" .
+			$result = $mysqli->query("SELECT timestamp, dv, dr, cv, cr" .
 						" From P1_Meter" .
 						" where timestamp >= " . $yesterday. " and timestamp < " . $tomorrow .
 						" order by timestamp desc limit 1");
 			$row = mysqli_fetch_assoc($result);	
 			if ($row){
-				$diff['ServerTime'] = $row['time'];
+				$diff['ts'] = $row['timestamp'];
 				$diff['CounterToday'] = $row['dv'];
 				$diff['CounterDelivToday'] = $row['dr'];
 				$diff['Usage'] = $row['cv'];
 				$diff['UsageDeliv'] = $row['cr'];
 			} else {
-				$diff['ServerTime'] = date("Y-m-d H:i:s",$time);
+				$diff['ts'] = $time;
 				$diff['CounterToday'] = 0;
 				$diff['CounterDelivToday'] = 0;
 				$diff['Usage'] = 0;

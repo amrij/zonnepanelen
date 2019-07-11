@@ -895,9 +895,9 @@ EOF
 			data: { "date" : reportDateStr },
 			success: function(data) {
 				p1data = eval(data);
-				if (p1data[0]["ServerTime"].length > 6){
-					p1servertime = p1data[0]["ServerTime"];
-					if (typeof p1servertime === 'undefined') {p1servertime = "";}
+				if (p1data[0]["ts"] > 0){
+					p1servertime = new Date(p1data[0]["ts"]);
+					p1servertime = ("0" + p1servertime.getHours()).slice(-2) + ":" + ("0" + p1servertime.getMinutes()).slice(-2);
 					p1CounterToday = p1data[0]["CounterToday"];
 					p1CounterDelivToday = p1data[0]["CounterDelivToday"];
 					p1Usage = p1data[0]["Usage"];
@@ -928,11 +928,11 @@ EOF
 							cdiff = "green_text";
 							diff = -diff;
 						}
-						document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>"+
-								"<tr><td><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td><td style=\"font-size:smaller\">"+p1servertime.substr(11,10)+"</td></tr>" +
-								"<tr><td>verbruik:</td><td>"+waarde(0,3,parseFloat(p1CounterToday))+" kWh</td></tr>" +
-								"<tr><td>retour:</td><td><u>"+waarde(0,3,parseFloat(p1CounterDelivToday))+" kWh</u></td></tr>" +
-								"<tr><td class="+cdiff+">netto:</td><td class="+cdiff+" >"+waarde(0,3,diff)+" kWh</td></tr>"+
+						document.getElementById("elec_text").innerHTML = "<table width=100% class=data-table>" +
+								"<tr><td><u><b><?php echo $ElecLeverancier?> vandaag</u></b></td><td style=\"font-size:smaller\">" + p1servertime + "</td></tr>" +
+								"<tr><td>verbruik:</td><td>" + waarde(0,3,parseFloat(p1CounterToday)) + " kWh</td></tr>" +
+								"<tr><td>retour:</td><td><u>" + waarde(0,3,parseFloat(p1CounterDelivToday)) + " kWh</u></td></tr>" +
+								"<tr><td class=" + cdiff + ">netto:</td><td class=" + cdiff + " >" + waarde(0,3,diff) + " kWh</td></tr>" +
 								"</table>";
 						if (pse+psv+pve+pvs > 0) {
 							// update current day info in graphs
