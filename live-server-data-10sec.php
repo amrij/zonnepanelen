@@ -568,29 +568,46 @@ switch ($methode){
 		if ($row){
 			// zet de laaste gegevens in P1_Meter_Overzicht
 			$van = $row[datum];
-			$sql = 'INSERT INTO `P1_Meter_Overzicht`(`datum`, `prod`, `v1`, `v2`, `r1`, `r2`) SELECT * '.
-			'FROM ( SELECT DATE(t2.d) as datum, sum(IFNULL(t1.tzon,0)) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, '.
-			'sum(t2.sr1) as r1, sum(t2.sr2) as r2 FROM (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, '.
-			'max(mv1)-min(mv1) as sv1, max(mv2)-min(mv2) as sv2, max(mr1)-min(mr1) as sr1, max(mr2)-min(mr2) as sr2 '.
-			'FROM P1_Meter where timestamp >= '.$van.' and timestamp < '.$tomorrow.' GROUP BY d ) t2 left join (SELECT timestamp, '.
-			'DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon '.
-			'FROM ' . $table . ' where timestamp >= '.$van.' and timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
-			') output ORDER by Datum '.
-			'ON DUPLICATE KEY UPDATE '.
-			'prod = output.prod, v1 = output.v1, v2 = output.v2, r1 = output.r1, r2 = output.r2'; 
+			$sql = 'INSERT INTO P1_Meter_Overzicht(datum, prod, v1, v2, r1, r2) ' .
+				'	SELECT * FROM (SELECT DATE(t2.d) as datum, sum(IFNULL(t1.tzon,0)) as prod, ' .
+				'						sum(t2.sv1) as v1, sum(t2.sv2) as v2, ' .
+				'						sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
+				'			FROM (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, ' .
+				'					max(mv1)-min(mv1) as sv1, max(mv2)-min(mv2) as sv2, ' .
+				'					max(mr1)-min(mr1) as sr1, max(mr2)-min(mr2) as sr2 ' .
+				'				FROM P1_Meter ' .
+				'				where timestamp >= ' . $van . ' and timestamp < ' . $tomorrow .
+				'				GROUP BY d ) t2 ' .
+				'			left join (SELECT timestamp, DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, ' .
+				'					(max(e_total)-min(e_total))/1000 as tzon ' .
+				'				FROM ' . $table .
+				'				where timestamp >= ' . $van . ' and timestamp < ' . $tomorrow .
+				'				GROUP BY d ) t1 ON t1.d = t2.d ' .
+				'		GROUP BY datum) output ' .
+				'		ORDER by Datum ' .
+				'ON DUPLICATE KEY UPDATE prod = output.prod, v1 = output.v1, v2 = output.v2, r1 = output.r1, r2 = output.r2';
 			if ($mysqli->query($sql) !== TRUE) {
 				echo "Error update table: " . $mysqli->error;
 			}
 		}else{
 			// vul P1_Meter_Overzicht met de gegevens
-			$sql = 'INSERT INTO `P1_Meter_Overzicht`(`datum`, `prod`, `v1`, `v2`, `r1`, `r2`) SELECT * '.
-			'FROM ( SELECT DATE(t2.d) as datum, sum(IFNULL(t1.tzon,0)) as prod, sum(t2.sv1) as v1, sum(t2.sv2) as v2, '.
-			'sum(t2.sr1) as r1, sum(t2.sr2) as r2 FROM (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, '.
-			'max(mv1)-min(mv1) as sv1, max(mv2)-min(mv2) as sv2, max(mr1)-min(mr1) as sr1, max(mr2)-min(mr2) as sr2 '.
-			'FROM P1_Meter where timestamp < '.$tomorrow.' GROUP BY d ) t2 left join (SELECT timestamp, '.
-			'DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon '.
-			'FROM ' . $table . ' where timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
-			') output ORDER by Datum'; 
+			$sql = 'INSERT INTO P1_Meter_Overzicht(datum, prod, v1, v2, r1, r2) ' .
+				'	SELECT * FROM (SELECT DATE(t2.d) as datum, sum(IFNULL(t1.tzon,0)) as prod, ' .
+				'						sum(t2.sv1) as v1, sum(t2.sv2) as v2, ' .
+				'						sum(t2.sr1) as r1, sum(t2.sr2) as r2 ' .
+				'			FROM (SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, ' .
+				'					max(mv1)-min(mv1) as sv1, max(mv2)-min(mv2) as sv2, ' .
+				'					max(mr1)-min(mr1) as sr1, max(mr2)-min(mr2) as sr2 ' .
+				'				FROM P1_Meter ' .
+				'				where timestamp < ' . $tomorrow .
+				'				GROUP BY d ) t2 ' .
+				'			left join (SELECT timestamp, DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, ' .
+				'					(max(e_total)-min(e_total))/1000 as tzon ' .
+				'				FROM ' . $table .
+				'				where timestamp < ' . $tomorrow .
+				'				GROUP BY d ) t1 ON t1.d = t2.d ' .
+				'		GROUP BY datum) output ' .
+				'		ORDER by Datum';
 			if ($mysqli->query($sql) !== TRUE) {
 				echo "Error insert table: " . $mysqli->error;
 			}
