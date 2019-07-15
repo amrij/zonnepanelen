@@ -233,11 +233,6 @@ switch ($methode){
 				' ORDER by oDate ;';
 			// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 			$inverter_data = $mysqli->query($query);
-			$thread_id = $mysqli->thread_id;
-			// Sluit DB
-			$mysqli->kill($thread_id);
-			$mysqli->close();
-
 
 			// ================================================================================
 			// loop through the dates and merge the data from Domoticz and the Converter arrays
@@ -449,10 +444,6 @@ switch ($methode){
 				' ORDER by oDate ;';
 			// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 			$inverter_data = $mysqli->query($query);
-			$thread_id = $mysqli->thread_id;
-			// Sluit DB
-			$mysqli->kill($thread_id);
-			$mysqli->close();
 
 			// ================================================================================
 			// loop through the dates and merge the data from DSMR server and the Converter arrays
