@@ -893,6 +893,8 @@ EOF
 			dataType: "json",
 			type: 'GET',
 			data: { "date" : reportDateStr },
+			cache: false,
+			async: false,
 			success: function(data) {
 				p1data = eval(data);
 				if (p1data[0]["ServerTime"].length > 6){
@@ -972,8 +974,6 @@ EOF
 			error : function(xhr, textStatus, errorThrown ) {
 					document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
 				},
-			cache: false,
-			async: false,
 		});
 	}
 
@@ -1008,6 +1008,7 @@ EOF
 						dataType: "json",
 						type: 'GET',
 						data: { "period" : "d", "aantal" : maantal, "date" : endmonth  },
+						cache: false,
 						async: false,
 					}).responseText;
 					datam1 = eval(datam1)
@@ -1213,6 +1214,8 @@ EOF
 			url: 'live-server-data-60sec.php', //url of data source
 			type: 'GET',
 			data: { "date" : reportDate, "period" : period_60sec }, //optional
+			cache: false,
+			async: false,
 			success: function(data) {
 				data = eval(data);
 				data_i = [];
@@ -1412,7 +1415,6 @@ EOF
 				if (P1 == 0) {power_chart.redraw();}
 				period_60sec = "c";
 			},
-			cache: false
 		});
 	}
 	
