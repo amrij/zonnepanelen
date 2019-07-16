@@ -2566,7 +2566,7 @@ EOF
 					AddDataToUtilityChart(data1, ichart, 0);
 				}
 				ichart.redraw();
-//				update_map_fields();
+				update_map_fields();
 			}
 		);
 	}
