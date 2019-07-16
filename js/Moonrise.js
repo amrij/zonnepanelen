@@ -329,11 +329,9 @@ function moonRiseSet(lat, lon, date, zone, sr, h12) {
 		calc_moonset_value	= "None";
 	}										// No moonset this date
 
-	if (calc_moonrise_value24 < calc_moonset_value24) {
-		if (sr == 'r'){return calc_moonrise_value;} 
-		if (sr == 's'){return calc_moonset_value;}
-		return sr;
-	} 
+	if (sr == 'r'){return calc_moonrise_value;} 
+	if (sr == 's'){return calc_moonset_value;}
+	return sr;
 	return '{S}' + calc_moonset_value + '/{R}' + calc_moonrise_value;
 }
 
