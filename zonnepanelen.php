@@ -894,6 +894,7 @@ EOF
 			type: 'GET',
 			data: { "date" : reportDateStr },
 			cache: false,
+			async: false,
 			success: function(data) {
 				p1data = eval(data);
 				if (p1data[0]["ServerTime"].length > 6){
@@ -1008,6 +1009,7 @@ EOF
 						type: 'GET',
 						data: { "period" : "d", "aantal" : maantal, "date" : endmonth  },
 						cache: false,
+						async: false,
 					}).responseText;
 					datam1 = eval(datam1)
 					if (typeof datam1 != 'undefined') {
@@ -1213,6 +1215,7 @@ EOF
 			type: 'GET',
 			data: { "date" : reportDate, "period" : period_60sec }, //optional
 			cache: false,
+			async: false,
 			success: function(data) {
 				data = eval(data);
 				data_i = [];
