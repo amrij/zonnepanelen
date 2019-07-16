@@ -106,10 +106,6 @@ $aantal = count($op_id); // aantal zonnepanelen dat in database is opgenomen
 //** P1 waarden aangeven
 $P1 = '0'; // 0 = nee, 1 = ja
 
-# Methode om de elektragegevens op te halen
-$methode = 1; # 1 = domoticz, 2 = DSMR, 3 = P1 database
-$DataURL = 'live-server-data-10sec.php'; 
-
 //** Algemene velden
 $ElecLeverancier = "Engie";                         // naam elektra leverancier
 $ElecDagGraph = '60';                               // aantal dagen in grafiek
@@ -125,11 +121,16 @@ $PVGis = [0,0,0,0,0,0,0,0,0,0,0,0];                 // schatting opbrengst ieder
 
 //** velden voor ophalen P1 info van Domoticz server
 $domohost = '192.168.0.??:8080';                    // ip:poort van domoticz
-$domoidx = "123";                                   // device IDX voor de Elektriciteits P1 meter
+$domoidx = "123";                                   // device IDX voor de Electriciteits P1 meter
+$DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
 
 //** velden voor Electra info van DSMR server(verwijder // om te activeren)
 // $dsmr_url='http://host-ip:8888';                     // URL voor DSMR inclusief
 // $dsmr_apikey='IDkdjqljwdlkqjwdoiiqjdpockskskdxpF';   // APIKEY voor DSMR
+// $DataURL = 'live-server-data-electra-dsmr.php';      // URL voor ophalen p1&Converter data tbv zonnepanelen-electra.php
+
+//** velden voor Electra info van eigen database server(verwijder // om te activeren)
+// $DataURL = 'live-server-data-electra-p1_meter_table.php';     // URL voor ophalen electra&Converter data
 
 //#### Astronomie
 
