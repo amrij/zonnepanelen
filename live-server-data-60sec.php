@@ -70,7 +70,7 @@ $sqlcols = $inverter == 1 ? 'v_ac, i_ac, v_dc, p_active'
 # reset difference array voor opslag in record van $total
 $diff = array();
 
-# haal de gegevens van de inverter op uit de database 
+# haal de gegevens van de inverter op uit de database
 $diff['ca']  = "in";
 $query = 'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, ' . $sqlcols .
 	' FROM ' . $table .
@@ -178,7 +178,7 @@ If ($midnight >= $begin) {
 	# haal gegevens van de panelen op
 	$query = "SELECT HEX(op_id) optimizer, FROM_UNIXTIME(timestamp, '" . $format . "') time, v_in, v_out, i_in, temperature, uptime, e_day" .
 		" FROM telemetry_optimizers" .
-		" WHERE timestamp > " . $today . " AND timestamp < " . $tomorrow . 
+		" WHERE timestamp > " . $today . " AND timestamp < " . $tomorrow .
 		" order BY HEX(op_id), timestamp";
 	$result = $mysqli->query($query);
 	if ($result) {
@@ -340,7 +340,7 @@ foreach ($mysqli->query(
 ##########################
 
 # ophalen routines (Moon phase calculation class)
-include('MoonPhase.php'); 
+include('MoonPhase.php');
 
 $diff = array();
 
@@ -388,7 +388,7 @@ $diff['fn'] = sprintf('./img/maan/phase_%003d.png',round($moon->phase()*360,0));
 # voeg het resultaat toe aan de total-array
 array_push($total, $diff);
 
-# Sluit DB	
+# Sluit DB
 $thread_id = $mysqli->thread_id;
 $mysqli->kill($thread_id);
 $mysqli->close();

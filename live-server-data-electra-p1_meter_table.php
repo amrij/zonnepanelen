@@ -3,7 +3,7 @@
 // versie: 1.69.0 aangepast door André Rijkeboer
 // auteur: Jos van der Zande based on model from André Rijkeboer
 //
-// datum:  30-05-2019 
+// datum:  30-05-2019
 // omschrijving: ophalen van de P1 en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //
@@ -107,7 +107,7 @@ $val = $mysqli->query('select 1 from `P1_Meter_Overzicht` LIMIT 1');
 
 if($val == FALSE)
 {
-	// creëer tabel P1_Meter_Overzicht 
+	// creëer tabel P1_Meter_Overzicht
 	$sql = "CREATE TABLE P1_Meter_Overzicht (
 		  datum date NOT NULL COMMENT 'Datum',
 		  prod float DEFAULT NULL COMMENT 'Solar productie',
@@ -139,7 +139,7 @@ if ($row){
 	'FROM ' . $table . ' where timestamp >= '.$van.' and timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
 	') output ORDER by Datum '.
 	'ON DUPLICATE KEY UPDATE '.
-	'prod = output.prod, v1 = output.v1, v2 = output.v2, r1 = output.r1, r2 = output.r2'; 
+	'prod = output.prod, v1 = output.v1, v2 = output.v2, r1 = output.r1, r2 = output.r2';
 	if ($mysqli->query($sql) !== TRUE) {
 		echo "Error update table: " . $mysqli->error;
 	}
@@ -152,7 +152,7 @@ if ($row){
 	'FROM P1_Meter where timestamp < '.$tomorrow.' GROUP BY d ) t2 left join (SELECT timestamp, '.
 	'DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon '.
 	'FROM ' . $table . ' where timestamp < '.$tomorrow.' GROUP BY d ) t1 ON t1.d = t2.d  GROUP BY datum '.
-	') output ORDER by Datum'; 
+	') output ORDER by Datum';
 	if ($mysqli->query($sql) !== TRUE) {
 		echo "Error insert table: " . $mysqli->error;
 	}
@@ -166,7 +166,7 @@ if ($period == 'c' ){
 				" From P1_Meter" .
 				" where timestamp >= " . $yesterday. " and timestamp < " . $tomorrow .
 				" order by timestamp desc limit 1");
-	$row = mysqli_fetch_assoc($result);	
+	$row = mysqli_fetch_assoc($result);
 	if ($row){
 		$diff['ServerTime'] = $row['time'];
 		$diff['CounterToday'] = $row['dv'];
@@ -179,7 +179,7 @@ if ($period == 'c' ){
 		$diff['CounterDelivToday'] = 0;
 		$diff['Usage'] = 0;
 		$diff['UsageDeliv'] = 0;
-	}		
+	}
 	array_push($total, $diff);
 } else {
 	// haal gegevens van de panelen op
@@ -204,7 +204,7 @@ if ($period == 'c' ){
 		$diff['v2'] = round($row["v2"],2);
 		$diff['r1'] = round($row["r1"],2);
 		$diff['r2'] = round($row["r2"],2);
-	
+
 		//voeg het resultaat toe aan de total-array
 		array_push($total, $diff);
 	}
@@ -216,12 +216,12 @@ if ($period == 'c' ){
 		$diff['v2'] = 0;
 		$diff['r1'] = 0;
 		$diff['r2'] = 0;
-	
+
 		//voeg het resultaat toe aan de total-array
 		array_push($total, $diff);
 	}
 }
- 
+
 // Sluit DB
 $thread_id = $mysqli->thread_id;
 $mysqli->kill($thread_id);
