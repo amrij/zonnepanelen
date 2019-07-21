@@ -464,6 +464,12 @@ EOF
 			<div class='daglengte_text' id='daglengte_text'   style="top: 85.1%; left: 40%; z-index: -10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 		</div>
 		<div Class='box_moonphase' id='box_moonphase'>
+			<div class="astro2" id="astro">
+				<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#astro2"/>
+			</div>
+			<map name="astro2" style="z-index: 40;">
+				<area id="astro_2" data-ttitle="Astronomische gegevens" shape="rect" coords="0,0,252,500" title="">
+			</map>
 			<img class="maan_th" id="maan_th" src=""          style="top:  0.6%; left:  7%; z-index: -10; height: 100%; position: absolute;" />
 			<div class='fase_text' id='fase_text'             style="top: 22.0%; left: 40%; z-index: -10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
 			<div class='verlicht_text' id='verlicht_text'     style="top: 55.0%; left: 40%; z-index: -10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
@@ -1390,6 +1396,10 @@ EOF
 									"<tr><td>Jun zonnewende</td><td>" + juni + "</td><td></td></tr>" +
 									"<tr><td>Sep equinox:</td><td>" + september + "</td><td></td></tr>" +
 									"<tr><td>Dec zonnewende</td><td>" + december + "</td><td></td></tr>" +
+									"</table>");
+							document.getElementById("astro_2").setAttribute("data-tcontent",
+									"<table class=qtiptable><col width=\"300\"><col width=\"330\"><col width=\"20\">" +
+									"<tr><td colspan=3 style=\"text-align:center\"><b>" + data[iy]["d2"] + "</b></td></tr>" +
 									"<tr><td colspan=3 style=\"text-align:center\"><b><br>Maan</b></td></tr>" +
 									"<tr><td>Opkomst:</td><td>" + maanrise + "</td><td></td></tr>" +
 									"<tr><td>Ondergaan:</td><td>" + maanset + "</td><td></td></tr>" +
