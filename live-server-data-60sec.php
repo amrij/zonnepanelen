@@ -18,7 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.70.1
+// versie: 1.71.0
 // auteur: André Rijkeboer
 // datum:  21-07-2019
 // omschrijving: ophalen van de gegevens van de panelen, de inverter en van astronomische gegevens

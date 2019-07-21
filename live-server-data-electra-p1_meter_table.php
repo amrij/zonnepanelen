@@ -1,9 +1,26 @@
 <?php
 //
-// versie: 1.69.0 aangepast door André Rijkeboer
-// auteur: Jos van der Zande based on model from André Rijkeboer
+// Copyright (C) 2019 André Rijkeboer
 //
-// datum:  30-05-2019
+// This file is part of zonnepanelen, which shows telemetry data from
+// the TCP traffic of SolarEdge PV inverters.
+//
+// zonnepanelen is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 3 of the License, or (at
+// your option) any later version.
+//
+// zonnepanelen is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
+//
+// versie: 1.71.0 
+// auteurs: Jos van der Zande based and André Rijkeboer
+// datum:  21-07-2019
 // omschrijving: ophalen van de P1 en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //
