@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.70.0
+// versie: 1.70.1
 // auteur: André Rijkeboer
-// datum:  28-06-2019
+// datum:  21-07-2019
 // omschrijving: ophalen van de gegevens van de panelen, de inverter en van astronomische gegevens
 
 # ophalen algemene gegevens
@@ -245,9 +245,11 @@ If ($midnight >= $begin) {
 	$cols = $inverter == 1 ? "p_active" : "p_active1+p_active2+p_active3";
 
 	# Verzamel min / max van de dag
-	$query = "SELECT MIN(temperature) t_min, MAX(temperature) t_max, MAX(" . $cols . ") p_max, max(e_total)-min(e_total) e_day" .
+	$query = "SELECT MIN(temperature) t_min, MAX(temperature) t_max, MAX(" . $cols . ") p_max, max(e_total)-min(e_total) + " .
+		" (select de_day FROM `telemetry_inverter_3phase` WHERE `timestamp` > " . $today . " AND timestamp < " . $tomorrow .
+		" ORDER BY `telemetry_inverter_3phase`.`timestamp` DESC LIMIT 1) e_day" .
 		" FROM " . $table .
-		" WHERE timestamp > " . $today . " AND timestamp < " . $tomorrow ;
+		" WHERE timestamp > " . $today . " AND timestamp < " . $tomorrow;
 	$result = $mysqli->query($query);
 
 	# zet de waarden in de record
