@@ -1458,25 +1458,25 @@ EOF
 		}
 	}
 	function UpdateDataInverter() {
-		if(inverter_redraw == 1) {
-			var series = inverter_charte.series[0];
-			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-			for (var i=0; i<=InvDays; i++){
-				inverter_charte.series[i].setData([], false);
-				inverter_chartv.series[i].setData([], false);
+		var series = inverter_charte.series[0];
+		var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+		for (var i=0; i<=InvDays; i++){
+			inverter_charte.series[i].setData([], false);
+			inverter_chartv.series[i].setData([], false);
+		}
+		var s_serie = "x";
+		var sma = simple_moving_averager(gem_verm);
+		for(var i = 0; i < data_i.length; i++){
+			if (gem_verm > 1 && s_serie != InvDays-data_i[i]['serie']) {
+				s_serie = InvDays-data_i[i]['serie'];
+				sma = simple_moving_averager(gem_verm);
 			}
-			var s_serie = "x";
-			var sma = simple_moving_averager(gem_verm);
-			for(var i = 0; i < data_i.length; i++){
-				if (gem_verm > 1 && s_serie != InvDays-data_i[i]['serie']) {
-					s_serie = InvDays-data_i[i]['serie'];
-					sma = simple_moving_averager(gem_verm);
-				}
-				n_gem_pow = sma(parseFloat(data_i[i]['cp']));
+			n_gem_pow = sma(parseFloat(data_i[i]['cp']));
 
-				inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['vp']*1], false, shift);
-				inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
-			}
+			inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['vp']*1], false, shift);
+			inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
+		}
+		if(inverter_redraw == 1) {
 			inverter_charte.redraw();
 			inverter_chartv.redraw();
 		}
