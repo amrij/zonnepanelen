@@ -464,6 +464,12 @@ EOF
 			<div class='daglengte_text' id='daglengte_text'   style="top: 85.1%; left: 40%; z-index: -10; width: 40%; height: 9%; line-height: 1.0em; position: absolute;"></div>
 		</div>
 		<div Class='box_moonphase' id='box_moonphase'>
+			<div class="astro2" id="astro">
+				<img src="./img/dummy.gif" style="width:100%; height:100%" usemap="#astro2"/>
+			</div>
+			<map name="astro2" style="z-index: 40;">
+				<area id="astro_2" data-ttitle="Astronomische gegevens" shape="rect" coords="0,0,252,500" title="">
+			</map>
 			<img class="maan_th" id="maan_th" src=""          style="top:  0.6%; left:  7%; z-index: -10; height: 100%; position: absolute;" />
 			<div class='fase_text' id='fase_text'             style="top: 22.0%; left: 40%; z-index: -10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
 			<div class='verlicht_text' id='verlicht_text'     style="top: 55.0%; left: 40%; z-index: -10; width: 50%; height: 42%; line-height: 1.0em; position: absolute;"></div>
@@ -618,7 +624,7 @@ EOF
 	var september = "";
 	var december = "";
 	var firstTime = true;	// Initialization flag
-	function writeN( n, str ) { 
+	function writeN( n, str ) {
 		switch( n ) {
 			case 1: maart = stringToTimestamp(str); break;
 			case 2: juni = stringToTimestamp(str); break;
@@ -686,7 +692,7 @@ EOF
 		var S = 0;
 		for( var i=0; i<24; i++ ) { S += A[i]*COS( B[i] + (C[i]*T) ); }
 		return S;
-	} 
+	}
 
 	//-----Correct TDT to UTC----------------------------------------------------------------
 	function fromTDTtoUTC( tobj ) {
@@ -698,7 +704,7 @@ EOF
 			/*1660*/  35, 33, 31, 29, 26,  24, 22, 20, 18, 16,  14, 12, 11, 10,  9,   8,  7,  7,  7,  7,
 			/*1700*/   7,  7,  8,  8,  9,   9,  9,  9,  9, 10,  10, 10, 10, 10, 10,  10, 10, 11, 11, 11,
 			/*1740*/  11, 11, 12, 12, 12,  12, 13, 13, 13, 14,  14, 14, 14, 15, 15,  15, 15, 15, 16, 16,
-			/*1780*/  16, 16, 16, 16, 16,  16, 15, 15, 14, 13,  
+			/*1780*/  16, 16, 16, 16, 16,  16, 15, 15, 14, 13,
 			/*1800*/ 13.1, 12.5, 12.2, 12.0, 12.0,  12.0, 12.0, 12.0, 12.0, 11.9,  11.6, 11.0, 10.2,  9.2,  8.2,
 			/*1830*/  7.1,  6.2,  5.6,  5.4,  5.3,   5.4,  5.6,  5.9,  6.2,  6.5,   6.8,  7.1,  7.3,  7.5,  7.6,
 			/*1860*/  7.7,  7.3,  6.2,  5.2,  2.7,   1.4, -1.2, -2.8, -3.8, -4.8,  -5.5, -5.3, -5.6, -5.7, -5.9,
@@ -710,14 +716,14 @@ EOF
 		var deltaT = 0; // deltaT = TDT - UTC (in Seconds)
 		var Year = tobj.getUTCFullYear();
 		var t = (Year - 2000) / 100;	// Centuries from the epoch 2000.0
-		
+
 		if ( Year >= TBLfirst && Year <= TBLlast ) { // Find correction in table
 			if (Year%2) { // Odd year - interpolate
 				deltaT = ( TBL[(Year-TBLfirst-1)/2] + TBL[(Year-TBLfirst+1)/2] ) / 2;
 			} else { // Even year - direct table lookup
 				deltaT = TBL[(Year-TBLfirst)/2];
 			}
-		} else if( Year < 948) { 
+		} else if( Year < 948) {
 			deltaT = 2177 + 497*t + 44.1*POW2(t);
 		} else if( Year >=948) {
 			deltaT =  102 + 102*t + 25.3*POW2(t);
@@ -729,7 +735,7 @@ EOF
 	} // End fromTDTtoUTC
 
 	//-----Julian Date to UTC Date Object----------------------------------------------------
-	// Meeus Astronmical Algorithms Chapter 7 
+	// Meeus Astronmical Algorithms Chapter 7
 	function fromJDtoUTC( JD ){
 		// JD = Julian Date, possible with fractional days
 		// Output is a JavaScript UTC Date Object
@@ -747,9 +753,9 @@ EOF
 		var E = INT( ( B-D )/30.6001 );
 		var DT = B - D - INT(30.6001*E) + F;	// Day of Month with decimals for time
 		var Mon = E - (E<13.5?1:13);			// Month Number
-		var Yr  = C - (Mon>2.5?4716:4715);		// Year    
+		var Yr  = C - (Mon>2.5?4716:4715);		// Year
 		var Day = INT( DT ); 					// Day of Month without decimals for time
-		var H = 24*(DT - Day);					// Hours and fractional hours 
+		var H = 24*(DT - Day);					// Hours and fractional hours
 		var Hr = INT( H ); 						// Integer Hours
 		var M = 60*(H - Hr);					// Minutes and fractional minutes
 		var Min = INT( M );						// Integer Minutes
@@ -1390,6 +1396,10 @@ EOF
 									"<tr><td>Jun zonnewende</td><td>" + juni + "</td><td></td></tr>" +
 									"<tr><td>Sep equinox:</td><td>" + september + "</td><td></td></tr>" +
 									"<tr><td>Dec zonnewende</td><td>" + december + "</td><td></td></tr>" +
+									"</table>");
+							document.getElementById("astro_2").setAttribute("data-tcontent",
+									"<table class=qtiptable><col width=\"300\"><col width=\"330\"><col width=\"20\">" +
+									"<tr><td colspan=3 style=\"text-align:center\"><b>" + data[iy]["d2"] + "</b></td></tr>" +
 									"<tr><td colspan=3 style=\"text-align:center\"><b><br>Maan</b></td></tr>" +
 									"<tr><td>Opkomst:</td><td>" + maanrise + "</td><td></td></tr>" +
 									"<tr><td>Ondergaan:</td><td>" + maanset + "</td><td></td></tr>" +
@@ -1417,7 +1427,7 @@ EOF
 			},
 		});
 	}
-	
+
 	$(function() {
 		Highcharts.setOptions({
 			global: { useUTC: false, },
@@ -1448,25 +1458,25 @@ EOF
 		}
 	}
 	function UpdateDataInverter() {
-		if(inverter_redraw == 1) {
-			var series = inverter_charte.series[0];
-			var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
-			for (var i=0; i<=InvDays; i++){
-				inverter_charte.series[i].setData([], false);
-				inverter_chartv.series[i].setData([], false);
+		var series = inverter_charte.series[0];
+		var shift = series.data.length > 86400; // shift if the series is longer than 86400(=1 dag)
+		for (var i=0; i<=InvDays; i++){
+			inverter_charte.series[i].setData([], false);
+			inverter_chartv.series[i].setData([], false);
+		}
+		var s_serie = "x";
+		var sma = simple_moving_averager(gem_verm);
+		for(var i = 0; i < data_i.length; i++){
+			if (gem_verm > 1 && s_serie != InvDays-data_i[i]['serie']) {
+				s_serie = InvDays-data_i[i]['serie'];
+				sma = simple_moving_averager(gem_verm);
 			}
-			var s_serie = "x";
-			var sma = simple_moving_averager(gem_verm);
-			for(var i = 0; i < data_i.length; i++){
-				if (gem_verm > 1 && s_serie != InvDays-data_i[i]['serie']) {
-					s_serie = InvDays-data_i[i]['serie'];
-					sma = simple_moving_averager(gem_verm);
-				}
-				n_gem_pow = sma(parseFloat(data_i[i]['cp']));
+			n_gem_pow = sma(parseFloat(data_i[i]['cp']));
 
-				inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['vp']*1], false, shift);
-				inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
-			}
+			inverter_charte.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], data_i[i]['vp']*1], false, shift);
+			inverter_chartv.series[InvDays-data_i[i]['serie']].addPoint([data_i[i]['ts'], n_gem_pow], false, shift);
+		}
+		if(inverter_redraw == 1) {
 			inverter_charte.redraw();
 			inverter_chartv.redraw();
 		}
