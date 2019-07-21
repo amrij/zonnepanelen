@@ -246,8 +246,8 @@ If ($midnight >= $begin) {
 
 	# Verzamel min / max van de dag
 	$query = "SELECT MIN(temperature) t_min, MAX(temperature) t_max, MAX(" . $cols . ") p_max, max(e_total)-min(e_total) + " .
-		" (select de_day FROM `telemetry_inverter_3phase` WHERE `timestamp` > " . $today . " AND timestamp < " . $tomorrow .
-		" ORDER BY `telemetry_inverter_3phase`.`timestamp` DESC LIMIT 1) e_day" .
+		" (select de_day FROM  " . $table . " WHERE `timestamp` > " . $today . " AND timestamp < " . $tomorrow .
+		" ORDER BY `timestamp` DESC LIMIT 1) e_day" .
 		" FROM " . $table .
 		" WHERE timestamp > " . $today . " AND timestamp < " . $tomorrow;
 	$result = $mysqli->query($query);
