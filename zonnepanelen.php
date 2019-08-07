@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.71.0
+versie: 1.71.1
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  21-07-2019
+datum:  07-08-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -1834,7 +1834,12 @@ EOF
 			},
 			plotOptions: {
 				series: {
-					 events: {
+					states: {
+						inactive: {
+							opacity: 1,
+						},
+					},
+					events: {
 						mouseOver: function () {
 							if (this.index != this.chart.series.length-1) {
 								this.update({
@@ -1980,6 +1985,11 @@ EOF
 			},
 			plotOptions: {
 				series: {
+					states: {
+						inactive: {
+							opacity: 1,
+						},
+					},
 					events: {
 						mouseOver: function () {
 							if (this.index != this.chart.series.length-1) {
