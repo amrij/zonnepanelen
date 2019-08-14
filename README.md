@@ -1,6 +1,6 @@
 # Zonnepanelen
 This Website will show telemetry data from the TCP traffic of SolarEdge PV inverters or both the SolarEdge and P1 meter information.
-The website is based on se-logger (https://github.com/jbuehl/solaredge/)
+The website is based on se-logger (https://github.com/Jerrythafast/se-logger/)
 It is suitable for single-phase inverters and 3-phase inverters.
 It also contains P1 information retrieval scripts for Domoticz, DSMR and an extra P1_Meter table which can to be added to the SolarEdge database.
 
