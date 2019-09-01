@@ -58,7 +58,7 @@ if ($period == 'm') {
 	$JSON_SUM = "Y-m-d";
 	$JSON_period = "day";
 }
-$tomorrow = (new DateTime("tomorrow " . date("2015-m-d 00:00:00", strtotime($d1))))->getTimestamp();
+$tomorrow = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($d1))))->getTimestamp();
 $vandaag = date("Y-m-d 00:00:00", strtotime($d1));
 $p1data = array();
 $p1rec = array();
