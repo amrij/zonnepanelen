@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.71.1
+versie: 1.71.2
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  07-08-2019
+datum:  02-10-2019
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -1047,7 +1047,7 @@ EOF
 			yvs -= vs;
 			if (PVGis[reportMaand] > 0) {
 				PVGisd = waarde(0,2,PVGis[reportMaand]/reportMonthDays);
-				PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*(reportMaand == con_month ? reportDag-con_day + 1 : reportDag));
+				PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*reportDag);
 				tPVGis = 0;
 				for (i=1; i<PVGis.length; i++) {
 					var factor = 1; <?php // Assume each month PVGis needs to be added ?>
