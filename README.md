@@ -31,6 +31,8 @@ In config.php the following information is defined:
 3. Customize css/zonnepanelen-local.css for zonnepanelen.php by copying the zonnepanelen-local-example.css to zonnepanelen-local.css.  The following is defined in this file:  
    - div.box_Zonnepanelen: place, dimensions and possible rotation;
    - div.box_Zonnepaneel_x: place and dimensions in % of the dimensions of div.box_Zonnepanelen.
+4. The following must be set in the MySql database:
+   mysql> SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 ## screenshot zonnepanelen.php $P1 = 0:
   ![Alt text](docs/zonnepanelen.png?raw=true "zonnepanelen.php")
