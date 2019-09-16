@@ -529,9 +529,9 @@ EOF
 	var currentDayYMD = "<?php echo $currentDayYMD ?>";
 	var reportDayDMY = "<?php echo $reportDayDMY ?>";
 	var reportWinterOffset = '<?php echo $reportWinterOffset?>';
-	var reportJaar = '<?php echo $reportJaar?>';
-	var reportMaand = '<?php echo $reportMaand?>';
-	var reportDag = '<?php echo $reportDag?>';
+	var reportJaar = parseInt('<?php echo $reportJaar?>');
+	var reportMaand = parseInt('<?php echo $reportMaand?>');
+	var reportDag = parseInt('<?php echo $reportDag?>');
 	var sunrise = '<?php echo $sunrise ?>';
 	var solar_noon = '<?php echo $solar_noon ?>';
 	var sunset = '<?php echo $sunset ?>';
