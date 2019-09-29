@@ -132,6 +132,10 @@ $DataURL = 'live-server-data-electra-domoticz.php'; // URL voor ophalen p1&Conve
 //** velden voor Electra info van eigen database server(verwijder // om te activeren)
 // $DataURL = 'live-server-data-electra-p1_meter_table.php';     // URL voor ophalen electra&Converter data
 
+//** velden voor ophalen P1 info van P1-monitor server
+//$P1monitorhost = '192.168.1.111';
+// $DataURL = 'live-server-data-electra-P1-monitor.php';     // URL voor ophalen electra&Converter data
+
 //#### Astronomie
 
 // gegeven van de plaats waar de zonnepanelen staan
