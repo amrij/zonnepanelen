@@ -529,9 +529,9 @@ EOF
 	var currentDayYMD = "<?php echo $currentDayYMD ?>";
 	var reportDayDMY = "<?php echo $reportDayDMY ?>";
 	var reportWinterOffset = '<?php echo $reportWinterOffset?>';
-	var reportJaar = '<?php echo $reportJaar?>';
-	var reportMaand = '<?php echo $reportMaand?>';
-	var reportDag = '<?php echo $reportDag?>';
+	var reportJaar = parseInt('<?php echo $reportJaar?>');
+	var reportMaand = parseInt('<?php echo $reportMaand?>');
+	var reportDag = parseInt('<?php echo $reportDag?>');
 	var sunrise = '<?php echo $sunrise ?>';
 	var solar_noon = '<?php echo $solar_noon ?>';
 	var sunset = '<?php echo $sunset ?>';
@@ -1111,17 +1111,17 @@ EOF
 			document.getElementById("p1_huis").className = "red_text";
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
-				if ( cP1Huis == 0 || cP1Huis < SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) {
+				if ( cP1Huis == 0 || cP1Huis < vs + ve) {
 					if (currentDayStartStamp < reportEndStamp) {
-						document.getElementById("p1_huis").innerHTML = waarde(0,3,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday)+" kWh";
+						document.getElementById("p1_huis").innerHTML = waarde(0,3,vs + ve)+" kWh";
 					}
 					document.getElementById("huis_1").setAttribute("data-tcontent",
 							"<table class=qtiptable>" +
 							"<tr><td colspan=3 style=\"text-align:center\"><b>" + s_lasttimestamp + "</b></td></tr>" +
 							"<tr><td colspan=3 style=\"text-align:center\"><br><b>Vandaag</b></td></tr>" +
-							"<tr><td>Zonne energie:</td><td>" + waarde(0,2,SolarProdToday - s_p1CounterDelivToday) + "</td><td>kWh</td></tr>" +
-							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,2,s_p1CounterToday) + "</td><td>kWh</td></tr>" +
-							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,2,SolarProdToday - s_p1CounterDelivToday + s_p1CounterToday) + "</td><td>kWh\r\n</td></tr>" +
+							"<tr><td>Zonne energie:</td><td>" + waarde(0,2,SolarProdToday - se) + "</td><td>kWh</td></tr>" +
+							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,2,ve) + "</td><td>kWh</td></tr>" +
+							"<tr><td>Totaal verbruik:</td><td>" + waarde(0,2,vs + ve) + "</td><td>kWh\r\n</td></tr>" +
 							"<tr><td colspan=3 style=\"text-align:center\"><br><b>Maand</b></td></tr>" +
 							"<tr><td>Zonne energie:</td><td>" + waarde(0,1,mvs) + "</td><td>kWh</td></tr>" +
 							"<tr><td><?php echo $ElecLeverancier?> energie:</td><td>" + waarde(0,1,mve) + "</td><td>kWh</td></tr>" +
