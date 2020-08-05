@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.71.2
+versie: 1.71.3
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  02-10-2019
+datum:  04-08-202-
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -93,18 +93,20 @@ omschrijving: hoofdprogramma
 		function shutdownHandler() //will be called when php script ends.
 		{
 			$lasterror = error_get_last();
-			switch ($lasterror['type'])
-			{
-				case E_ERROR:
-				case E_CORE_ERROR:
-				case E_COMPILE_ERROR:
-				case E_USER_ERROR:
-				case E_RECOVERABLE_ERROR:
-				case E_CORE_WARNING:
-				case E_COMPILE_WARNING:
-				case E_PARSE:
-					$error = "[SHUTDOWN] lvl:" . $lasterror['type'] . " | msg:" . $lasterror['message'] . " | file:" . $lasterror['file'] . " | ln:" . $lasterror['line'];
-					mylog($error, "fatal");
+			if( $lasterror  !== NULL) {
+				switch ($lasterror['type'])
+				{
+					case E_ERROR:
+					case E_CORE_ERROR:
+					case E_COMPILE_ERROR:
+					case E_USER_ERROR:
+					case E_RECOVERABLE_ERROR:
+					case E_CORE_WARNING:
+					case E_COMPILE_WARNING:
+					case E_PARSE:
+						$error = "[SHUTDOWN] lvl:" . $lasterror['type'] . " | msg:" . $lasterror['message'] . " | file:" . $lasterror['file'] . " | ln:" . $lasterror['line'];
+						mylog($error, "fatal");
+				}
 			}
 		}
 
@@ -171,7 +173,7 @@ omschrijving: hoofdprogramma
 		$reportEndStamp = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($reportDate))))->getTimestamp();
 		$currentDayYMD = date("Y-m-d", time());
 		$reportDayDMY = date("d-m-Y", strtotime($reportDate));
-		$a = strptime($reportDate, '%d-%m-%Y %H:%M:%S');
+		$a = strptime($reportDateStr, '%d-%m-%Y %H:%M:%S');
 		if ($a['tm_year']+1900 < 2000) { $a = strptime($reportDate, '%Y-%m-%d'); }
 		$a = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
 		$reportDateYMD = strftime('%Y-%m-%d', $a);
