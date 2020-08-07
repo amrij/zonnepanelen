@@ -164,19 +164,14 @@ if ($period == 'c' ) {
 	$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
 	if ($period == 'd' ) {
 		$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
-		$query = 'SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), '.$SQLdatefilter.') as iDate, (max(e_total)-min(e_total))/1000 as prod' .
-				' FROM ' . $table .
-				' WHERE timestamp <= UNIX_TIMESTAMP("' .  date('Y-m-d', $date) . ' 23:59:59") AND timestamp >= UNIX_TIMESTAMP("' .  $checkdate . '")' .
-				' GROUP BY iDate' .
-				' ORDER by iDate';
 	} else {
 		$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date))."-01";
-		$query = 'SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), '.$SQLdatefilter.') as iDate, (max(e_total)-min(e_total))/1000 as prod' .
-				' FROM ' . $table .
-				' WHERE timestamp <= UNIX_TIMESTAMP("' .  date('Y-m-d', $date) . ' 23:59:59")  AND timestamp >= UNIX_TIMESTAMP("' .  $checkdate . '")' .
-				' GROUP BY iDate' .
-				' ORDER by iDate';
 	}
+	$query = 'SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), '.$SQLdatefilter.') as iDate, (max(e_total)-min(e_total))/1000 as prod' .
+			' FROM ' . $table .
+			' WHERE timestamp <= UNIX_TIMESTAMP("' .  date('Y-m-d', $date) . ' 23:59:59") AND timestamp >= UNIX_TIMESTAMP("' .  $checkdate . '")' .
+			' GROUP BY iDate' .
+			' ORDER by iDate';
 	// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 	$inverter_data = $mysqli->query($query);
 	$thread_id = $mysqli->thread_id;
