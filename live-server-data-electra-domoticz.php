@@ -65,6 +65,11 @@ $diff = array();
 if ($period == 'c' ) {
 	//Get current info for P1_ElectriciteitsMeter from domoticz
 	$response = file_get_contents('http://'.$domohost.'&/json.htm?type=devices&rid='.$domoidx);
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$domo_rest = json_decode($response,true);
 	$diff['ServerTime'] = $domo_rest["ServerTime"];
 	$diff['CounterDelivToday'] = $domo_rest["result"][0]['CounterDelivToday'];
@@ -76,6 +81,11 @@ if ($period == 'c' ) {
 	// ============================================================================================
 	// Laad de data van het laatste jaar voor de P1_ElectriciteitsMeter uit domoticz
 	$response = file_get_contents('http://'.$domohost.'&/json.htm?type=graph&sensor=counter&idx='.$domoidx.'&range=year');
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$domo_rest = json_decode($response,true);
 	$domo_data_cy = $domo_rest['result'];
 

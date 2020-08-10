@@ -69,6 +69,11 @@ $total = array();
 if ($period == 'c' ) {
 	//Get start for the day info for P1_ElectriciteitsMeter from P1-monitor
 	$response = file_get_contents('http://'.$P1monitorhost.'/api/v1/smartmeter?limit=1&json=object&sort=asc&starttime='.str_replace(" ","%20",$vandaag));
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$total = array();
 	$diff = array();
 	$p1_rest = json_decode($response,true);
@@ -89,6 +94,11 @@ if ($period == 'c' ) {
 		$found = 0;
 		$dagh = ((new DateTime(date("Y-m-d 00:00:00", strtotime($d1))))->modify('-'.($limit-1).' day'))->format('Y-m-d H:i:s');
 		$response = file_get_contents('http://'.$P1monitorhost.'/api/v1/smartmeter?limit=1&json=object&sort=asc&starttime='.str_replace(" ","%20",$dagh));
+		if (!$response) {
+			echo "\nUnable to reach server for P1 information\nERROR:";
+			print_r(error_get_last()['message']);
+			exit();
+		}
 		$td = date("Y-m-d", strtotime($dagh));
 		if ($response){ 
 			$p1_rest = json_decode($response,true);

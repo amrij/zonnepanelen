@@ -74,6 +74,11 @@ if ($period == 'c' ) {
 			'header' => array('X-AUTHKEY:'.$dsmr_apikey))
 			)
 	));
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$dsmr_restc = json_decode($response,true);
 
 	//Get today info for P1_ElectriciteitsMeter from DSMR server
@@ -102,6 +107,11 @@ if ($period == 'c' ) {
 			'header' => array('X-AUTHKEY:'.$dsmr_apikey))
 			)
 	));
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$dsmr_rest = json_decode($response,true);
 	$dsmr_data_cy = $dsmr_rest['results'];
 
