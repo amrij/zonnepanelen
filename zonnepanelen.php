@@ -214,6 +214,7 @@ omschrijving: hoofdprogramma
 		$contract_datum_end = sprintf("%04d-%02d-%02d", $con_e_y, $con_m, $con_d);
 
 		// set defaults in case not provided in config.php, to avoid errors.
+		$P = (isset($P) ? $P : 0);
 		$kleur = (isset($kleur) ? $kleur : '#4169E1');
 		$kleur1 = (isset($kleur1) ? $kleur1 : '#009900');
 		$kleur2 = (isset($kleur2) ? $kleur2 : '#009900');
