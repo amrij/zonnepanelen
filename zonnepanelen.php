@@ -214,6 +214,7 @@ omschrijving: hoofdprogramma
 		$contract_datum_end = sprintf("%04d-%02d-%02d", $con_e_y, $con_m, $con_d);
 
 		// set defaults in case not provided in config.php, to avoid errors.
+		$P = (isset($P) ? $P : 0);
 		$kleur = (isset($kleur) ? $kleur : '#4169E1');
 		$kleur1 = (isset($kleur1) ? $kleur1 : '#009900');
 		$kleur2 = (isset($kleur2) ? $kleur2 : '#009900');
@@ -608,7 +609,6 @@ EOF
 	var PVGisd = "";
 	var PVGism = "";
 	var PVGisj = "";
-	var starty = 0;
 	var reportMonthDays = daysInMonth(reportMaand, reportJaar);
 	var con_start_date = new Date(contract_start_date);
 	var con_end_date = new Date(contract_end_date);
@@ -617,6 +617,12 @@ EOF
 	var con_start_year = con_start_date.getFullYear();
 	var con_days = daysInMonth(con_month, con_start_year);
 	var period_60sec = "s";
+	var solarloaded=false;
+	var p1cloaded=false;
+	var p1mloaded=false;
+	var p1dloaded=false;
+	var yearstarted=false;
+	var yearloaded=false;
 
 	google.charts.load('current', {'packages':['gauge', 'line']});
 	google.charts.setOnLoadCallback(drawChart);
@@ -626,6 +632,7 @@ EOF
 	var september = "";
 	var december = "";
 	var firstTime = true;	// Initialization flag
+
 	function writeN( n, str ) {
 		switch( n ) {
 			case 1: maart = stringToTimestamp(str); break;
@@ -778,32 +785,47 @@ EOF
 	}
 
 	function drawChart() {
-		if (P1 == 1){ draw_p1_chart();}
-		if (p1CounterToday == 0) {
-			if (P1 == 1){p1_update();}
-			s_p1CounterToday = p1CounterToday;
-			s_p1CounterDelivToday = p1CounterDelivToday;
-		}
 		requestData60sec();
+		if (P1 == 1){
+			Get_All_P1_data();
+		} else {
+			p1mloaded = true;
+			p1dloaded = true;
+			p1cloaded = true;
+		}
 		document.getElementById("box_panel_vermogen").style.display = "none"
 		document.getElementById("box_panel_energy").style.display = "none"
 		document.getElementById("sunrise_text").innerHTML = sunrise+" uur";
 		document.getElementById("solar_noon_text").innerHTML = solar_noon+" uur";
 		document.getElementById("sunset_text").innerHTML = sunset+" uur";
 		document.getElementById("daglengte_text").innerHTML = daglengte+" uur";
-		if (currentDayStartStamp < reportEndStamp) {
-			setInterval(function() {
-				var now = new Date();
-				if (ds == '' && reportEndStamp < now/1000) {
-					window.location = window.location.pathname;
-					return false;
+		var initVar = setInterval(function() {
+			if (!p1mloaded && typeof ychart.series[2].data.length !== 'undefined' && ychart.series[2].data.length > 0) {p1mloaded=true;}
+			if (!p1dloaded && typeof wchart.series[2].data.length !== 'undefined' && wchart.series[2].data.length > 0) {p1dloaded=true;}
+			if (!yearstarted && p1mloaded && p1dloaded){yearstarted = true; update_jaar();}
+			if (!solarloaded && typeof inverter_chartv.series[0] !== 'undefined' && inverter_chartv.series[0].data.length > 0) {solarloaded=true;}
+			if (solarloaded && (P1 == 0 || (p1mloaded && p1dloaded))) {
+				clearInterval(initVar);
+				if (currentDayStartStamp < reportEndStamp) {
+					p1_update();
+					setInterval(function() {
+						var now = new Date();
+						if (ds == '' && reportEndStamp < now/1000) {
+							window.location = window.location.pathname;
+							return false;
+						}
+						if (P1 == 1){
+							p1_update();
+						}
+					}, 10000);
+					setInterval(function() {
+						requestData60sec();
+					}, 60000);
+				} else {
+					update_map_fields();
 				}
-				if (P1 == 1){p1_update();}
-			}, 10000);
-			setInterval(function() {
-				requestData60sec();
-			}, 60000);
-		}
+			}
+		}, 100);
 	}
 
 	var paneelGraph = {
@@ -902,7 +924,7 @@ EOF
 			type: 'GET',
 			data: { "date" : reportDateStr },
 			cache: false,
-			async: false,
+			async: true,
 			success: function(data) {
 				p1data = eval(data);
 				if (p1data[0]["ServerTime"].length > 6){
@@ -970,6 +992,17 @@ EOF
 							pse = se;
 							psv = sv;
 							//
+							p1cloaded = true;
+							if (s_p1CounterToday+s_p1CounterDelivToday == 0) {
+								s_p1CounterToday = p1CounterToday;
+								s_p1CounterDelivToday = p1CounterDelivToday;
+								document.getElementById("sola_text").innerHTML = document.getElementById("sola_text").innerHTML.replace(
+												"verbruik?",
+												waarde(0,3,parseFloat(SolarProdToday)-parseFloat(s_p1CounterDelivToday)))
+								document.getElementById("sola_text").innerHTML = document.getElementById("sola_text").innerHTML.replace(
+												"retour?",
+												waarde(0,3,parseFloat(s_p1CounterDelivToday)))
+ 						    }
 							wchart.redraw();
 							ychart.redraw();
 							update_map_fields();
@@ -981,7 +1014,7 @@ EOF
 			},
 			error : function(xhr, textStatus, errorThrown ) {
 					document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
-				},
+			},
 		});
 	}
 
@@ -992,95 +1025,101 @@ EOF
 	}
 
 	function update_jaar() {
- 			yse = 0;
-			ysv = 0;
-			yve = 0;
-			yvs = 0;
-			PVGisd = "";
-			PVGism = "";
-			PVGisj = "";
-			$.each(ychart.series[2].data, function(i, point) {
-				var pdate = new Date(point.x);
-				var pm = pdate.getMonth()+1;
-				var py = pdate.getFullYear();
-				<?php // Get days diff with contract start and end date ?>
-				var dd_start = datediff(pdate,con_start_date);
-				var dd_end = datediff(con_end_date,pdate);
-				if(con_start_year == py && con_month == pm) {
-					<?php // we are in the start month of the contract so get only the data for those remaining days of the month ?>
-					var endmonth = con_start_year + "-" + con_month + "-" + con_days;
-					var maantal = con_days - con_day + 1;
-					var url='<?php echo $DataURL?>?period=d&aantal='+maantal+"&date="+endmonth;
-					var datam1 = $.ajax({
-						url: '<?php echo $DataURL?>',
-						dataType: "json",
-						type: 'GET',
-						data: { "period" : "d", "aantal" : maantal, "date" : endmonth  },
-						cache: false,
-						async: false,
-					}).responseText;
-					datam1 = eval(datam1)
-					if (typeof datam1 != 'undefined') {
-						if (reportMaand == con_month && reportDag >= con_day) { maantal = reportDag - con_day + 1;}
-						for (y = 0; y < maantal; y++) {
-							var prod = parseFloat(datam1[y]['prod']);  //Solar productie
-							var v1 = parseFloat(datam1[y]['v1']);      // verbruik hoog
-							var v2 = parseFloat(datam1[y]['v2']);      // verbruik laag
-							var r1 = parseFloat(datam1[y]['r1']);      // return hoog
-							var r2 = parseFloat(datam1[y]['r2']);      // return laag
-							yve += v1 + v2;
-							yvs += prod - r1 - r2;
-							yse += r1 + r2;
-							ysv += prod - r1 - r2;
+		<?php // Get the tart month of the contract so get only the data for those remaining days of the month ?>
+		var endmonth = con_start_year + "-" + con_month + "-" + con_days;
+		var maantal = con_days - con_day + 1;
+		var url='<?php echo $DataURL?>?period=d&aantal='+maantal+"&date="+endmonth;
+		yse = 0;
+		ysv = 0;
+		yve = 0;
+		yvs = 0;
+		PVGisd = "";
+		PVGism = "";
+		PVGisj = "";
+		$.ajax({
+			url: '<?php echo $DataURL?>',
+			dataType: "json",
+			type: 'GET',
+			data: { "period" : "d", "aantal" : maantal, "date" : endmonth  },
+			cache: false,
+			async: true,
+			success: function(datam1) {
+				datam1 = eval(datam1)
+				$.each(ychart.series[2].data, function(i, point) {
+					var pdate = new Date(point.x);
+					var pm = pdate.getMonth()+1;
+					var py = pdate.getFullYear();
+					<?php // Get days diff with contract start and end date ?>
+					var dd_start = datediff(pdate,con_start_date);
+					var dd_end = datediff(con_end_date,pdate);
+					if(con_start_year == py && con_month == pm) {
+						if (typeof datam1 != 'undefined') {
+							if (reportMaand == con_month && reportDag >= con_day) { maantal = reportDag - con_day + 1;}
+							for (y = 0; y < maantal; y++) {
+								var prod = parseFloat(datam1[y]['prod']);  //Solar productie
+								var v1 = parseFloat(datam1[y]['v1']);      // verbruik hoog
+								var v2 = parseFloat(datam1[y]['v2']);      // verbruik laag
+								var r1 = parseFloat(datam1[y]['r1']);      // return hoog
+								var r2 = parseFloat(datam1[y]['r2']);      // return laag
+								yve += v1 + v2;
+								yvs += prod - r1 - r2;
+								yse += r1 + r2;
+								ysv += prod - r1 - r2;
+							}
 						}
-					}
-				} else if(dd_start > 0 && dd_end > 0) {
+					} else if(dd_start > 0 && dd_end > 0) {
 						<?php // we are within de contract period so add to contract year total ?>
 						yse += ychart.series[0].data[i].y;
 						ysv += ychart.series[1].data[i].y;
 						yve += ychart.series[2].data[i].y;
 						yvs += ychart.series[3].data[i].y;
-				}
-			});
-
-			yse -= se;
-			ysv -= sv;
-			yve -= ve;
-			yvs -= vs;
-			if (PVGis[reportMaand] > 0) {
-				PVGisd = waarde(0,2,PVGis[reportMaand]/reportMonthDays);
-				PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*reportDag);
-				tPVGis = 0;
-				for (i=1; i<PVGis.length; i++) {
-					var factor = 1; <?php // Assume each month PVGis needs to be added ?>
-					if (i == con_month) { <?php // contract month corner case ?>
-						if (reportMaand == con_month) { <?php // special case if also in reportMonth ?>
-							if (reportDag >= con_day) { <?php // Only add the days between contract start and reportDay ?>
-								factor = (reportDag - con_day + 1)/con_days;
+					}
+				});
+				yse -= pse;
+				ysv -= psv;
+				yve -= pve;
+				yvs -= pvs;
+				if (PVGis[reportMaand] > 0) {
+					PVGisd = waarde(0,2,PVGis[reportMaand]/reportMonthDays);
+					PVGism = waarde(0,1,PVGis[reportMaand]/reportMonthDays*reportDag);
+					tPVGis = 0;
+					for (i=1; i<PVGis.length; i++) {
+						var factor = 1; <?php // Assume each month PVGis needs to be added ?>
+						if (i == con_month) { <?php // contract month corner case ?>
+							if (reportMaand == con_month) { <?php // special case if also in reportMonth ?>
+								if (reportDag >= con_day) { <?php // Only add the days between contract start and reportDay ?>
+									factor = (reportDag - con_day + 1)/con_days;
+								}
+								else if (reportDag < con_day) { <?php // reportDay is in year after contract start ?>
+									<?php // Add days from beginning of month to reportDag, and days from contract startday to end of month ?>
+									factor = (reportDag + (con_days - con_day + 1))/con_days;
+								}
 							}
-							else if (reportDag < con_day) { <?php // reportDay is in year after contract start ?>
-								<?php // Add days from beginning of month to reportDag, and days from contract startday to end of month ?>
-								factor = (reportDag + (con_days - con_day + 1))/con_days;
+							else { <?php // Add days from contract start day to end of month ?>
+								factor = (con_days - con_day + 1)/con_days;
 							}
 						}
-						else { <?php // Add days from contract start day to end of month ?>
-							factor = (con_days - con_day + 1)/con_days;
+						else if (i == reportMaand) { <?php // reportMonth corner case ?>
+							<?php // for reportMonth only add from beginning of month to reportDag?>
+							factor = reportDag/reportMonthDays;
 						}
+						else if ((reportJaar == con_start_year && (i < con_month || i > reportMaand)) ||
+							 (reportJaar >  con_start_year && (i < con_month && i > reportMaand))) {
+							<?php // out of bounds when outside contract date and report date, nothing to add ?>
+							factor = 0;
+						}
+						tPVGis += PVGis[i]*factor;
 					}
-					else if (i == reportMaand) { <?php // reportMonth corner case ?>
-						<?php // for reportMonth only add from beginning of month to reportDag?>
-						factor = reportDag/reportMonthDays;
-					}
-					else if ((reportJaar == con_start_year && (i < con_month || i > reportMaand)) ||
-						 (reportJaar >  con_start_year && (i < con_month && i > reportMaand))) {
-						<?php // out of bounds when outside contract date and report date, nothing to add ?>
-						factor = 0;
-					}
-					tPVGis += PVGis[i]*factor;
+					PVGisj = waarde(0,0,tPVGis);
 				}
-				PVGisj = waarde(0,0,tPVGis);
-			}
-	}
+				update_map_fields();
+				yearloaded = true;
+			},
+			error : function(xhr, textStatus, errorThrown ) {
+					document.getElementById("elec_text").innerHTML = "Fout: <?php echo $DataURL?>";
+			},
+		});
+}
 	function update_map_fields() {
 		if (wchart != "" && wchart.series[0].data.length>0 && ychart.series[0].data.length>0) {
 			ve = 0;
@@ -1109,7 +1148,6 @@ EOF
 					mvs += wchart.series[3].data[i].y;
 				}
 			});
-			if (starty == 0 ){starty = 1; update_jaar();}
 			document.getElementById("p1_huis").className = "red_text";
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
@@ -1223,7 +1261,7 @@ EOF
 			type: 'GET',
 			data: { "date" : reportDate, "period" : period_60sec }, //optional
 			cache: false,
-			async: false,
+			async: true,
 			success: function(data) {
 				data = eval(data);
 				data_i = [];
@@ -1263,10 +1301,10 @@ EOF
 											"<table width=100% class=data-table>" +
 											"<tr><td><b><u>Solar vandaag</u></b></td><td style=\"font-size:smaller\">" + data[iy]["IT"].substr(11,10) + "</td></tr>" +
 											((P1 == 1) ? (
-												"<tr><td>verbruik:</td><td>" + waarde(0,3,parseFloat(data[iy]["IE"])-parseFloat(s_p1CounterDelivToday)) + " kWh</td></tr>" +
-												"<tr><td>retour:</td><td><u>" + waarde(0,3,parseFloat(s_p1CounterDelivToday)) + " kWh</u></td></tr>"
-												) : "" ) +
-											"<tr><td class=green_text>productie:</td><td class=green_text>" + waarde(0,3,data[iy]["IE"]) + " kWh</td></tr>" +
+												"<tr><td>verbruik:</td><td>" + (s_p1CounterDelivToday+s_p1CounterToday>0 ? waarde(0,3,parseFloat(SolarProdToday)-parseFloat(s_p1CounterDelivToday)): "verbruik?") + " kWh</td></tr>" +
+												"<tr><td>retour:</td><td><u>" + (s_p1CounterDelivToday+s_p1CounterToday>0 ? waarde(0,3,parseFloat(s_p1CounterDelivToday)): "retour?")  + " kWh</u></td></tr>"
+												) : "") +
+											"<tr><td class=green_text>productie:</td><td class=green_text>" + waarde(0,3,SolarProdToday) + " kWh</td></tr>" +
 											"<tr><td>efficiëntie:</td><td>" + waarde(0,2,(SolarProdToday*1000/tverm)) + " Wh/Wp</td></tr></table>";
 									document.getElementById("inverter_text").innerHTML =
 											"<table width=100% class=data-table>"+
@@ -2344,7 +2382,7 @@ EOF
 // -------------------------------
 // P1 meter scripts
 // -------------------------------
-	function draw_p1_chart() {
+	$(document).ready(function() {
 		// definieer standaard opties voor iedere grafiek
 		var chartoptions={
 			chart: {
@@ -2573,8 +2611,10 @@ EOF
 		// voeg de data series toe aan de Charts
 		AddSeriestoChart(wchart, 0);
 		AddSeriestoChart(ychart, 0);
+	});
 
-		// lees data en update grafieken alleen initieel
+	function Get_All_P1_data() {
+			// lees data en update grafieken alleen initieel
 		updateP1graphs(wchart,"d",<?php echo $ElecDagGraph?>);
 		updateP1graphs(ychart,"m",<?php echo $ElecMaandGraph?>);
 	}
@@ -2588,7 +2628,6 @@ EOF
 					AddDataToUtilityChart(data1, ichart, 0);
 				}
 				ichart.redraw();
-				update_map_fields();
 			}
 		);
 	}
@@ -2678,6 +2717,7 @@ EOF
 			id: 'SolarElecNet',
 			type: 'areaspline',
 			name: 'Solar Retour <?php echo $ElecLeverancier?>',
+			animation: false,
 			color: '<?php echo $kleurSR ?>',
 			fillOpacity: '<?php echo $fillOpacitySR ?>',
 			stack: 'sreturn',
@@ -2687,6 +2727,7 @@ EOF
 			id: 'SolarVerbruik',
 			type: 'areaspline',
 			name: 'Solar verbruik',
+			animation: false,
 			showInLegend: true,
 			color: '<?php echo $kleurSV ?>',
 			fillOpacity: '<?php echo $fillOpacitySV ?>',
@@ -2696,6 +2737,7 @@ EOF
 		chart.addSeries({
 			id: 'verbruikElecNet',
 			name: 'Verbruik <?php echo $ElecLeverancier?>',
+			animation: false,
 			dataLabels: {
 				enabled: true,
 				inside: false,
@@ -2728,6 +2770,7 @@ EOF
 		chart.addSeries({
 			id: 'verbruikSolar',
 			name: 'Verbruik Solar',
+			animation: false,
 			color: '<?php echo $kleurVS ?>',
 			stack: 'susage',
 		}, false);
@@ -2736,6 +2779,7 @@ EOF
 				id: 'SolarPVGis',
 				type: 'line',
 				name: PVGtxt+' schatting',
+				animation: false,
 				color: '<?php echo $kleurS ?>',
 				lineWidth: 1,
 				marker: {
