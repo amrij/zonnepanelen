@@ -1151,7 +1151,7 @@ EOF
 			document.getElementById("p1_huis").className = "red_text";
 			if (s_p1CounterToday+s_p1CounterDelivToday > 0) {
 				var cP1Huis = parseFloat('0'+document.getElementById("p1_huis").innerHTML);
-				if ( cP1Huis == 0 || cP1Huis < vs + ve) {
+				if ( cP1Huis == 0 || cP1Huis <= vs + ve) {
 					if (currentDayStartStamp < reportEndStamp) {
 						document.getElementById("p1_huis").innerHTML = waarde(0,3,vs + ve)+" kWh";
 					}
