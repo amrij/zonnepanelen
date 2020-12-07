@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.69.1
+// versie: 1.69.2
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  1-06-2019
+// datum:  7-08-2020
 // omschrijving: ophalen van de P1meter informatie uit Domoticz en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-domoticz.php/period=c
@@ -42,6 +42,7 @@ $period = array_key_exists('period', $_GET) ? $_GET['period'] : "";
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 
 if($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
+if($period == '') { $period = 'd'; }
 if($limit == '') { $limit = '30'; }
 
 if ($period == 'm') {
@@ -64,6 +65,11 @@ $diff = array();
 if ($period == 'c' ) {
 	//Get current info for P1_ElectriciteitsMeter from domoticz
 	$response = file_get_contents('http://'.$domohost.'&/json.htm?type=devices&rid='.$domoidx);
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$domo_rest = json_decode($response,true);
 	$diff['ServerTime'] = $domo_rest["ServerTime"];
 	$diff['CounterDelivToday'] = $domo_rest["result"][0]['CounterDelivToday'];
@@ -75,11 +81,15 @@ if ($period == 'c' ) {
 	// ============================================================================================
 	// Laad de data van het laatste jaar voor de P1_ElectriciteitsMeter uit domoticz
 	$response = file_get_contents('http://'.$domohost.'&/json.htm?type=graph&sensor=counter&idx='.$domoidx.'&range=year');
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$domo_rest = json_decode($response,true);
 	$domo_data_cy = $domo_rest['result'];
 
 	// ==================================================================================================
-	$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
 	$checkdates = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
 	$checkdatee = date("Y-m-d", $date);
 	$i=0;
@@ -160,20 +170,18 @@ if ($period == 'c' ) {
 	$mysqli = new mysqli($host, $user, $passwd, $db, $port);
 	// haal gegevens van de inverter op
 	$diff = array();
-	$date_e = (new DateTime(sprintf("today %s",date("Y-m-d 23:59:59", strtotime($checkdatee)))))->getTimestamp();
 	$p1revrow = ["se_day" => 0];
 	$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
-	$query = ' SELECT * FROM ( ' .
-		'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-		'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
-		'	 		FROM ' . $table .
-		'			WHERE timestamp < ' . $tomorrow .
-		'			GROUP BY d  ' .
-		'		  ) t1 ' .
-		' GROUP BY oDate ' .
-		' ORDER by t1.d desc ' .
-		' LIMIT '.$limit.') output' .
-		' ORDER by oDate ;';
+	if ($period == 'd' ) {
+		$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
+	} else {
+		$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date))."-01";
+	}
+	$query = 'SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), '.$SQLdatefilter.') as iDate, (max(e_total)-min(e_total))/1000 as prod' .
+			' FROM ' . $table .
+			' WHERE timestamp <= UNIX_TIMESTAMP("' .  date('Y-m-d', $date) . ' 23:59:59") AND timestamp >= UNIX_TIMESTAMP("' .  $checkdate . '")' .
+			' GROUP BY iDate' .
+			' ORDER by iDate';
 	// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 	$inverter_data = $mysqli->query($query);
 	$thread_id = $mysqli->thread_id;
@@ -236,4 +244,5 @@ if ($period == 'c' ) {
 }
 //Output totale resultaat als JSON
 echo json_encode($total);
+echo "\n";
 ?>

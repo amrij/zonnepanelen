@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.80.0
+// versie: 1.80.1
 // auteur: André Rijkeboer
 //
-// datum:  28-08-2019
+// datum:  9-08-2020
 // omschrijving: ophalen van de P1meter informatie uit P1-monitor en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-P1-monitor.php?period=c
@@ -69,6 +69,11 @@ $total = array();
 if ($period == 'c' ) {
 	//Get start for the day info for P1_ElectriciteitsMeter from P1-monitor
 	$response = file_get_contents('http://'.$P1monitorhost.'/api/v1/smartmeter?limit=1&json=object&sort=asc&starttime='.str_replace(" ","%20",$vandaag));
+	if (!$response) {
+		echo "\nUnable to reach server for P1 information\nERROR:";
+		print_r(error_get_last()['message']);
+		exit();
+	}
 	$total = array();
 	$diff = array();
 	$p1_rest = json_decode($response,true);
@@ -89,6 +94,11 @@ if ($period == 'c' ) {
 		$found = 0;
 		$dagh = ((new DateTime(date("Y-m-d 00:00:00", strtotime($d1))))->modify('-'.($limit-1).' day'))->format('Y-m-d H:i:s');
 		$response = file_get_contents('http://'.$P1monitorhost.'/api/v1/smartmeter?limit=1&json=object&sort=asc&starttime='.str_replace(" ","%20",$dagh));
+		if (!$response) {
+			echo "\nUnable to reach server for P1 information\nERROR:";
+			print_r(error_get_last()['message']);
+			exit();
+		}
 		$td = date("Y-m-d", strtotime($dagh));
 		if ($response){ 
 			$p1_rest = json_decode($response,true);
@@ -177,17 +187,16 @@ if ($period == 'c' ) {
 	$date_e = (new DateTime(sprintf("today %s",date("Y-m-d 23:59:59", strtotime($checkdatee)))))->getTimestamp();
 	$p1revrow = ["se_day" => 0];
 	$table = $inverter == 1 ? "telemetry_inverter" : "telemetry_inverter_3phase";
-	$query = ' SELECT * FROM ( ' .
-		'    SELECT DATE_FORMAT(t1.d, '.$SQLdatefilter.') as oDate, DATE(t1.d) as iDate, sum(IFNULL(t1.tzon,0)) as prod ' .
-		'	 FROM (	SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), "%Y-%m-%d") as d, (max(e_total)-min(e_total))/1000 as tzon ' .
-		'	 		FROM ' . $table .
-		'			WHERE timestamp < ' . $tomorrow .
-		'			GROUP BY d  ' .
-		'		  ) t1 ' .
-		' GROUP BY oDate ' .
-		' ORDER by t1.d desc ' .
-		' LIMIT '.$limit.') output' .
-		' ORDER by oDate ;';
+	if ($period == 'd' ) {
+		$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date));
+	} else {
+		$checkdate = date($JSON_SUM, strtotime("-$limit $JSON_period",$date))."-01";
+	}
+	$query = 'SELECT DATE_FORMAT(DATE(FROM_UNIXTIME(timestamp)), '.$SQLdatefilter.') as iDate, (max(e_total)-min(e_total))/1000 as prod' .
+			' FROM ' . $table .
+			' WHERE timestamp <= UNIX_TIMESTAMP("' .  date('Y-m-d', $date) . ' 23:59:59") AND timestamp >= UNIX_TIMESTAMP("' .  $checkdate . '")' .
+			' GROUP BY iDate' .
+			' ORDER by iDate';
 	// haal de gegevens van de inverter op $SQL_datefilter = 'DATE_FORMAT(t2.d, "%Y-%m-%d")';
 	$inverter_data = $mysqli->query($query);
 	$thread_id = $mysqli->thread_id;
