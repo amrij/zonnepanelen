@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.71.0
+// versie: 1.71.1
 // auteur: André Rijkeboer
-// datum:  21-07-2019
+// datum:  16-02-2021
 // omschrijving: ophalen van de gegevens van de panelen, de inverter en van astronomische gegevens
 
 # ophalen algemene gegevens
@@ -29,7 +29,7 @@ include('config.php');
 # openen van de database
 $mysqli = new mysqli($host, $user, $passwd, $db, $port);
 
-# ophale datum gegevens
+# ophalen datum gegevens
 $d1 = array_key_exists('date', $_GET) ? $_GET['date'] : "";
 if ($d1 == '') { $d1 = date("d-m-Y H:i:s", time()); }
 
@@ -74,17 +74,21 @@ $diff = array();
 $diff['ca']  = "in";
 $query = 'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, de_day, ' . $sqlcols .
 	' FROM ' . $table .
-	' WHERE e_day>0 AND timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow .
+	' WHERE timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow .
 	' ORDER BY timestamp';
 foreach ($mysqli->query($query) as $j => $row) {
-	while ($dag[0] != gmdate("d", $row['timestamp'])) {
+	# Set the first record day found
+	if ($j == 0)
+		$dag[0] = gmdate("d", $row['timestamp']);
+	# reset daytotal and change series range
+	if ($dag[0] != gmdate("d", $row['timestamp'])) {
 		$dag[1]--;
-		$dag[0] = gmdate("d", $today-($dag[1]-1)*86400);
+		$dag[0] = gmdate("d", $row['timestamp']);
 		$de_day_total = 0;
 	}
 	$de_day_total += $row["de_day"];
 	$diff['serie']  = $dag[1];
-	$diff['ts']    = ($today + date("H", $row['timestamp']) * 3600 + round(0.2 * date("i", $row['timestamp'])) * 5 * 60) * 1000;
+	$diff['ts']    = intval($today + date("H", $row['timestamp']) * 3600 + round(0.2 * date("i", $row['timestamp'])) * 5 * 60) * 1000;
 	$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
 	$diff['cp'] = $row['p_active'];
 	# voeg het resultaat toe aan de total-array
@@ -123,7 +127,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 		if ($row['optimizer'] == $op_id[$i][0]) {
 			$diff['serie']  = 0;
 			$diff['op_id']  = $i;
-			$diff['ts'] = $row['timestamp'] * 1000;
+			$diff['ts'] = intval($row['timestamp'] * 1000);
 			$diff['temp'] = $row['temperature']*2;
 			$diff['cp'] = sprintf("%.3f", $row['vermogen']);
 
@@ -327,7 +331,7 @@ foreach ($mysqli->query(
 		$limit )
 		as $j => $row) {
 	$de_day_total += $row["de_day"];
-	$diff['ts']   = $row['timestamp'] * 1000;
+	$diff['ts']   = intval($row['timestamp'] * 1000);
 	$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
 	$diff['cp'] = $row['p_active'];
 	// voeg het resultaat toe aan de total-array
