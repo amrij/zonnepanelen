@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.71.1
+// versie: 1.71.2
 // auteur: André Rijkeboer
-// datum:  16-02-2021
+// datum:  23-02-2021
 // omschrijving: ophalen van de gegevens van de panelen, de inverter en van astronomische gegevens
 
 # ophalen algemene gegevens
@@ -87,12 +87,15 @@ foreach ($mysqli->query($query) as $j => $row) {
 		$de_day_total = 0;
 	}
 	$de_day_total += $row["de_day"];
-	$diff['serie']  = $dag[1];
-	$diff['ts']    = intval($today + date("H", $row['timestamp']) * 3600 + round(0.2 * date("i", $row['timestamp'])) * 5 * 60) * 1000;
-	$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
-	$diff['cp'] = $row['p_active'];
-	# voeg het resultaat toe aan de total-array
-	array_push($total, $diff);
+	$cHH = date("H", $row['timestamp']);
+	if ($row["de_day"] > 0 || ($cHH > 8 && $cHH < 17) ) {
+		$diff['serie']  = $dag[1];
+		$diff['ts']    = intval($today + date("H", $row['timestamp']) * 3600 + round(0.2 * date("i", $row['timestamp'])) * 5 * 60) * 1000;
+		$diff['vp'] = sprintf("%.3f", $de_day_total/1000);
+		$diff['cp'] = $row['p_active'];
+		# voeg het resultaat toe aan de total-array
+		array_push($total, $diff);
+	}
 }
 
 ##################
