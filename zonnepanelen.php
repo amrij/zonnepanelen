@@ -18,12 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 #
-versie: 1.71.3
+versie: 1.71.4
 auteurs:
 	André Rijkeboer
 	Jos van der Zande
 	Marcel Mol
-datum:  04-08-202-
+datum:  24-02-2021
 omschrijving: hoofdprogramma
 -->
 <html>
@@ -269,7 +269,6 @@ omschrijving: hoofdprogramma
 					type: 'datetime',
 					maxZoom: 9000 * 1000, // 600 seconds = 10 minutes
 					title: { text: null },
-					startOnTick: true,
 					minPadding: 0,
 					maxPadding: 0,
 					labels: { overflow: 'justify' },
