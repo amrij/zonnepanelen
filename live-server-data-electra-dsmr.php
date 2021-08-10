@@ -1,9 +1,9 @@
 <?php
 //
-// versie: 1.69.2
+// versie: 1.69.3
 // auteur: Jos van der Zande  based on model from André Rijkeboer
 //
-// datum:  7-08-2020
+// datum:  8-08-2021
 // omschrijving: ophalen van de P1meter informatie uit DSMR server en SolarEdge gegeven om ze samen in 1 grafiek te laten zien
 //
 //~ URL tbv live data p1 Meter: live-server-data-electra-dsmr.php/period=c
@@ -93,8 +93,14 @@ if ($period == 'c' ) {
 	$diff['ServerTime'] = date("d-m-Y H:i:s",strtotime($dsmr_restc['timestamp']));
 	$diff['CounterToday'] = round((floatval($dsmr_restd['electricity1'])+floatval($dsmr_restd['electricity2'])),3);
 	$diff['CounterDelivToday'] = round((floatval($dsmr_restd['electricity1_returned'])+floatval($dsmr_restd['electricity2_returned'])),3);
-	$diff['Usage'] = round(floatval($dsmr_restc['currently_delivered']),3);
-	$diff['UsageDeliv'] = round(floatval($dsmr_restc['currently_returned']),3);
+	$nettoNet = round(floatval($dsmr_restc['currently_delivered']),3) - round(floatval($dsmr_restc['currently_returned']),3);
+	if ($nettoNet > 0) {
+		$diff['Usage'] = round($nettoNet,3);
+		$diff['UsageDeliv'] = 0;
+	} else {
+		$diff['Usage'] = 0;
+		$diff['UsageDeliv'] = round($nettoNet * -1,3);
+	}
 	array_push($total, $diff);
 } else {
 	// ============================================================================================
