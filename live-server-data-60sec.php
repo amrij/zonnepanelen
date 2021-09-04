@@ -1,6 +1,6 @@
 <?php
 //
-// Copyright (C) 2019 André Rijkeboer
+// Copyright (C) 2021 André Rijkeboer
 //
 // This file is part of zonnepanelen, which shows telemetry data from
 // the TCP traffic of SolarEdge PV inverters.
@@ -18,9 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with zonnepanelen.  If not, see <http://www.gnu.org/licenses/>.
 //
-// versie: 1.71.2
+// versie: 1.71.3
 // auteur: André Rijkeboer
-// datum:  23-02-2021
+// datum:  2-09-2021
 // omschrijving: ophalen van de gegevens van de panelen, de inverter en van astronomische gegevens
 
 # ophalen algemene gegevens
@@ -77,13 +77,11 @@ $query = 'SELECT timestamp, IF(temperature = 0, NULL, temperature) temperature, 
 	' WHERE timestamp BETWEEN ' . $date_i . ' AND ' . $tomorrow .
 	' ORDER BY timestamp';
 foreach ($mysqli->query($query) as $j => $row) {
-	# Set the first record day found
-	if ($j == 0)
-		$dag[0] = gmdate("d", $row['timestamp']);
-	# reset daytotal and change series range
-	if ($dag[0] != gmdate("d", $row['timestamp'])) {
+	# when another day is encounter we reset daytotal and change series range.
+	# The loop is required to get the correct series number in case one or more days data is missing.
+	while ($dag[0] != gmdate("d", $row['timestamp'])) {
 		$dag[1]--;
-		$dag[0] = gmdate("d", $row['timestamp']);
+		$dag[0] = gmdate("d", $today-($dag[1]-1)*86400);
 		$de_day_total = 0;
 	}
 	$de_day_total += $row["de_day"];
