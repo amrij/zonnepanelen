@@ -174,8 +174,8 @@ omschrijving: hoofdprogramma
 		$currentDayYMD = date("Y-m-d", time());
 		$reportDayDMY = date("d-m-Y", strtotime($reportDate));
                 $a = date_parse_from_format('d-m-Y H:M:S',$reportDateStr);
-                if ($a['year']+1900 < 2000) { $a = date_parse_from_format('Y-m-d',$reportDate); }
-                $a = mktime(0,0,0,$a['month']+1, $a['day'], $a['year']+1900);
+                if ($a['year'] < 2000) { $a = date_parse_from_format('Y-m-d',$reportDate); }
+                $a = mktime(0,0,0,$a['month'], $a['day'], $a['year']);
 		$reportDateYMD = date('Y-m-d', $a);
 		$datum = $reportStamp/86400;
 		$timezone = date('Z',strtotime($reportDate))/3600;
