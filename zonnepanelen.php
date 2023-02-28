@@ -58,7 +58,7 @@ omschrijving: hoofdprogramma
 		set_error_handler("errorHandler");
 		register_shutdown_function("shutdownHandler");
 
-		function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context)
+		function errorHandler($error_level, $error_message, $error_file, $error_line)
 		{
 			$error = "lvl: " . $error_level . " | msg:" . $error_message . " | file:" . $error_file . " | ln:" . $error_line;
 			switch ($error_level) {
@@ -173,10 +173,10 @@ omschrijving: hoofdprogramma
 		$reportEndStamp = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($reportDate))))->getTimestamp();
 		$currentDayYMD = date("Y-m-d", time());
 		$reportDayDMY = date("d-m-Y", strtotime($reportDate));
-		$a = strptime($reportDateStr, '%d-%m-%Y %H:%M:%S');
-		if ($a['tm_year']+1900 < 2000) { $a = strptime($reportDate, '%Y-%m-%d'); }
-		$a = mktime(0,0,0,$a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
-		$reportDateYMD = strftime('%Y-%m-%d', $a);
+		$reportDateYMD = date('Y-m-d', $a);
+                $a = date_parse_from_format('d-m-Y H:M:S',$reportDateStr);
+                if ($a['year']+1900 < 2000) { $a = date_parse_from_format('Y-m-d',$reportDate); }
+                $a = mktime(0,0,0,$a['month']+1, $a['day'], $a['year']+1900);
 		$datum = $reportStamp/86400;
 		$timezone = date('Z',strtotime($reportDate))/3600;
 		$localtime = 0; //Time (pas local midnight)
@@ -189,16 +189,16 @@ omschrijving: hoofdprogramma
 		$bleuset_s = iteratie($datum,$lat,$long,$timezone,$localtime,2,-6);
 		$nauticalrise_s = iteratie($datum,$lat,$long,$timezone,$localtime,0,-12);
 		$nauticalset_s = iteratie($datum,$lat,$long,$timezone,$localtime,2,-12);
-		$sunrise = date("H:i:s",($datum+$sunrise_s)*86400);
-		$solar_noon = date("H:i:s",($datum+$solar_noon_s)*86400);
-		$sunset = date("H:i:s",($datum+$sunset_s)*86400);
-		$goldenrise = date("H:i:s",($datum+$goldenrise_s)*86400);
-		$goldenset = date("H:i:s",($datum+$goldenset_s)*86400);
-		$bleurise = date("H:i:s",($datum+$bleurise_s)*86400);
-		$bleuset = date("H:i:s",($datum+$bleuset_s)*86400);
-		$nauticalrise = date("H:i:s",($datum+$nauticalrise_s)*86400);
-		$nauticalset = date("H:i:s",($datum+$nauticalset_s)*86400);
-		$daglengte = date("H:i:s",($datum+$sunset_s-$sunrise_s)*86400);
+		$sunrise = date("H:i:s",(int) ($datum+$sunrise_s)*86400);
+		$solar_noon = date("H:i:s",(int) ($datum+$solar_noon_s)*86400);
+		$sunset = date("H:i:s",(int) ($datum+$sunset_s)*86400);
+		$goldenrise = date("H:i:s",(int) ($datum+$goldenrise_s)*86400);
+		$goldenset = date("H:i:s",(int) ($datum+$goldenset_s)*86400);
+		$bleurise = date("H:i:s",(int) ($datum+$bleurise_s)*86400);
+		$bleuset = date("H:i:s",(int) ($datum+$bleuset_s)*86400);
+		$nauticalrise = date("H:i:s",(int) ($datum+$nauticalrise_s)*86400);
+		$nauticalset = date("H:i:s",(int) ($datum+$nauticalset_s)*86400);
+		$daglengte = date("H:i:s",(int) ($datum+$sunset_s-$sunrise_s)*86400);
 		// bereken contract Start en Eind datum tbv jaar totalen
 		$contract_datum = empty($contract_datum) ? "01-01" : $contract_datum ;
 		$con_date_fields = explode("-", $contract_datum,2);
