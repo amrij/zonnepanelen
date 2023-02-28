@@ -173,10 +173,10 @@ omschrijving: hoofdprogramma
 		$reportEndStamp = (new DateTime("tomorrow " . date("Y-m-d 00:00:00", strtotime($reportDate))))->getTimestamp();
 		$currentDayYMD = date("Y-m-d", time());
 		$reportDayDMY = date("d-m-Y", strtotime($reportDate));
-		$reportDateYMD = date('Y-m-d', $a);
                 $a = date_parse_from_format('d-m-Y H:M:S',$reportDateStr);
                 if ($a['year']+1900 < 2000) { $a = date_parse_from_format('Y-m-d',$reportDate); }
                 $a = mktime(0,0,0,$a['month']+1, $a['day'], $a['year']+1900);
+		$reportDateYMD = date('Y-m-d', $a);
 		$datum = $reportStamp/86400;
 		$timezone = date('Z',strtotime($reportDate))/3600;
 		$localtime = 0; //Time (pas local midnight)
